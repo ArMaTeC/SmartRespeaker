@@ -1,12 +1,11 @@
 substitutions:
-  # Phases of the Voice Assistant
-  voice_assist_idle_phase_id: '1'             # Ready for wake word
-  voice_assist_waiting_for_command_phase_id: '2'  # After wake word
-  voice_assist_listening_for_command_phase_id: '3' # Listening
-  voice_assist_thinking_phase_id: '4'         # Processing
-  voice_assist_replying_phase_id: '5'         # Replying
-  voice_assist_not_ready_phase_id: '10'       # Not ready
-  voice_assist_error_phase_id: '11'           # Error
+  voice_assist_idle_phase_id: '1'
+  voice_assist_waiting_for_command_phase_id: '2'
+  voice_assist_listening_for_command_phase_id: '3'
+  voice_assist_thinking_phase_id: '4'
+  voice_assist_replying_phase_id: '5'
+  voice_assist_not_ready_phase_id: '10'
+  voice_assist_error_phase_id: '11'
   hidden_ssid: "false"
 
 esphome:
@@ -83,10 +82,10 @@ api:
     key: "ZCgwWwJTbF0/EQpyOkSOl+nYyghZdE9n5tRAoEMnWDk="
   id: api_id
   actions:
-    - action: start_va
-      then: [voice_assistant.start]
-    - action: stop_va
-      then: [voice_assistant.stop]
+    - action: start_assist
+      then: [assist_satellite.start]
+    - action: stop_assist
+      then: [assist_satellite.stop]
   on_client_connected:
     - script.execute: control_leds
   on_client_disconnected:
@@ -285,8 +284,8 @@ binary_sensor:
                           then: [media_player.stop: {announcement: true}]
                           else:
                             - if:
-                                condition: {voice_assistant.is_running:}
-                                then: [voice_assistant.stop:]
+                                condition: {assist_satellite.is_running:}
+                                then: [assist_satellite.stop:]
                                 else:
                                   - if:
                                       condition: {media_player.is_playing:}
@@ -296,7 +295,7 @@ binary_sensor:
                                             condition:
                                               and:
                                                 - switch.is_off: mic_mute_switch
-                                                - not: {voice_assistant.is_running}
+                                                - not: {assist_satellite.is_running}
                                             then:
                                               - if:
                                                   condition: {switch.is_on: button_sound}
@@ -306,7 +305,7 @@ binary_sensor:
                                                         priority: true
                                                         sound_file: !lambda return id(center_button_press_sound);
                                                     - delay: 300ms
-                                              - voice_assistant.start:
+                                              - assist_satellite.start:
       - timing:
           - ON for at most 1s
           - OFF for at most 0.25s
@@ -323,7 +322,8 @@ binary_sensor:
                           id: play_sound
                           priority: false
                           sound_file: !lambda return id(center_button_double_press_sound);
-                - media_player.volume_up: external_media_player  # Volume up
+                - media_player.volume_up:
+                    id: external_media_player
       - timing:
           - ON for at most 1s
           - OFF for at most 0.25s
@@ -342,7 +342,8 @@ binary_sensor:
                           id: play_sound
                           priority: false
                           sound_file: !lambda return id(center_button_triple_press_sound);
-                - media_player.volume_down: external_media_player  # Volume down
+                - media_player.volume_down:
+                    id: external_media_player
       - timing: [ON for at least 1s]
         then:
           - if:
@@ -449,7 +450,7 @@ light:
             static bool state = false;
             state = !state;
             if (state) {
-              id(led_respeaker_onboard).turn_on().set_rgb(1.0, 0.0, 0.0).set_brightness(1.0).perform();
+              id(led_respeaker_onboard).turn_on().set_rng(1.0, 0.0, 0.0).set_brightness(1.0).perform();
             } else {
               id(led_respeaker_onboard).turn_off().perform();
             }
@@ -725,7 +726,7 @@ script:
   - id: fetch_first_active_timer
     then:
       - lambda: |
-          const auto timers = id(va).get_timers();
+          const auto timers = id(assist).get_timers();
           auto output_timer = timers.begin()->second;
           for (auto &iterable_timer : timers) {
             if (iterable_timer.second.is_active && iterable_timer.second.seconds_left <= output_timer.seconds_left) {
@@ -736,7 +737,7 @@ script:
   - id: check_if_timers_active
     then:
       - lambda: |
-          const auto timers = id(va).get_timers();
+          const auto timers = id(assist).get_timers();
           bool output = false;
           if (timers.size() > 0) {
             for (auto &iterable_timer : timers) {
@@ -850,7 +851,7 @@ media_player:
           condition:
             and:
               - switch.is_off: timer_ringing
-              - not: {voice_assistant.is_running:}
+              - not: {assist_satellite.is_running:}
               - not: {media_player.is_announcing:}
           then:
             - mixer_speaker.apply_ducking:
@@ -930,7 +931,7 @@ external_components:
       type: git
       url: https://github.com/esphome/home-assistant-voice-pe
       ref: dev
-    components: [micro_wake_word, microphone, voice_assistant]
+    components: [micro_wake_word, microphone, assist_satellite]
     refresh: 0s
   - source:
       type: git
@@ -984,15 +985,15 @@ micro_wake_word:
                                 priority: true
                                 sound_file: !lambda return id(wake_word_triggered_sound);
                             - delay: 300ms
-                      - voice_assistant.start:
+                      - assist_satellite.start:
                           wake_word: !lambda return wake_word;
 
-voice_assistant:
-  id: va
+assist_satellite:
+  id: assist
   microphone: nabu_mic_va
+  speaker: mixing_speaker
   media_player: external_media_player
   micro_wake_word: mww
-  use_wake_word: false
   noise_suppression_level: 0
   auto_gain: 0 dbfs
   volume_multiplier: 1
@@ -1008,7 +1009,7 @@ voice_assistant:
     - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
     - script.execute: control_leds
   on_client_disconnected:
-    - voice_assistant.stop:
+    - assist_satellite.stop:
     - lambda: id(voice_assistant_phase) = ${voice_assist_not_ready_phase_id};
     - script.execute: control_leds
   on_error:
@@ -1047,10 +1048,10 @@ voice_assistant:
         condition:
           switch.is_on: is_question_response_switch
         then:
-          - voice_assistant.start:
+          - assist_satellite.start:
           - switch.turn_off: is_question_response_switch
   on_end:
-    - wait_until: {not: {voice_assistant.is_running:}}
+    - wait_until: {not: {assist_satellite.is_running:}}
     - mixer_speaker.apply_ducking:
         id: media_mixing_input
         decibel_reduction: 0
