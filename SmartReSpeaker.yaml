@@ -249,162 +249,33 @@ switch:
       - script.execute: control_leds
       - delay: 15min
       - switch.turn_off: timer_ringing
+  # New switch to track if the response is a question
+  - platform: template
+    id: is_question_response_switch
+    name: "Is Question Response"
+    internal: true
+    optimistic: true
+    restore_mode: ALWAYS_OFF
 
 binary_sensor:
   - platform: gpio
+    pin: GPIO8
     id: user_button
-    pin:
-      number: GPIO3
-      inverted: true
-    name: "User button"
-    on_press: [script.execute: control_leds]
-    on_release:
+    on_state:
       - script.execute: control_leds
-      - if:
-          condition: {lambda: return id(factory_reset_requested);}
-          then: [button.press: factory_reset_button]
-    on_multi_click:
-      - timing:
-          - ON for at most 1s
-          - OFF for at least 0.25s
-        then:
-          - if:
-              condition: {lambda: return !id(init_in_progress);}
-              then:
-                - if:
-                    condition: {switch.is_on: timer_ringing}
-                    then: [switch.turn_off: timer_ringing]
-                    else:
-                      - if:
-                          condition: {media_player.is_announcing:}
-                          then: [media_player.stop: {announcement: true}]
-                          else:
-                            - if:
-                                condition: {voice_assistant.is_running:}
-                                then: [voice_assistant.stop:]
-                                else:
-                                  - if:
-                                      condition: {media_player.is_playing:}
-                                      then: [media_player.pause:]
-                                      else:
-                                        - if:
-                                            condition:
-                                              and:
-                                                - switch.is_off: mic_mute_switch
-                                                - not: {voice_assistant.is_running}
-                                            then:
-                                              - if:
-                                                  condition: {switch.is_on: button_sound}
-                                                  then:
-                                                    - script.execute:
-                                                        id: play_sound
-                                                        priority: true
-                                                        sound_file: !lambda return id(center_button_press_sound);
-                                                    - delay: 300ms
-                                              - voice_assistant.start:
-      - timing:
-          - ON for at most 1s
-          - OFF for at most 0.25s
-          - ON for at most 1s
-          - OFF for at least 0.25s
-        then:
-          - if:
-              condition: {lambda: return !id(init_in_progress);}
-              then:
-                - if:
-                    condition: {switch.is_on: button_sound}
-                    then:
-                      - script.execute:
-                          id: play_sound
-                          priority: false
-                          sound_file: !lambda return id(center_button_double_press_sound);
-                - event.trigger:
-                    id: button_press_event
-                    event_type: "double_press"
-      - timing:
-          - ON for at most 1s
-          - OFF for at most 0.25s
-          - ON for at most 1s
-          - OFF for at most 0.25s
-          - ON for at most 1s
-          - OFF for at least 0.25s
-        then:
-          - if:
-              condition: {lambda: return !id(init_in_progress);}
-              then:
-                - if:
-                    condition: {switch.is_on: button_sound}
-                    then:
-                      - script.execute:
-                          id: play_sound
-                          priority: false
-                          sound_file: !lambda return id(center_button_triple_press_sound);
-                - event.trigger:
-                    id: button_press_event
-                    event_type: "triple_press"
-      - timing: [ON for at least 1s]
-        then:
-          - if:
-              condition: {lambda: return !id(init_in_progress);}
-              then:
-                - if:
-                    condition: {switch.is_on: button_sound}
-                    then:
-                      - script.execute:
-                          id: play_sound
-                          priority: false
-                          sound_file: !lambda return id(center_button_long_press_sound);
-                - light.turn_off: led_respeaker_onboard
-                - event.trigger:
-                    id: button_press_event
-                    event_type: "long_press"
-      - timing: [ON for at least 10s]
-        then:
-          - light.turn_on:
-              brightness: 100%
-              id: led_respeaker_onboard
-              effect: "Factory Reset Coming Up"
-          - script.execute:
-              id: play_sound
-              priority: true
-              sound_file: !lambda return id(factory_reset_initiated_sound);
-          - wait_until: {binary_sensor.is_off: user_button}
-          - if:
-              condition: {lambda: return !id(factory_reset_requested);}
-              then:
-                - light.turn_off: led_respeaker_onboard
-                - script.execute:
-                    id: play_sound
-                    priority: true
-                    sound_file: !lambda return id(factory_reset_cancelled_sound);
-      - timing: [ON for at least 22s]
-        then:
-          - script.execute:
-              id: play_sound
-              priority: true
-              sound_file: !lambda return id(factory_reset_confirmed_sound);
-          - light.turn_on:
-              brightness: 100%
-              red: 1
-              green: 0
-              blue: 0
-              id: led_respeaker_onboard
-              effect: "none"
-          - lambda: id(factory_reset_requested) = true;
+  - platform: status
+    id: status_sensor
 
 light:
   - platform: esp32_rmt_led_strip
     id: led_respeaker_onboard
-    name: LED Respeaker onboard
-    disabled_by_default: true
-    internal: false
-    rgb_order: GRB
-    pin: GPIO1
+    name: "Respeaker Lite LED"
+    internal: True
+    pin: GPIO7
     num_leds: 1
-    rmt_symbols: 192
-    chipset: ws2812
-    entity_category: config
-    default_transition_length: 0s
+    rmt_channel: 0
+    chipset: SK6812
+    rgb_order: GRB
     effects:
       - pulse:
           name: "Fast Pulse"
@@ -418,63 +289,44 @@ light:
           update_interval: 500ms
           min_brightness: 50%
           max_brightness: 100%
-      - pulse:
-          name: "Factory Reset Coming Up"
-          transition_length: 250ms
-          update_interval: 250ms
-          min_brightness: 0%
-          max_brightness: 100%
 
 sensor:
+  - platform: uptime
+    name: Uptime
+    id: uptime_sensor
   - platform: template
     id: next_timer
-    name: "Next timer"
-    update_interval: never
-    disabled_by_default: true
+    name: Next timer
     device_class: duration
     unit_of_measurement: s
+    accuracy_decimals: 0
     icon: "mdi:timer"
-  # New sensor for hypothetical battery level (assuming ADC pin available)
-  - platform: adc
-    id: battery_voltage
-    pin: GPIO10  # Adjust pin based on hardware
-    name: "Battery Voltage"
-    unit_of_measurement: "V"
-    update_interval: 60s
-    accuracy_decimals: 2
-    filters:
-      - multiply: 2  # Adjust based on voltage divider
-    on_value:
-      - if:
-          condition: {lambda: return x < 3.3;}  # Threshold for low battery
-          then:
-            - lambda: id(low_battery_alert) = true;
-            - script.execute: control_leds
-          else:
-            - lambda: id(low_battery_alert) = false;
-            - script.execute: control_leds
 
 text_sensor:
   - platform: template
-    id: next_timer_name
-    name: "Next timer name"
-    icon: "mdi:timer"
-    disabled_by_default: true
+    id: mute_state
+    internal: true
+    lambda: return id(respeaker).get_mute_state() ? "true" : "false";
+    on_value:
+      - if:
+          condition:
+            lambda: return id(mic_mute_switch).state != (x == "true");
+          then:
+            - switch.toggle: mic_mute_switch
   - platform: template
     id: tts_uri
-    name: "TTS URI"
-    disabled_by_default: true
+    internal: true
+  - platform: template
+    id: next_timer_name
+    name: Next timer name
+    icon: "mdi:timer"
 
 event:
   - platform: template
-    id: button_press_event
-    name: "Button press"
-    icon: mdi:button-pointer
-    device_class: button
-    event_types:
-      - double_press
-      - triple_press
-      - long_press
+    id: stop
+    event_type: stop_event
+    on_event:
+      - voice_assistant.stop:
 
 script:
   - id: control_leds
@@ -582,6 +434,7 @@ script:
           blue: 1
           id: led_respeaker_onboard
           effect: "Fast Pulse"
+  # Modified LED effect from "Slow Pulse" to "Fast Pulse"
   - id: control_leds_voice_assistant_replying_phase
     then:
       - light.turn_on:
@@ -590,7 +443,7 @@ script:
           green: 1
           blue: 1
           id: led_respeaker_onboard
-          effect: "Slow Pulse"
+          effect: "Fast Pulse"
   - id: control_leds_voice_assistant_error_phase
     then:
       - light.turn_on:
@@ -725,239 +578,71 @@ script:
 
 i2s_audio:
   - id: i2s_output
-    i2s_lrclk_pin:
-      number: GPIO7
-      allow_other_uses: true
-    i2s_bclk_pin:
-      number: GPIO8
-      allow_other_uses: true
-    i2s_mclk_pin:
-      number: GPIO9
-      allow_other_uses: true
-  - id: i2s_input
-    i2s_lrclk_pin:
-      number: GPIO7
-      allow_other_uses: true
-    i2s_bclk_pin:
-      number: GPIO8
-      allow_other_uses: true
-    i2s_mclk_pin:
-      number: GPIO9
-      allow_other_uses: true
+    i2s_lrclk_pin: GPIO1
+    i2s_bclk_pin: GPIO2
 
 microphone:
-  - platform: nabu_microphone
-    i2s_din_pin: GPIO44
+  - platform: i2s_audio
+    id: nabu_mic_va
+    i2s_din_pin: GPIO3
     adc_type: external
     pdm: false
-    sample_rate: 48000
-    bits_per_sample: 32bit
-    i2s_mode: secondary
-    i2s_audio_id: i2s_input
-    channel_0:
-      id: nabu_mic_va
-      amplify_shift: 0
-    channel_1:
-      id: nabu_mic_mww
-      amplify_shift: 2
 
 speaker:
   - platform: i2s_audio
-    id: i2s_audio_speaker
-    sample_rate: 48000
-    i2s_mode: secondary
-    i2s_dout_pin: GPIO43
-    bits_per_sample: 32bit
+    id: respeaker_speaker
     i2s_audio_id: i2s_output
+    sample_rate: 16000
+    bits_per_sample: 16bit
     dac_type: external
-    channel: stereo
-    timeout: never
-    buffer_duration: 100ms
-    audio_dac: aic3204_dac
-  - platform: mixer
-    id: mixing_speaker
-    output_speaker: i2s_audio_speaker
-    num_channels: 2
-    source_speakers:
-      - id: announcement_mixing_input
-        timeout: never
-      - id: media_mixing_input
-        timeout: never
-  - platform: resampler
-    id: announcement_resampling_speaker
-    output_speaker: announcement_mixing_input
-    sample_rate: 48000
-    bits_per_sample: 16
-  - platform: resampler
-    id: media_resampling_speaker
-    output_speaker: media_mixing_input
-    sample_rate: 48000
-    bits_per_sample: 16
+    mode: mono
+  - platform: mixer_speaker
+    id: media_mixing_input
+    internal: true
+    inputs:
+      - speaker: respeaker_speaker
+        type: announcement
+      - speaker: respeaker_speaker
+        type: tts
+        ducking: true
 
 media_player:
   - platform: speaker
     id: external_media_player
-    name: Media Player
-    internal: false
-    volume_increment: 0.05
-    volume_min: 0.4
-    volume_max: 0.85
-    announcement_pipeline:
-      speaker: announcement_resampling_speaker
-      format: FLAC
-      num_channels: 1
-      sample_rate: 48000
-    media_pipeline:
-      speaker: media_resampling_speaker
-      format: FLAC
-      num_channels: 2
-      sample_rate: 48000
-    on_announcement:
-      - mixer_speaker.apply_ducking:
-          id: media_mixing_input
-          decibel_reduction: 20
-          duration: 0.0s
-    on_state:
-      - if:
-          condition:
-            and:
-              - switch.is_off: timer_ringing
-              - not: {voice_assistant.is_running:}
-              - not: {media_player.is_announcing:}
-          then:
-            - mixer_speaker.apply_ducking:
-                id: media_mixing_input
-                decibel_reduction: 0
-                duration: 1.0s
-    files:
-      - id: center_button_press_sound
-        file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/center_button_press.flac
-      - id: center_button_double_press_sound
-        file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/center_button_double_press.flac
-      - id: center_button_triple_press_sound
-        file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/center_button_triple_press.flac
-      - id: center_button_long_press_sound
-        file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/center_button_long_press.flac
-      - id: factory_reset_initiated_sound
-        file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/factory_reset_initiated.mp3
-      - id: factory_reset_cancelled_sound
-        file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/factory_reset_cancelled.mp3
-      - id: factory_reset_confirmed_sound
-        file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/factory_reset_confirmed.mp3
-      - id: mute_switch_on_sound
-        file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/mute_switch_on.flac
-      - id: mute_switch_off_sound
-        file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/mute_switch_off.flac
-      - id: timer_finished_sound
-        file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/timer_finished.flac
-      - id: wake_word_triggered_sound
-        file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/wake_word_triggered.flac
+    speaker: media_mixing_input
+    name: "Respeaker Lite Media Player"
 
 respeaker_lite:
   id: respeaker
-  reset_pin: GPIO2
-  mute_state:
-    internal: true
-    id: mute_state
-  firmware_version:
-    icon: mdi:application-cog
-    name: XMOS firmware version
-    internal: false
-    id: firmware_version
-  firmware:
-    url: https://github.com/formatBCE/Respeaker-Lite-ESPHome-integration/raw/refs/heads/main/respeaker_lite_i2s_dfu_firmware_48k_v1.1.0.bin
-    version: "1.1.0"
-    md5: 9297155d1bf3eb21a9d4db52a89ea0c6
-    on_begin:
-      - light.turn_on:
-          brightness: 50%
-          red: 0.5
-          green: 0.5
-          blue: 0.5
-          id: led_respeaker_onboard
-          effect: "Slow Pulse"
-    on_end:
-      - light.turn_on:
-          brightness: 50%
-          red: 0
-          green: 1
-          blue: 0
-          id: led_respeaker_onboard
-          effect: "Fast Pulse"
-      - delay: 3s
-      - light.turn_off: led_respeaker_onboard
-    on_error:
-      - light.turn_on:
-          brightness: 50%
-          red: 1
-          green: 0
-          blue: 0
-          id: led_respeaker_onboard
-          effect: "Fast Pulse"
-      - delay: 3s
-      - light.turn_off: led_respeaker_onboard
+  mute_pin: GPIO4
 
 external_components:
-  - source:
-      type: git
-      url: https://github.com/esphome/home-assistant-voice-pe
-      ref: dev
-    components: [micro_wake_word, microphone, voice_assistant]
-    refresh: 0s
-  - source:
-      type: git
-      url: https://github.com/formatBCE/home-assistant-voice-pe
-      ref: 48kHz_mic_support
-    components: [nabu_microphone]
-    refresh: 0s
-  - source:
-      type: git
-      url: https://github.com/formatBCE/Respeaker-Lite-ESPHome-integration
-      ref: main
-    components: [respeaker_lite]
+  - source: github://pr#6079
+    components: [micro_wake_word]
     refresh: 0s
 
 audio_dac:
-  - platform: aic3204
-    id: aic3204_dac
+  - platform: es8311
+    id: external_dac
     i2c_id: internal_i2c
+    address: 0x18
 
 micro_wake_word:
-  id: mww
-  models:
-    - model: https://github.com/kahrendt/microWakeWord/releases/download/okay_nabu_20241226.3/okay_nabu.json
-      id: okay_nabu
-    - model: hey_jarvis
-      id: hey_jarvis
-    - model: hey_mycroft
-      id: hey_mycroft
-    - model: https://github.com/kahrendt/microWakeWord/releases/download/stop/stop.json
-      id: stop
-      internal: true
-  vad:
-  microphone: nabu_mic_mww
-  on_wake_word_detected:
-    - if:
-        condition: {switch.is_off: mic_mute_switch}
-        then:
-          - if:
-              condition: {switch.is_on: timer_ringing}
-              then: [switch.turn_off: timer_ringing]
-              else:
-                - if:
-                    condition: {media_player.is_announcing:}
-                    then: [media_player.stop: {announcement: true}]
-                    else:
-                      - if:
-                          condition: {switch.is_on: wake_sound}
-                          then:
-                            - script.execute:
-                                id: play_sound
-                                priority: true
-                                sound_file: !lambda return id(wake_word_triggered_sound);
-                            - delay: 300ms
-                      - voice_assistant.start:
-                          wake_word: !lambda return wake_word;
+  - id: mww
+    model: okay_nabu
+    on_wake_word_detected:
+      - voice_assistant.start:
+          continuous: false
+      - if:
+          condition:
+            and:
+              - lambda: return !id(init_in_progress);
+              - switch.is_on: wake_sound
+          then:
+            - script.execute:
+                id: play_sound
+                priority: false
+                sound_file: !lambda return id(wake_sound_file);
 
 voice_assistant:
   id: va
@@ -1011,10 +696,17 @@ voice_assistant:
     - lambda: id(voice_assistant_phase) = ${voice_assist_replying_phase_id};
     - script.execute: control_leds
     - script.execute: activate_stop_word_if_tts_step_is_long
+  # Modified to check if the response is a question and restart the voice assistant
   on_tts_end:
     - text_sensor.template.publish:
         id: tts_uri
         state: !lambda 'return x;'
+    - if:
+        condition:
+          switch.is_on: is_question_response_switch
+        then:
+          - voice_assistant.start:
+          - switch.turn_off: is_question_response_switch
   on_end:
     - wait_until: {not: {voice_assistant.is_running:}}
     - mixer_speaker.apply_ducking:
@@ -1062,15 +754,7 @@ voice_assistant:
 button:
   - platform: factory_reset
     id: factory_reset_button
-    name: "Factory Reset"
-    entity_category: diagnostic
-    internal: true
-  - platform: restart
-    id: restart_button
-    name: "Restart"
-    entity_category: config
-    disabled_by_default: true
-    icon: "mdi:restart"
+    name: Factory Reset
 
 debug:
-  update_interval: 5s
+  enabled: True
