@@ -248,11 +248,11 @@ switch:
       - script.execute: control_leds
       - delay: 15min
       - switch.turn_off: timer_ringing
-  # New switch to track if the response is a question
+  # Switch to track if the response is a question
   - platform: template
     id: is_question_response_switch
     name: "Is Question Response"
-    internal: true
+    internal: false
     optimistic: true
     restore_mode: ALWAYS_OFF
 
@@ -458,6 +458,14 @@ sensor:
           else:
             - lambda: id(low_battery_alert) = false;
             - script.execute: control_leds
+  # Sensor to monitor voice assistant phase
+  - platform: template
+    id: voice_assistant_phase_sensor
+    name: "Voice Assistant Phase"
+    lambda: return id(voice_assistant_phase);
+    update_interval: 1s
+    unit_of_measurement: ""
+    icon: "mdi:state-machine"
 
 text_sensor:
   - platform: template
