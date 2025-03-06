@@ -1,11 +1,12 @@
 substitutions:
-  voice_assist_idle_phase_id: '1'
-  voice_assist_waiting_for_command_phase_id: '2'
-  voice_assist_listening_for_command_phase_id: '3'
-  voice_assist_thinking_phase_id: '4'
-  voice_assist_replying_phase_id: '5'
-  voice_assist_not_ready_phase_id: '10'
-  voice_assist_error_phase_id: '11'
+  # Phases of the Voice Assistant
+  voice_assist_idle_phase_id: '1'             # Ready for wake word
+  voice_assist_waiting_for_command_phase_id: '2'  # After wake word
+  voice_assist_listening_for_command_phase_id: '3' # Listening
+  voice_assist_thinking_phase_id: '4'         # Processing
+  voice_assist_replying_phase_id: '5'         # Replying
+  voice_assist_not_ready_phase_id: '10'       # Not ready
+  voice_assist_error_phase_id: '11'           # Error
   hidden_ssid: "false"
 
 esphome:
@@ -40,6 +41,15 @@ esp32:
   framework:
     type: esp-idf
     version: recommended
+    sdkconfig_options:
+      CONFIG_ESP32S3_DEFAULT_CPU_FREQ_240: "y"
+      CONFIG_ESP32S3_DATA_CACHE_64KB: "y"
+      CONFIG_ESP32S3_DATA_CACHE_LINE_64B: "y"
+      CONFIG_ESP32S3_INSTRUCTION_CACHE_32KB: "y"
+      CONFIG_BT_ALLOCATION_FROM_SPIRAM_FIRST: "y"
+      CONFIG_BT_BLE_DYNAMIC_ENV_MEMORY: "y"
+      CONFIG_MBEDTLS_EXTERNAL_MEM_ALLOC: "y"
+      CONFIG_MBEDTLS_SSL_PROTO_TLS1_3: "y"
 
 wifi:
   networks:
@@ -313,7 +323,7 @@ binary_sensor:
                           id: play_sound
                           priority: false
                           sound_file: !lambda return id(center_button_double_press_sound);
-                - media_player.volume_up: external_media_player  # Increase volume
+                - media_player.volume_up: external_media_player  # Volume up
       - timing:
           - ON for at most 1s
           - OFF for at most 0.25s
@@ -332,7 +342,7 @@ binary_sensor:
                           id: play_sound
                           priority: false
                           sound_file: !lambda return id(center_button_triple_press_sound);
-                - media_player.volume_down: external_media_player  # Decrease volume
+                - media_player.volume_down: external_media_player  # Volume down
       - timing: [ON for at least 1s]
         then:
           - if:
