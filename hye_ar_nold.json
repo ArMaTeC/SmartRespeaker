@@ -3,7 +3,7 @@
   "wake_word": "Hey Arnold",
   "author": "Karl Lawrence",
   "website": "https://www.armatechsquad.com/",
-  "model": "hey_ar_nold.tflite",
+  "model": "https://github.com/ArMaTeC/SmartRespeaker/raw/refs/heads/main/hey_ar_nold.tflite",
   "trained_languages": ["en"],
   "version": 2,
   "micro": {
