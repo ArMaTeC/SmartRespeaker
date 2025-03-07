@@ -1152,14 +1152,27 @@ voice_assistant:
     - text_sensor.template.publish:
         id: tts_uri
         state: !lambda 'return x;'
+    - lambda: |-
+        ESP_LOGD("voice_assistant", "TTS ended. Last response: '%s'", id(last_response_text).state.c_str());
+        ESP_LOGD("voice_assistant", "Checking if last char is '?': %d", id(last_response_text).state.back() == '?');
     - if:
         condition:
-          lambda: 'return id(last_response_text).state.back() == ''?'';'
+          lambda: 'return !id(last_response_text).state.empty() && id(last_response_text).state.back() == ''?'';'
         then:
+          - lambda: ESP_LOGD("voice_assistant", "Response ends with '?'. Restarting assistant...");
           - switch.turn_on: is_question_response_switch
           - script.execute: control_leds_question_response_state
+          - if:
+              condition: {switch.is_on: wake_sound}
+              then:
+                - script.execute:
+                    id: play_sound
+                    priority: true
+                    sound_file: !lambda return id(wake_word_triggered_sound);
+                - delay: 300ms
           - voice_assistant.start:
         else:
+          - lambda: ESP_LOGD("voice_assistant", "Response does not end with '?'. Not restarting.");
           - switch.turn_off: is_question_response_switch
   on_end:
     - wait_until: {not: {voice_assistant.is_running:}}
