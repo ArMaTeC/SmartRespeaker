@@ -137,6 +137,10 @@ globals:
     type: bool
     restore_value: no
     initial_value: 'true'
+  - id: last_response_text  # New global to store response text
+    type: std::string
+    restore_value: no
+    initial_value: '""'
 
 switch:
   - platform: template
@@ -524,7 +528,7 @@ sensor:
     on_value:
       - if:
           condition: 
-            lambda: return x < 0.10;  # Changed from 3.3 to 0.10
+            lambda: return x < 0.05;
           then:
             - lambda: id(low_battery_alert) = true;
             - script.execute: control_leds
@@ -659,7 +663,7 @@ script:
             id(last_led_trigger).publish_state("Media Playing");
           }
           else {
-            if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: idle (Breathing Blue)");
+            if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: idle (LED Off)");
             id(control_leds_voice_assistant_idle_phase).execute();
             id(last_led_trigger).publish_state("Idle");
           }
@@ -693,12 +697,8 @@ script:
           effect: "Fast Pulse"
   - id: control_leds_voice_assistant_idle_phase
     then:
-      - light.turn_on:
+      - light.turn_off:
           id: led_respeaker_onboard
-          red: 0
-          green: 0
-          blue: 1.0
-          effect: "Idle Breathing"
   - id: control_leds_voice_assistant_waiting_for_command_phase
     then:
       - light.turn_on:
@@ -1141,17 +1141,19 @@ voice_assistant:
     - lambda: id(voice_assistant_phase) = ${voice_assist_thinking_phase_id};
     - script.execute: control_leds
   on_tts_start:
-    - lambda: id(voice_assistant_phase) = ${voice_assist_replying_phase_id};
-    - script.execute: control_leds
+    - lambda: |-
+        id(voice_assistant_phase) = ${voice_assist_replying_phase_id};
+        id(last_response_text) = text;  // Store the response text
+        id(control_leds).execute();
     - script.execute: activate_stop_word_if_tts_step_is_long
   on_tts_end:
     - text_sensor.template.publish:
         id: tts_uri
         state: !lambda |-
-          return x;
+          return x;  // x is the URL
     - if:
         condition:
-          lambda: return x.back() == '?';
+          lambda: return id(last_response_text).back() == '?';  // Check stored text
         then:
           - switch.turn_on: is_question_response_switch
           - script.execute: control_leds_question_response_state
