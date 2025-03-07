@@ -136,11 +136,7 @@ globals:
   - id: debug_mode
     type: bool
     restore_value: no
-    initial_value: 'true'  # Set to true for debugging
-  - id: question_response_lights_sequence
-    type: bool
-    restore_value: no
-    initial_value: 'false'
+    initial_value: 'true'
 
 switch:
   - platform: template
@@ -175,7 +171,6 @@ switch:
           blue: 0
           effect: none
       - delay: 0.5s
-      - script.execute: control_leds
       - if:
           condition:
             and:
@@ -186,6 +181,7 @@ switch:
                 id: play_sound
                 priority: false
                 sound_file: !lambda return id(mute_switch_on_sound);
+      - script.execute: control_leds
     on_turn_off:
       - light.turn_on:
           id: led_respeaker_onboard
@@ -195,7 +191,6 @@ switch:
           blue: 0
           effect: none
       - delay: 0.5s
-      - script.execute: control_leds
       - if:
           condition:
             and:
@@ -206,6 +201,7 @@ switch:
                 id: play_sound
                 priority: false
                 sound_file: !lambda return id(mute_switch_off_sound);
+      - script.execute: control_leds
     turn_on_action: [switch.turn_on: mute_toggle]
     turn_off_action: [switch.turn_on: mute_toggle]
   - platform: template
@@ -279,7 +275,7 @@ binary_sensor:
     id: user_button
     pin:
       number: GPIO3
-      mode: INPUT_PULLUP  # Ensure pull-up to prevent floating
+      mode: INPUT_PULLUP
       inverted: true
     name: "User button"
     on_press: [script.execute: control_leds]
@@ -410,7 +406,6 @@ binary_sensor:
               blue: 0
               id: led_respeaker_onboard
               effect: "none"
-          - lambda: id(factory_reset_requested) = true;
 
 light:
   - platform: esp32_rmt_led_strip
@@ -485,34 +480,28 @@ light:
           update_interval: 250ms
           min_brightness: 0%
           max_brightness: 100%
-      - sequence:
-          name: "Question Response Lights"
-          transition_length: 200ms
-          sequence:
-            - red: 0%
-              green: 100%
-              blue: 0%
-              brightness: 100%
-            - red: 0%
-              green: 0%
-              blue: 0%
-              brightness: 0%
-            - red: 0%
-              green: 100%
-              blue: 0%
-              brightness: 100%
-            - red: 0%
-              green: 0%
-              blue: 0%
-              brightness: 0%
-            - red: 0%
-              green: 100%
-              blue: 0%
-              brightness: 100%
-            - red: 0%
-              green: 0%
-              blue: 0%
-              brightness: 0%
+      - lambda:
+          name: "Question Response"
+          update_interval: 750ms
+          lambda: |-
+            static int state = 0;
+            state = (state + 1) % 3;
+            auto call = id(led_respeaker_onboard).turn_on();
+            if (state == 0) {
+              call.set_red(0.0);
+              call.set_green(0.0);
+              call.set_blue(1.0);
+            } else if (state == 1) {
+              call.set_red(0.0);
+              call.set_green(1.0);
+              call.set_blue(0.0);
+            } else {
+              call.set_red(1.0);
+              call.set_green(0.0);
+              call.set_blue(0.0);
+            }
+            call.set_brightness(0.75);
+            call.perform();
 
 sensor:
   - platform: template
@@ -534,7 +523,8 @@ sensor:
       - multiply: 2
     on_value:
       - if:
-          condition: {lambda: return x < 3.3;}
+          condition: 
+            lambda: return x < 0.10;  # Changed from 3.3 to 0.10
           then:
             - lambda: id(low_battery_alert) = true;
             - script.execute: control_leds
@@ -559,6 +549,11 @@ text_sensor:
     id: tts_uri
     name: "TTS URI"
     disabled_by_default: true
+  - platform: template
+    id: last_led_trigger
+    name: "Last LED Trigger"
+    icon: "mdi:led-on"
+    update_interval: never
 
 event:
   - platform: template
@@ -580,7 +575,6 @@ script:
           then:
             - lambda: ESP_LOGD("control_leds", "Starting control_leds script execution");
       - lambda: |
-          // Log all relevant states at the start
           if (id(debug_mode)) {
             ESP_LOGD("control_leds", "voice_assistant_phase: %d", id(voice_assistant_phase));
             ESP_LOGD("control_leds", "improv_ble_in_progress: %d", id(improv_ble_in_progress));
@@ -592,83 +586,82 @@ script:
             ESP_LOGD("control_leds", "timer_ringing: %d", id(timer_ringing).state);
             ESP_LOGD("control_leds", "media_player_state: %d", (int)id(external_media_player).state);
             ESP_LOGD("control_leds", "is_timer_active: %d", id(is_timer_active));
-            ESP_LOGD("control_leds", "question_response_lights_sequence: %d", id(question_response_lights_sequence));
           }
 
-          // Condition 1: Question response sequence
-          if (id(question_response_lights_sequence)) {
-            if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: question_response_lights_sequence");
-            id(control_leds_question_response_lights).execute();
-          }
-          // Condition 2: Improv BLE in progress
-          else if (id(improv_ble_in_progress)) {
+          if (id(improv_ble_in_progress)) {
             if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: improv_ble_in_progress (Solid Blue)");
             id(control_leds_improv_ble_state).execute();
+            id(last_led_trigger).publish_state("Improv BLE");
           }
-          // Condition 3: Initialization in progress
           else if (id(init_in_progress)) {
             if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: init_in_progress (Pulsing Blue)");
             id(control_leds_init_state).execute();
+            id(last_led_trigger).publish_state("Initializing");
           }
-          // Condition 4: No WiFi or API connection
           else if (!id(wifi_id).is_connected() || !id(api_id).is_connected()) {
             if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: no_ha_connection (Flashing Blue)");
             id(control_leds_no_ha_connection_state).execute();
+            id(last_led_trigger).publish_state("No Connection");
           }
-          // Condition 5: User button pressed
           else if (id(user_button).state) {
             if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: user_button_pressed (Solid Cyan)");
             id(control_leds_center_button_touched).execute();
+            id(last_led_trigger).publish_state("Button Pressed");
           }
-          // Condition 6: Low battery alert
           else if (id(low_battery_alert)) {
             if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: low_battery (Flashing Red)");
             id(control_leds_low_battery).execute();
+            id(last_led_trigger).publish_state("Low Battery");
           }
-          // Condition 7: Timer ringing
           else if (id(timer_ringing).state) {
             if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: timer_ringing (Pulsing Yellow)");
             id(control_leds_timer_ringing).execute();
+            id(last_led_trigger).publish_state("Timer Ringing");
           }
-          // Voice Assistant Phases
           else if (id(voice_assistant_phase) == 2) {
             if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: va_waiting_for_command (Slow Pulse Pink)");
             id(control_leds_voice_assistant_waiting_for_command_phase).execute();
+            id(last_led_trigger).publish_state("Waiting for Command");
           }
           else if (id(voice_assistant_phase) == 3) {
             if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: va_listening (Green Pulse)");
             id(control_leds_voice_assistant_listening_for_command_phase).execute();
+            id(last_led_trigger).publish_state("Listening");
           }
           else if (id(voice_assistant_phase) == 4) {
             if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: va_thinking (Fast Pulse Purple)");
             id(control_leds_voice_assistant_thinking_phase).execute();
+            id(last_led_trigger).publish_state("Thinking");
           }
           else if (id(voice_assistant_phase) == 5) {
             if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: va_replying (Green-Cyan Alternate)");
             id(control_leds_voice_assistant_replying_phase).execute();
+            id(last_led_trigger).publish_state("Speaking");
           }
           else if (id(voice_assistant_phase) == 11) {
             if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: va_error (Flashing Red)");
             id(control_leds_voice_assistant_error_phase).execute();
+            id(last_led_trigger).publish_state("Error");
           }
           else if (id(voice_assistant_phase) == 10) {
             if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: va_not_ready (Solid Orange)");
             id(control_leds_voice_assistant_not_ready_phase).execute();
+            id(last_led_trigger).publish_state("Not Ready");
           }
-          // Condition 8: Timer active (but not ringing)
           else if (id(is_timer_active)) {
             if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: timer_ticking (Slow Pulse Yellow)");
             id(control_leds_timer_ticking).execute();
+            id(last_led_trigger).publish_state("Timer Ticking");
           }
-          // Condition 9: Media player playing
           else if (id(external_media_player).state == media_player::MediaPlayerState::MEDIA_PLAYER_STATE_PLAYING) {
             if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: media_playing (Breathing Green)");
             id(control_leds_media_playing).execute();
+            id(last_led_trigger).publish_state("Media Playing");
           }
-          // Default: Idle state
           else {
             if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: idle (Breathing Blue)");
             id(control_leds_voice_assistant_idle_phase).execute();
+            id(last_led_trigger).publish_state("Idle");
           }
 
           if (id(debug_mode)) {
@@ -681,7 +674,7 @@ script:
           red: 0
           green: 0
           blue: 1.0
-          effect: none  # Solid Blue
+          effect: none
   - id: control_leds_init_state
     then:
       - light.turn_on:
@@ -689,7 +682,7 @@ script:
           red: 0
           green: 0
           blue: 1.0
-          effect: "Slow Pulse"  # Pulsing Blue
+          effect: "Slow Pulse"
   - id: control_leds_no_ha_connection_state
     then:
       - light.turn_on:
@@ -697,7 +690,7 @@ script:
           red: 0
           green: 0
           blue: 1.0
-          effect: "Fast Pulse"  # Flashing Blue
+          effect: "Fast Pulse"
   - id: control_leds_voice_assistant_idle_phase
     then:
       - light.turn_on:
@@ -705,7 +698,7 @@ script:
           red: 0
           green: 0
           blue: 1.0
-          effect: "Idle Breathing"  # Breathing Blue
+          effect: "Idle Breathing"
   - id: control_leds_voice_assistant_waiting_for_command_phase
     then:
       - light.turn_on:
@@ -713,7 +706,7 @@ script:
           red: 1.0
           green: 0.2
           blue: 1.0
-          effect: "Slow Pulse"  # Slow Pulse Pink
+          effect: "Slow Pulse"
   - id: control_leds_voice_assistant_listening_for_command_phase
     then:
       - light.turn_on:
@@ -721,7 +714,7 @@ script:
           red: 0
           green: 1.0
           blue: 0
-          effect: "Listening Pulse"  # Green Pulse
+          effect: "Listening Pulse"
   - id: control_leds_voice_assistant_thinking_phase
     then:
       - light.turn_on:
@@ -729,17 +722,17 @@ script:
           red: 0.5
           green: 0
           blue: 0.5
-          effect: "Fast Pulse"  # Fast Pulse Purple
+          effect: "Fast Pulse"
   - id: control_leds_voice_assistant_replying_phase
     then:
       - light.turn_on:
           id: led_respeaker_onboard
-          effect: "Replying Alternate"  # Green-Cyan Alternate
+          effect: "Replying Alternate"
   - id: control_leds_voice_assistant_error_phase
     then:
       - light.turn_on:
           id: led_respeaker_onboard
-          effect: "Error Flash"  # Flashing Red
+          effect: "Error Flash"
   - id: control_leds_voice_assistant_not_ready_phase
     then:
       - light.turn_on:
@@ -747,7 +740,7 @@ script:
           red: 1.0
           green: 0.5
           blue: 0
-          effect: none  # Solid Orange
+          effect: none
   - id: control_leds_center_button_touched
     then:
       - light.turn_on:
@@ -755,7 +748,7 @@ script:
           red: 0
           green: 1.0
           blue: 1.0
-          effect: none  # Solid Cyan
+          effect: none
   - id: control_leds_timer_ringing
     then:
       - light.turn_on:
@@ -763,7 +756,7 @@ script:
           red: 1.0
           green: 1.0
           blue: 0
-          effect: "Slow Pulse"  # Pulsing Yellow
+          effect: "Slow Pulse"
   - id: control_leds_timer_ticking
     then:
       - light.turn_on:
@@ -771,7 +764,7 @@ script:
           red: 1.0
           green: 1.0
           blue: 0
-          effect: "Slow Pulse"  # Slow Pulse Yellow
+          effect: "Slow Pulse"
   - id: control_leds_media_playing
     then:
       - light.turn_on:
@@ -779,7 +772,7 @@ script:
           red: 0
           green: 1.0
           blue: 0
-          effect: "Idle Breathing"  # Breathing Green
+          effect: "Idle Breathing"
   - id: control_leds_low_battery
     then:
       - light.turn_on:
@@ -787,12 +780,12 @@ script:
           red: 1.0
           green: 0
           blue: 0
-          effect: "Fast Pulse"  # Flashing Red
-  - id: control_leds_question_response_lights
+          effect: "Fast Pulse"
+  - id: control_leds_question_response_state
     then:
       - light.turn_on:
           id: led_respeaker_onboard
-          effect: "Question Response Lights" # Question Response Lights
+          effect: "Question Response"
   - id: ring_timer
     then:
       - script.execute: enable_repeat_one
@@ -825,7 +818,8 @@ script:
     then:
       - lambda: |-
           if (priority) {
-            id(external_media_player)              ->make_call()
+            id(external_media_player)
+              ->make_call()
               .set_command(media_player::MediaPlayerCommand::MEDIA_PLAYER_COMMAND_STOP)
               .set_announcement(true)
               .perform();
@@ -861,16 +855,6 @@ script:
     then:
       - delay: 1s
       - lambda: id(stop).enable();
-  - id: start_question_response_lights_sequence
-    then:
-      - lambda: id(question_response_lights_sequence) = true;
-      - script.execute: control_leds
-      - delay: 3s # Adjust duration as needed
-      - script.execute: stop_question_response_lights_sequence
-  - id: stop_question_response_lights_sequence
-    then:
-      - lambda: id(question_response_lights_sequence) = false;
-      - script.execute: control_leds
 
 i2s_audio:
   - id: i2s_output
@@ -1163,14 +1147,16 @@ voice_assistant:
   on_tts_end:
     - text_sensor.template.publish:
         id: tts_uri
-        state: !lambda 'return x;'
+        state: !lambda |-
+          return x;
     - if:
         condition:
-          switch.is_on: is_question_response_switch
+          lambda: return x.back() == '?';
         then:
-          - script.execute: start_question_response_lights_sequence
-          - delay: 1s
+          - switch.turn_on: is_question_response_switch
+          - script.execute: control_leds_question_response_state
           - voice_assistant.start:
+        else:
           - switch.turn_off: is_question_response_switch
   on_end:
     - wait_until: {not: {voice_assistant.is_running:}}
