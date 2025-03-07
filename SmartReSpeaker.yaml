@@ -554,7 +554,7 @@ text_sensor:
     name: "Last LED Trigger"
     icon: "mdi:led-on"
     update_interval: never
-  - platform: template  # New text sensor to store response text
+  - platform: template
     id: last_response_text
     name: "Last Response Text"
     internal: true
@@ -1141,22 +1141,20 @@ voice_assistant:
   on_stt_vad_end:
     - lambda: id(voice_assistant_phase) = ${voice_assist_thinking_phase_id};
     - script.execute: control_leds
-  on_intent_end:  # Capture response text here
-    - text_sensor.template.publish:
-        id: last_response_text
-        state: !lambda 'return id(va).get_conversation_response();'
   on_tts_start:
     - lambda: id(voice_assistant_phase) = ${voice_assist_replying_phase_id};
     - script.execute: control_leds
     - script.execute: activate_stop_word_if_tts_step_is_long
+    - text_sensor.template.publish:
+        id: last_response_text
+        state: !lambda 'return x;'
   on_tts_end:
     - text_sensor.template.publish:
         id: tts_uri
-        state: !lambda |-
-          return x;  // x is the URL
+        state: !lambda 'return x;'
     - if:
         condition:
-          lambda: return id(last_response_text).state.back() == '?';
+          lambda: 'return id(last_response_text).state.back() == ''?'';'
         then:
           - switch.turn_on: is_question_response_switch
           - script.execute: control_leds_question_response_state
