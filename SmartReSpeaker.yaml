@@ -137,10 +137,6 @@ globals:
     type: bool
     restore_value: no
     initial_value: 'true'
-  - id: last_response_text  # New global to store response text
-    type: std::string
-    restore_value: no
-    initial_value: '""'
 
 switch:
   - platform: template
@@ -557,6 +553,11 @@ text_sensor:
     id: last_led_trigger
     name: "Last LED Trigger"
     icon: "mdi:led-on"
+    update_interval: never
+  - platform: template  # New text sensor to store response text
+    id: last_response_text
+    name: "Last Response Text"
+    internal: true
     update_interval: never
 
 event:
@@ -1140,11 +1141,13 @@ voice_assistant:
   on_stt_vad_end:
     - lambda: id(voice_assistant_phase) = ${voice_assist_thinking_phase_id};
     - script.execute: control_leds
+  on_intent_end:  # Capture response text here
+    - text_sensor.template.publish:
+        id: last_response_text
+        state: !lambda 'return id(va).get_conversation_response();'
   on_tts_start:
-    - lambda: |-
-        id(voice_assistant_phase) = ${voice_assist_replying_phase_id};
-        id(last_response_text) = text;  // Store the response text
-        id(control_leds).execute();
+    - lambda: id(voice_assistant_phase) = ${voice_assist_replying_phase_id};
+    - script.execute: control_leds
     - script.execute: activate_stop_word_if_tts_step_is_long
   on_tts_end:
     - text_sensor.template.publish:
@@ -1153,7 +1156,7 @@ voice_assistant:
           return x;  // x is the URL
     - if:
         condition:
-          lambda: return id(last_response_text).back() == '?';  // Check stored text
+          lambda: return id(last_response_text).state.back() == '?';
         then:
           - switch.turn_on: is_question_response_switch
           - script.execute: control_leds_question_response_state
