@@ -1,11 +1,11 @@
 substitutions:
-  voice_assist_idle_phase_id: 1
-  voice_assist_waiting_for_command_phase_id: 2
-  voice_assist_listening_for_command_phase_id: 3
-  voice_assist_thinking_phase_id: 4
-  voice_assist_replying_phase_id: 5
-  voice_assist_not_ready_phase_id: 10
-  voice_assist_error_phase_id: 11
+  voice_assist_idle_phase_id: '1'
+  voice_assist_waiting_for_command_phase_id: '2'
+  voice_assist_listening_for_command_phase_id: '3'
+  voice_assist_thinking_phase_id: '4'
+  voice_assist_replying_phase_id: '5'
+  voice_assist_not_ready_phase_id: '10'
+  voice_assist_error_phase_id: '11'
   hidden_ssid: "false"
 
 esphome:
@@ -137,6 +137,10 @@ globals:
     type: bool
     restore_value: no
     initial_value: 'true'  # Set to true for debugging
+  - id: question_response_lights_sequence
+    type: bool
+    restore_value: no
+    initial_value: 'false'
 
 switch:
   - platform: template
@@ -481,6 +485,34 @@ light:
           update_interval: 250ms
           min_brightness: 0%
           max_brightness: 100%
+      - sequence:
+          name: "Question Response Lights"
+          transition_length: 200ms
+          sequence:
+            - red: 0%
+              green: 100%
+              blue: 0%
+              brightness: 100%
+            - red: 0%
+              green: 0%
+              blue: 0%
+              brightness: 0%
+            - red: 0%
+              green: 100%
+              blue: 0%
+              brightness: 100%
+            - red: 0%
+              green: 0%
+              blue: 0%
+              brightness: 0%
+            - red: 0%
+              green: 100%
+              blue: 0%
+              brightness: 100%
+            - red: 0%
+              green: 0%
+              blue: 0%
+              brightness: 0%
 
 sensor:
   - platform: template
@@ -560,34 +592,40 @@ script:
             ESP_LOGD("control_leds", "timer_ringing: %d", id(timer_ringing).state);
             ESP_LOGD("control_leds", "media_player_state: %d", (int)id(external_media_player).state);
             ESP_LOGD("control_leds", "is_timer_active: %d", id(is_timer_active));
+            ESP_LOGD("control_leds", "question_response_lights_sequence: %d", id(question_response_lights_sequence));
           }
 
-          // Condition 1: Improv BLE in progress
-          if (id(improv_ble_in_progress)) {
+          // Condition 1: Question response sequence
+          if (id(question_response_lights_sequence)) {
+            if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: question_response_lights_sequence");
+            id(control_leds_question_response_lights).execute();
+          }
+          // Condition 2: Improv BLE in progress
+          else if (id(improv_ble_in_progress)) {
             if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: improv_ble_in_progress (Solid Blue)");
             id(control_leds_improv_ble_state).execute();
           }
-          // Condition 2: Initialization in progress
+          // Condition 3: Initialization in progress
           else if (id(init_in_progress)) {
             if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: init_in_progress (Pulsing Blue)");
             id(control_leds_init_state).execute();
           }
-          // Condition 3: No WiFi or API connection
+          // Condition 4: No WiFi or API connection
           else if (!id(wifi_id).is_connected() || !id(api_id).is_connected()) {
             if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: no_ha_connection (Flashing Blue)");
             id(control_leds_no_ha_connection_state).execute();
           }
-          // Condition 4: User button pressed
+          // Condition 5: User button pressed
           else if (id(user_button).state) {
             if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: user_button_pressed (Solid Cyan)");
             id(control_leds_center_button_touched).execute();
           }
-          // Condition 5: Low battery alert
+          // Condition 6: Low battery alert
           else if (id(low_battery_alert)) {
             if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: low_battery (Flashing Red)");
             id(control_leds_low_battery).execute();
           }
-          // Condition 6: Timer ringing
+          // Condition 7: Timer ringing
           else if (id(timer_ringing).state) {
             if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: timer_ringing (Pulsing Yellow)");
             id(control_leds_timer_ringing).execute();
@@ -617,12 +655,12 @@ script:
             if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: va_not_ready (Solid Orange)");
             id(control_leds_voice_assistant_not_ready_phase).execute();
           }
-          // Condition 7: Timer active (but not ringing)
+          // Condition 8: Timer active (but not ringing)
           else if (id(is_timer_active)) {
             if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: timer_ticking (Slow Pulse Yellow)");
             id(control_leds_timer_ticking).execute();
           }
-          // Condition 8: Media player playing
+          // Condition 9: Media player playing
           else if (id(external_media_player).state == media_player::MediaPlayerState::MEDIA_PLAYER_STATE_PLAYING) {
             if (id(debug_mode)) ESP_LOGD("control_leds", "Executing: media_playing (Breathing Green)");
             id(control_leds_media_playing).execute();
@@ -750,6 +788,11 @@ script:
           green: 0
           blue: 0
           effect: "Fast Pulse"  # Flashing Red
+  - id: control_leds_question_response_lights
+    then:
+      - light.turn_on:
+          id: led_respeaker_onboard
+          effect: "Question Response Lights" # Question Response Lights
   - id: ring_timer
     then:
       - script.execute: enable_repeat_one
@@ -782,8 +825,7 @@ script:
     then:
       - lambda: |-
           if (priority) {
-            id(external_media_player)
-              ->make_call()
+            id(external_media_player)              ->make_call()
               .set_command(media_player::MediaPlayerCommand::MEDIA_PLAYER_COMMAND_STOP)
               .set_announcement(true)
               .perform();
@@ -819,6 +861,16 @@ script:
     then:
       - delay: 1s
       - lambda: id(stop).enable();
+  - id: start_question_response_lights_sequence
+    then:
+      - lambda: id(question_response_lights_sequence) = true;
+      - script.execute: control_leds
+      - delay: 3s # Adjust duration as needed
+      - script.execute: stop_question_response_lights_sequence
+  - id: stop_question_response_lights_sequence
+    then:
+      - lambda: id(question_response_lights_sequence) = false;
+      - script.execute: control_leds
 
 i2s_audio:
   - id: i2s_output
@@ -1116,6 +1168,8 @@ voice_assistant:
         condition:
           switch.is_on: is_question_response_switch
         then:
+          - script.execute: start_question_response_lights_sequence
+          - delay: 1s
           - voice_assistant.start:
           - switch.turn_off: is_question_response_switch
   on_end:
