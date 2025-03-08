@@ -484,7 +484,7 @@ light:
     internal: false
     rgb_order: GRB
     pin: GPIO1
-    num_leds: 1
+    num_leds: 12
     rmt_symbols: 192
     chipset: ws2812
     entity_category: config
@@ -896,7 +896,7 @@ script:
       - lambda: |-
           id(external_media_player)
             ->make_call()
-            .set_command(media_player::MediaPlayerCommand::MEDIA_PLAYER mestCOMMAND_REPEAT_OFF)
+            .set_command(media_player::MediaPlayerCommand::MEDIA_PLAYER_COMMAND_REPEAT_OFF)
             .set_announcement(true)
             .perform();
           id(external_media_player)->set_playlist_delay_ms(speaker::AudioPipelineType::ANNOUNCEMENT, 0);
@@ -1217,8 +1217,8 @@ voice_assistant:
   micro_wake_word: mww
   use_wake_word: false
   noise_suppression_level: 0
-  auto_gain: 10 dbfs  # Increase gain to improve STT recognition
-  volume_multiplier: 2  # Boost volume for clearer audio
+  auto_gain: 10 dbfs
+  volume_multiplier: 2
   on_client_connected:
     - logger.log: "VA client connected"
     - if:
@@ -1334,8 +1334,8 @@ voice_assistant:
           - logger.log: "Response ends with '?'. Waiting for TTS to finish"
           - switch.turn_on: is_question_response_switch
           - script.execute: control_leds_question_response_state
-          - delay: 2s  # Give time for TTS to fetch and start playing
-          - wait_until:  # Wait for announcement to complete
+          - delay: 2s
+          - wait_until:
               condition:
                 not:
                   media_player.is_announcing:
@@ -1355,11 +1355,11 @@ voice_assistant:
                     sound_file: !lambda return id(wake_word_triggered_sound);
                 - delay: 500ms
           - voice_assistant.stop:
-          - delay: 500ms  # Ensure clean stop
+          - delay: 500ms
           - micro_wake_word.stop:
-          - delay: 100ms  # Reset wake word
+          - delay: 100ms
           - micro_wake_word.start:
-          - delay: 500ms  # Allow stabilization
+          - delay: 500ms
           - lambda: |-
               id(voice_assistant_phase) = ${voice_assist_waiting_for_command_phase_id};
               ESP_LOGD("voice_assistant", "Restarting VA with silence detection");
@@ -1367,7 +1367,7 @@ voice_assistant:
               silence_detection: True
           - logger.log: "VA restarted for question response"
           - script.execute: control_leds
-          - delay: 1s  # Give VA time to start
+          - delay: 1s
           - if:
               condition:
                 not:
@@ -1402,7 +1402,7 @@ voice_assistant:
                 - script.execute: control_leds
   on_end:
     - logger.log: "VA ended"
-    - delay: 2s  # Wait for on_tts_end to complete if restarting
+    - delay: 2s
     - wait_until:
         condition:
           not:
