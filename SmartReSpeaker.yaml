@@ -521,14 +521,12 @@ light:
             static bool state = false;
             state = !state;
             auto call = id(led_respeaker_onboard).turn_on();
-            if (state) {
-              call.set_red(0.0);
-              call.set_green(1.0);
-              call.set_blue(1.0);
-            } else {
-              call.set_red(0.0);
-              call.set_green(1.0);
-              call.set_blue(0.0);
+            for (int i = 0; i < 12; i++) {
+              if (state) {
+                call.set_rgb(i, 0.0, 1.0, 1.0); // Cyan
+              } else {
+                call.set_rgb(i, 0.0, 1.0, 0.0); // Green
+              }
             }
             call.set_brightness(0.5);
             call.perform();
@@ -538,9 +536,18 @@ light:
           lambda: |-
             static bool state = false;
             state = !state;
-            if (state) {
-              id(led_respeaker_onboard).turn_on().set_red(1.0).set_green(0.0).set_blue(0.0).set_brightness(1.0).perform();
-            } else {
+            auto call = id(led_respeaker_onboard).turn_on();
+            for (int i = 0; i < 12; i++) {
+              if (state) {
+                call.set_rgb(i, 1.0, 0.0, 0.0); // Red
+                call.set_brightness(1.0);
+              } else {
+                call.set_rgb(i, 0.0, 0.0, 0.0); // Off
+                call.set_brightness(0.0);
+              }
+            }
+            call.perform();
+            if (!state) {
               id(led_respeaker_onboard).turn_off().perform();
             }
       - pulse:
@@ -556,22 +563,45 @@ light:
             static int state = 0;
             state = (state + 1) % 3;
             auto call = id(led_respeaker_onboard).turn_on();
-            if (state == 0) {
-              call.set_red(0.0);
-              call.set_green(0.0);
-              call.set_blue(1.0);
-            } else if (state == 1) {
-              call.set_red(0.0);
-              call.set_green(1.0);
-              call.set_blue(0.0);
-            } else {
-              call.set_red(1.0);
-              call.set_green(0.0);
-              call.set_blue(0.0);
+            for (int i = 0; i < 12; i++) {
+              if (state == 0) {
+                call.set_rgb(i, 0.0, 0.0, 1.0); // Blue
+              } else if (state == 1) {
+                call.set_rgb(i, 0.0, 1.0, 0.0); // Green
+              } else {
+                call.set_rgb(i, 1.0, 0.0, 0.0); // Red
+              }
             }
             call.set_brightness(0.75);
             call.perform();
+      - lambda:
+          name: "Ring Chase"
+          update_interval: 100ms  # Speed of the animation (lower = faster)
+          lambda: |-
+            static int position = 0;
+            static float tail_brightness[12] = {0}; // Array to store brightness for tail effect
 
+            auto call = id(led_respeaker_onboard).turn_on();
+
+            // Fade all LEDs slightly each frame for a smooth tail
+            for (int i = 0; i < 12; i++) {
+              tail_brightness[i] *= 0.7; // Decay factor (adjust for tail length)
+              if (tail_brightness[i] < 0.05) tail_brightness[i] = 0; // Cutoff to avoid flicker
+            }
+
+            // Set the "head" LED to full brightness and color (e.g., white)
+            tail_brightness[position] = 1.0;
+
+            // Apply the brightness and color to all LEDs
+            for (int i = 0; i < 12; i++) {
+              float brightness = tail_brightness[i];
+              call.set_rgb(i, brightness, brightness, brightness); // White chase effect
+            }
+
+            // Move to the next position in the ring
+            position = (position + 1) % 12;
+
+            call.perform();
 sensor:
   - platform: template
     id: next_timer
@@ -793,13 +823,13 @@ script:
           effect: "Listening Pulse"
   - id: control_leds_voice_assistant_thinking_phase
     then:
-      - logger.log: "Setting LED: VA thinking (Fast Pulse Purple)"
+      - logger.log: "Setting LED: VA thinking (Ring Chase)"
       - light.turn_on:
           id: led_respeaker_onboard
-          red: 0.5
-          green: 0
-          blue: 0.5
-          effect: "Fast Pulse"
+          red: 1.0
+          green: 0.5
+          blue: 0
+          effect: "Ring Chase"
   - id: control_leds_voice_assistant_replying_phase
     then:
       - logger.log: "Setting LED: VA replying (Green-Cyan Alternate)"
