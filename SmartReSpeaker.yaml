@@ -160,6 +160,22 @@ globals:
     type: bool
     restore_value: no
     initial_value: 'true'
+  - id: awaiting_question_response
+    type: bool
+    restore_value: no
+    initial_value: 'false'
+  - id: led_red
+    type: float
+    restore_value: no
+    initial_value: '1.0'
+  - id: led_green
+    type: float
+    restore_value: no
+    initial_value: '1.0'
+  - id: led_blue
+    type: float
+    restore_value: no
+    initial_value: '1.0'
 
 switch:
   - platform: template
@@ -521,12 +537,10 @@ light:
             static bool state = false;
             state = !state;
             auto call = id(led_respeaker_onboard).turn_on();
-            for (int i = 0; i < 12; i++) {
-              if (state) {
-                call.set_rgb(i, 0.0, 1.0, 1.0); // Cyan
-              } else {
-                call.set_rgb(i, 0.0, 1.0, 0.0); // Green
-              }
+            if (state) {
+              call.set_rgb(0.0, 1.0, 1.0); // Cyan for all LEDs
+            } else {
+              call.set_rgb(0.0, 1.0, 0.0); // Green for all LEDs
             }
             call.set_brightness(0.5);
             call.perform();
@@ -536,19 +550,10 @@ light:
           lambda: |-
             static bool state = false;
             state = !state;
-            auto call = id(led_respeaker_onboard).turn_on();
-            for (int i = 0; i < 12; i++) {
-              if (state) {
-                call.set_rgb(i, 1.0, 0.0, 0.0); // Red
-                call.set_brightness(1.0);
-              } else {
-                call.set_rgb(i, 0.0, 0.0, 0.0); // Off
-                call.set_brightness(0.0);
-              }
-            }
-            call.perform();
-            if (!state) {
-              id(led_respeaker_onboard).turn_off().perform();
+            if (state) {
+              id(led_respeaker_onboard).turn_on().set_rgb(1.0, 0.0, 0.0).set_brightness(1.0).perform(); // Red
+            } else {
+              id(led_respeaker_onboard).turn_off().perform(); // Off
             }
       - pulse:
           name: "Factory Reset Coming Up"
@@ -563,45 +568,46 @@ light:
             static int state = 0;
             state = (state + 1) % 3;
             auto call = id(led_respeaker_onboard).turn_on();
-            for (int i = 0; i < 12; i++) {
-              if (state == 0) {
-                call.set_rgb(i, 0.0, 0.0, 1.0); // Blue
-              } else if (state == 1) {
-                call.set_rgb(i, 0.0, 1.0, 0.0); // Green
-              } else {
-                call.set_rgb(i, 1.0, 0.0, 0.0); // Red
-              }
+            if (state == 0) {
+              call.set_rgb(0.0, 0.0, 1.0); // Blue
+            } else if (state == 1) {
+              call.set_rgb(0.0, 1.0, 0.0); // Green
+            } else {
+              call.set_rgb(1.0, 0.0, 0.0); // Red
             }
             call.set_brightness(0.75);
             call.perform();
       - lambda:
           name: "Ring Chase"
-          update_interval: 100ms  # Speed of the animation (lower = faster)
+          update_interval: 100ms
           lambda: |-
             static int position = 0;
-            static float tail_brightness[12] = {0}; // Array to store brightness for tail effect
-
+            static float tail_brightness[12] = {0};
             auto call = id(led_respeaker_onboard).turn_on();
-
-            // Fade all LEDs slightly each frame for a smooth tail
             for (int i = 0; i < 12; i++) {
-              tail_brightness[i] *= 0.7; // Decay factor (adjust for tail length)
-              if (tail_brightness[i] < 0.05) tail_brightness[i] = 0; // Cutoff to avoid flicker
+              tail_brightness[i] *= 0.7;
+              if (tail_brightness[i] < 0.05) tail_brightness[i] = 0;
             }
-
-            // Set the "head" LED to full brightness and color (e.g., white)
             tail_brightness[position] = 1.0;
-
-            // Apply the brightness and color to all LEDs
+            float max_brightness = 0;
             for (int i = 0; i < 12; i++) {
-              float brightness = tail_brightness[i];
-              call.set_rgb(i, brightness, brightness, brightness); // White chase effect
+              if (tail_brightness[i] > max_brightness) {
+                max_brightness = tail_brightness[i];
+              }
             }
-
-            // Move to the next position in the ring
+            if (max_brightness > 0) {
+              call.set_rgb(
+                id(led_red) * max_brightness,
+                id(led_green) * max_brightness,
+                id(led_blue) * max_brightness
+              );
+            } else {
+              call.set_rgb(0, 0, 0);
+            }
             position = (position + 1) % 12;
-
             call.perform();
+            
+
 sensor:
   - platform: template
     id: next_timer
@@ -696,47 +702,47 @@ script:
                 ESP_LOGD("control_leds", "is_timer_active: %d", id(is_timer_active));
       - lambda: |-
           if (id(improv_ble_in_progress)) {
-            ESP_LOGD("control_leds", "Executing: improv_ble_in_progress (Solid Blue)");
+            ESP_LOGD("control_leds", "Executing: improv_ble_in_progress (Blue Ring)");
             id(control_leds_improv_ble_state).execute();
             id(last_led_trigger).publish_state("Improv BLE");
           }
           else if (id(init_in_progress)) {
-            ESP_LOGD("control_leds", "Executing: init_in_progress (Pulsing Blue)");
+            ESP_LOGD("control_leds", "Executing: init_in_progress (Blue Ring)");
             id(control_leds_init_state).execute();
             id(last_led_trigger).publish_state("Initializing");
           }
           else if (!id(wifi_id).is_connected() || !id(api_id).is_connected()) {
-            ESP_LOGD("control_leds", "Executing: no_ha_connection (Flashing Blue)");
+            ESP_LOGD("control_leds", "Executing: no_ha_connection (Blue Ring)");
             id(control_leds_no_ha_connection_state).execute();
             id(last_led_trigger).publish_state("No Connection");
           }
           else if (id(user_button).state) {
-            ESP_LOGD("control_leds", "Executing: user_button_pressed (Solid Cyan)");
+            ESP_LOGD("control_leds", "Executing: user_button_pressed (Cyan Ring)");
             id(control_leds_center_button_touched).execute();
             id(last_led_trigger).publish_state("Button Pressed");
           }
           else if (id(low_battery_alert)) {
-            ESP_LOGD("control_leds", "Executing: low_battery (Flashing Red)");
+            ESP_LOGD("control_leds", "Executing: low_battery (Red Ring)");
             id(control_leds_low_battery).execute();
             id(last_led_trigger).publish_state("Low Battery");
           }
           else if (id(timer_ringing).state) {
-            ESP_LOGD("control_leds", "Executing: timer_ringing (Pulsing Yellow)");
+            ESP_LOGD("control_leds", "Executing: timer_ringing (Yellow Ring)");
             id(control_leds_timer_ringing).execute();
             id(last_led_trigger).publish_state("Timer Ringing");
           }
           else if (id(voice_assistant_phase) == 2) {
-            ESP_LOGD("control_leds", "Executing: va_waiting_for_command (Slow Pulse Pink)");
+            ESP_LOGD("control_leds", "Executing: va_waiting_for_command (Pink Ring)");
             id(control_leds_voice_assistant_waiting_for_command_phase).execute();
             id(last_led_trigger).publish_state("Waiting for Command");
           }
           else if (id(voice_assistant_phase) == 3) {
-            ESP_LOGD("control_leds", "Executing: va_listening (Green Pulse)");
+            ESP_LOGD("control_leds", "Executing: va_listening (Green Ring)");
             id(control_leds_voice_assistant_listening_for_command_phase).execute();
             id(last_led_trigger).publish_state("Listening");
           }
           else if (id(voice_assistant_phase) == 4) {
-            ESP_LOGD("control_leds", "Executing: va_thinking (Fast Pulse Purple)");
+            ESP_LOGD("control_leds", "Executing: va_thinking (Purple Ring)");
             id(control_leds_voice_assistant_thinking_phase).execute();
             id(last_led_trigger).publish_state("Thinking");
           }
@@ -746,22 +752,22 @@ script:
             id(last_led_trigger).publish_state("Speaking");
           }
           else if (id(voice_assistant_phase) == 11) {
-            ESP_LOGD("control_leds", "Executing: va_error (Flashing Red)");
+            ESP_LOGD("control_leds", "Executing: va_error (Red Ring)");
             id(control_leds_voice_assistant_error_phase).execute();
             id(last_led_trigger).publish_state("Error");
           }
           else if (id(voice_assistant_phase) == 10) {
-            ESP_LOGD("control_leds", "Executing: va_not_ready (Solid Orange)");
+            ESP_LOGD("control_leds", "Executing: va_not_ready (Orange Ring)");
             id(control_leds_voice_assistant_not_ready_phase).execute();
             id(last_led_trigger).publish_state("Not Ready");
           }
           else if (id(is_timer_active)) {
-            ESP_LOGD("control_leds", "Executing: timer_ticking (Slow Pulse Yellow)");
+            ESP_LOGD("control_leds", "Executing: timer_ticking (Yellow Ring)");
             id(control_leds_timer_ticking).execute();
             id(last_led_trigger).publish_state("Timer Ticking");
           }
           else if (id(external_media_player).state == media_player::MediaPlayerState::MEDIA_PLAYER_STATE_PLAYING) {
-            ESP_LOGD("control_leds", "Executing: media_playing (Breathing Green)");
+            ESP_LOGD("control_leds", "Executing: media_playing (Green Ring)");
             id(control_leds_media_playing).execute();
             id(last_led_trigger).publish_state("Media Playing");
           }
@@ -773,31 +779,28 @@ script:
       - logger.log: "Finished control_leds script execution"
   - id: control_leds_improv_ble_state
     then:
-      - logger.log: "Setting LED: Improv BLE state (Solid Blue)"
+      - logger.log: "Setting LED: Improv BLE state (Blue Ring)"
+      - lambda: |-
+          id(led_red) = 0.0; id(led_green) = 0.0; id(led_blue) = 1.0;
       - light.turn_on:
           id: led_respeaker_onboard
-          red: 0
-          green: 0
-          blue: 1.0
-          effect: none
+          effect: "Ring Chase"
   - id: control_leds_init_state
     then:
-      - logger.log: "Setting LED: Init state (Pulsing Blue)"
+      - logger.log: "Setting LED: Init state (Blue Ring)"
+      - lambda: |-
+          id(led_red) = 0.0; id(led_green) = 0.0; id(led_blue) = 1.0;
       - light.turn_on:
           id: led_respeaker_onboard
-          red: 0
-          green: 0
-          blue: 1.0
-          effect: "Slow Pulse"
+          effect: "Ring Chase"
   - id: control_leds_no_ha_connection_state
     then:
-      - logger.log: "Setting LED: No HA connection (Flashing Blue)"
+      - logger.log: "Setting LED: No HA connection (Blue Ring)"
+      - lambda: |-
+          id(led_red) = 0.0; id(led_green) = 0.0; id(led_blue) = 1.0;
       - light.turn_on:
           id: led_respeaker_onboard
-          red: 0
-          green: 0
-          blue: 1.0
-          effect: "Fast Pulse"
+          effect: "Ring Chase"
   - id: control_leds_voice_assistant_idle_phase
     then:
       - logger.log: "Setting LED: VA idle (Off)"
@@ -805,30 +808,27 @@ script:
           id: led_respeaker_onboard
   - id: control_leds_voice_assistant_waiting_for_command_phase
     then:
-      - logger.log: "Setting LED: VA waiting (Slow Pulse Pink)"
+      - logger.log: "Setting LED: VA waiting (Pink Ring)"
+      - lambda: |-
+          id(led_red) = 1.0; id(led_green) = 0.2; id(led_blue) = 1.0;
       - light.turn_on:
           id: led_respeaker_onboard
-          red: 1.0
-          green: 0.2
-          blue: 1.0
-          effect: "Slow Pulse"
+          effect: "Ring Chase"
   - id: control_leds_voice_assistant_listening_for_command_phase
     then:
-      - logger.log: "Setting LED: VA listening (Green Pulse)"
+      - logger.log: "Setting LED: VA listening (Green Ring)"
+      - lambda: |-
+          id(led_red) = 0.0; id(led_green) = 1.0; id(led_blue) = 0.0;
       - light.turn_on:
           id: led_respeaker_onboard
-          red: 0
-          green: 1.0
-          blue: 0
-          effect: "Listening Pulse"
+          effect: "Ring Chase"
   - id: control_leds_voice_assistant_thinking_phase
     then:
-      - logger.log: "Setting LED: VA thinking (Ring Chase)"
+      - logger.log: "Setting LED: VA thinking (Purple Ring)"
+      - lambda: |-
+          id(led_red) = 0.5; id(led_green) = 0.0; id(led_blue) = 0.5;
       - light.turn_on:
           id: led_respeaker_onboard
-          red: 1.0
-          green: 0.5
-          blue: 0
           effect: "Ring Chase"
   - id: control_leds_voice_assistant_replying_phase
     then:
@@ -838,64 +838,60 @@ script:
           effect: "Replying Alternate"
   - id: control_leds_voice_assistant_error_phase
     then:
-      - logger.log: "Setting LED: VA error (Flashing Red)"
+      - logger.log: "Setting LED: VA error (Red Ring)"
+      - lambda: |-
+          id(led_red) = 1.0; id(led_green) = 0.0; id(led_blue) = 0.0;
       - light.turn_on:
           id: led_respeaker_onboard
-          effect: "Error Flash"
+          effect: "Ring Chase"
   - id: control_leds_voice_assistant_not_ready_phase
     then:
-      - logger.log: "Setting LED: VA not ready (Solid Orange)"
+      - logger.log: "Setting LED: VA not ready (Orange Ring)"
+      - lambda: |-
+          id(led_red) = 1.0; id(led_green) = 0.5; id(led_blue) = 0.0;
       - light.turn_on:
           id: led_respeaker_onboard
-          red: 1.0
-          green: 0.5
-          blue: 0
-          effect: none
+          effect: "Ring Chase"
   - id: control_leds_center_button_touched
     then:
-      - logger.log: "Setting LED: Button touched (Solid Cyan)"
+      - logger.log: "Setting LED: Button touched (Cyan Ring)"
+      - lambda: |-
+          id(led_red) = 0.0; id(led_green) = 1.0; id(led_blue) = 1.0;
       - light.turn_on:
           id: led_respeaker_onboard
-          red: 0
-          green: 1.0
-          blue: 1.0
-          effect: none
+          effect: "Ring Chase"
   - id: control_leds_timer_ringing
     then:
-      - logger.log: "Setting LED: Timer ringing (Pulsing Yellow)"
+      - logger.log: "Setting LED: Timer ringing (Yellow Ring)"
+      - lambda: |-
+          id(led_red) = 1.0; id(led_green) = 1.0; id(led_blue) = 0.0;
       - light.turn_on:
           id: led_respeaker_onboard
-          red: 1.0
-          green: 1.0
-          blue: 0
-          effect: "Slow Pulse"
+          effect: "Ring Chase"
   - id: control_leds_timer_ticking
     then:
-      - logger.log: "Setting LED: Timer ticking (Slow Pulse Yellow)"
+      - logger.log: "Setting LED: Timer ticking (Yellow Ring)"
+      - lambda: |-
+          id(led_red) = 1.0; id(led_green) = 1.0; id(led_blue) = 0.0;
       - light.turn_on:
           id: led_respeaker_onboard
-          red: 1.0
-          green: 1.0
-          blue: 0
-          effect: "Slow Pulse"
+          effect: "Ring Chase"
   - id: control_leds_media_playing
     then:
-      - logger.log: "Setting LED: Media playing (Breathing Green)"
+      - logger.log: "Setting LED: Media playing (Green Ring)"
+      - lambda: |-
+          id(led_red) = 0.0; id(led_green) = 1.0; id(led_blue) = 0.0;
       - light.turn_on:
           id: led_respeaker_onboard
-          red: 0
-          green: 1.0
-          blue: 0
-          effect: "Idle Breathing"
+          effect: "Ring Chase"
   - id: control_leds_low_battery
     then:
-      - logger.log: "Setting LED: Low battery (Flashing Red)"
+      - logger.log: "Setting LED: Low battery (Red Ring)"
+      - lambda: |-
+          id(led_red) = 1.0; id(led_green) = 0.0; id(led_blue) = 0.0;
       - light.turn_on:
           id: led_respeaker_onboard
-          red: 1.0
-          green: 0
-          blue: 0
-          effect: "Fast Pulse"
+          effect: "Ring Chase"
   - id: control_leds_question_response_state
     then:
       - logger.log: "Setting LED: Question response (RGB Cycle)"
