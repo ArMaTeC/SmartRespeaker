@@ -1,3 +1,4 @@
+# Configuration settings for Respeaker Lite Satellite
 substitutions:
   voice_assist_idle_phase_id: '1'
   voice_assist_waiting_for_command_phase_id: '2'
@@ -231,7 +232,7 @@ switch:
     internal: true
     restore_mode: ALWAYS_OFF
     on_turn_off:
-      - lambda: id(stop).disable();
+      - lambda: id(stop_model).disable();
       - script.execute: disable_repeat
       - if:
           condition: {media_player.is_announcing:}
@@ -246,7 +247,7 @@ switch:
           id: media_mixing_input
           decibel_reduction: 20
           duration: 0.0s
-      - lambda: id(stop).enable();
+      - lambda: id(stop_model).enable();
       - script.execute: ring_timer
       - script.execute: control_leds
       - delay: 15min
@@ -323,6 +324,7 @@ binary_sensor:
                                                         sound_file: !lambda return id(center_button_press_sound);
                                                     - delay: 300ms
                                               - voice_assistant.start:
+                                                  silence_detection: True
       - timing:
           - ON for at most 1s
           - OFF for at most 0.25s
@@ -855,7 +857,7 @@ script:
   - id: activate_stop_word_if_tts_step_is_long
     then:
       - delay: 1s
-      - lambda: id(stop).enable();
+      - lambda: id(stop_model).enable();
 
 i2s_audio:
   - id: i2s_output
@@ -884,8 +886,8 @@ microphone:
     i2s_din_pin: GPIO44
     adc_type: external
     pdm: false
-    sample_rate: 48000
-    bits_per_sample: 32bit
+    sample_rate: 16000
+    bits_per_sample: 16bit
     i2s_mode: secondary
     i2s_audio_id: i2s_input
     channel_0:
@@ -987,6 +989,7 @@ media_player:
       - id: wake_word_triggered_sound
         file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/wake_word_triggered.flac
 
+
 respeaker_lite:
   id: respeaker
   reset_pin: GPIO2
@@ -999,7 +1002,7 @@ respeaker_lite:
     internal: false
     id: firmware_version
   firmware:
-    url: https://github.com/formatBCE/Respeaker-Lite-ESPHome-integration/raw/refs/heads/main/respeaker_lite_i2s_dfu_firmware_48k_v1.1.0.bin
+    url: https://github.com/ArMaTeC/SmartRespeaker/raw/refs/heads/main/firmware/respeaker_lite_i2s_dfu_firmware_48k_v1.1.0.bin
     version: "1.1.0"
     md5: 9297155d1bf3eb21a9d4db52a89ea0c6
     on_begin:
@@ -1034,21 +1037,9 @@ respeaker_lite:
 external_components:
   - source:
       type: git
-      url: https://github.com/esphome/home-assistant-voice-pe
-      ref: dev
-    components: [micro_wake_word, microphone, voice_assistant]
-    refresh: 0s
-  - source:
-      type: git
-      url: https://github.com/formatBCE/home-assistant-voice-pe
-      ref: 48kHz_mic_support
-    components: [nabu_microphone]
-    refresh: 0s
-  - source:
-      type: git
-      url: https://github.com/formatBCE/Respeaker-Lite-ESPHome-integration
+      url: https://github.com/ArMaTeC/SmartRespeaker
       ref: main
-    components: [respeaker_lite]
+    components: [respeaker_lite, nabu_microphone, micro_wake_word, microphone, voice_assistant]
     refresh: 0s
 
 audio_dac:
@@ -1061,12 +1052,8 @@ micro_wake_word:
   models:
     - model: https://github.com/kahrendt/microWakeWord/releases/download/okay_nabu_20241226.3/okay_nabu.json
       id: okay_nabu
-    - model: hey_jarvis
-      id: hey_jarvis
-    - model: hey_mycroft
-      id: hey_mycroft
     - model: https://github.com/kahrendt/microWakeWord/releases/download/stop/stop.json
-      id: stop
+      id: stop_model
       internal: true
   vad:
   microphone: nabu_mic_mww
@@ -1083,22 +1070,29 @@ micro_wake_word:
                     then: [media_player.stop: {announcement: true}]
                     else:
                       - if:
-                          condition: {switch.is_on: wake_sound}
+                          condition:
+                            lambda: return wake_word == "stop";
                           then:
-                            - script.execute:
-                                id: play_sound
-                                priority: true
-                                sound_file: !lambda return id(wake_word_triggered_sound);
-                            - delay: 300ms
-                      - voice_assistant.start:
-                          wake_word: !lambda return wake_word;
+                            - voice_assistant.stop:
+                          else:
+                            - if:
+                                condition: {switch.is_on: wake_sound}
+                                then:
+                                  - script.execute:
+                                      id: play_sound
+                                      priority: true
+                                      sound_file: !lambda return id(wake_word_triggered_sound);
+                                  - delay: 300ms
+                            - voice_assistant.start:
+                                silence_detection: True
+                                wake_word: !lambda return wake_word;
 
 voice_assistant:
   id: va
   microphone: nabu_mic_va
   media_player: external_media_player
   micro_wake_word: mww
-  use_wake_word: false
+  use_wake_word: true
   noise_suppression_level: 0
   auto_gain: 0 dbfs
   volume_multiplier: 1
@@ -1171,23 +1165,31 @@ voice_assistant:
                     sound_file: !lambda return id(wake_word_triggered_sound);
                 - delay: 300ms
           - voice_assistant.start:
+              silence_detection: True
         else:
           - lambda: ESP_LOGD("voice_assistant", "Response does not end with '?'. Not restarting.");
           - switch.turn_off: is_question_response_switch
   on_end:
-    - wait_until: {not: {voice_assistant.is_running:}}
+    - wait_until:
+        condition:
+          not:
+            voice_assistant.is_running:
     - mixer_speaker.apply_ducking:
         id: media_mixing_input
         decibel_reduction: 0
-        duration: 1.0s
+        duration: 1s
     - script.stop: activate_stop_word_if_tts_step_is_long
     - if:
-        condition: {switch.is_off: timer_ringing}
-        then: [lambda: id(stop).disable();]
+        condition:
+          switch.is_off:
+            id: timer_ringing
+        then:
+          - lambda: id(stop_model).disable();
     - if:
         condition:
-        - lambda: 'return id(voice_assistant_phase) == ${voice_assist_error_phase_id};'
-        then: [delay: 1s]
+          lambda: 'return id(voice_assistant_phase) == ${voice_assist_error_phase_id};'
+        then:
+          - delay: 1s
     - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
     - script.execute: control_leds
   on_timer_finished:
