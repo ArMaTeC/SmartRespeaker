@@ -896,7 +896,7 @@ script:
       - lambda: |-
           id(external_media_player)
             ->make_call()
-            .set_command(media_player::MediaPlayerCommand::MEDIA_PLAYER_COMMAND_REPEAT_OFF)
+            .set_command(media_player::MediaPlayerCommand::MEDIA_PLAYER mestCOMMAND_REPEAT_OFF)
             .set_announcement(true)
             .perform();
           id(external_media_player)->set_playlist_delay_ms(speaker::AudioPipelineType::ANNOUNCEMENT, 0);
@@ -1209,6 +1209,7 @@ micro_wake_word:
                             - voice_assistant.start:
                                 silence_detection: True
                                 wake_word: !lambda return wake_word;
+
 voice_assistant:
   id: va
   microphone: nabu_mic_va
@@ -1392,6 +1393,13 @@ voice_assistant:
         else:
           - logger.log: "Response does not end with '?'. Not restarting"
           - switch.turn_off: is_question_response_switch
+          - if:
+              condition:
+                lambda: 'return id(voice_assistant_phase) == ${voice_assist_replying_phase_id};'
+              then:
+                - logger.log: "Resetting to idle after non-question response"
+                - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
+                - script.execute: control_leds
   on_end:
     - logger.log: "VA ended"
     - delay: 2s  # Wait for on_tts_end to complete if restarting
