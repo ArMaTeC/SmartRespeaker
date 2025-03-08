@@ -23,6 +23,8 @@ esphome:
           id: next_timer
           state: -1
       - script.execute: control_leds
+      - micro_wake_word.start:  # Ensure wake word starts on boot
+      - logger.log: "Initializing wake word detection on boot"
       - delay: 10min
       - if:
           condition:
@@ -279,135 +281,35 @@ binary_sensor:
       mode: INPUT_PULLUP
       inverted: true
     name: "User button"
-    on_press: [script.execute: control_leds]
+    filters:
+      - debounce: 50ms  # Reduce false triggers
+    on_press:
+      - script.execute: control_leds
     on_release:
       - script.execute: control_leds
       - if:
           condition: {lambda: return id(factory_reset_requested);}
           then: [button.press: factory_reset_button]
-    on_multi_click:
-      - timing:
-          - ON for at most 1s
-          - OFF for at least 0.25s
+    on_click:
+      - min_length: 50ms
+        max_length: 1000ms
         then:
           - if:
-              condition: {lambda: return !id(init_in_progress);}
-              then:
-                - if:
-                    condition: {switch.is_on: timer_ringing}
-                    then: [switch.turn_off: timer_ringing]
-                    else:
-                      - if:
-                          condition: {media_player.is_announcing:}
-                          then: [media_player.stop: {announcement: true}]
-                          else:
-                            - if:
-                                condition: {voice_assistant.is_running:}
-                                then: [voice_assistant.stop:]
-                                else:
-                                  - if:
-                                      condition: {media_player.is_playing:}
-                                      then: [media_player.pause:]
-                                      else:
-                                        - if:
-                                            condition:
-                                              and:
-                                                - switch.is_off: mic_mute_switch
-                                                - not: {voice_assistant.is_running}
-                                            then:
-                                              - if:
-                                                  condition: {switch.is_on: button_sound}
-                                                  then:
-                                                    - script.execute:
-                                                        id: play_sound
-                                                        priority: true
-                                                        sound_file: !lambda return id(center_button_press_sound);
-                                                    - delay: 300ms
-                                              - voice_assistant.start:
-                                                  silence_detection: True
-      - timing:
-          - ON for at most 1s
-          - OFF for at most 0.25s
-          - ON for at most 1s
-          - OFF for at least 0.25s
-        then:
-          - if:
-              condition: {lambda: return !id(init_in_progress);}
+              condition:
+                and:
+                  - switch.is_off: mic_mute_switch
+                  - not: {voice_assistant.is_running:}
               then:
                 - if:
                     condition: {switch.is_on: button_sound}
                     then:
                       - script.execute:
                           id: play_sound
-                          priority: false
-                          sound_file: !lambda return id(center_button_double_press_sound);
-                - media_player.volume_up:
-                    id: external_media_player
-      - timing:
-          - ON for at most 1s
-          - OFF for at most 0.25s
-          - ON for at most 1s
-          - OFF for at most 0.25s
-          - ON for at most 1s
-          - OFF for at least 0.25s
-        then:
-          - if:
-              condition: {lambda: return !id(init_in_progress);}
-              then:
-                - if:
-                    condition: {switch.is_on: button_sound}
-                    then:
-                      - script.execute:
-                          id: play_sound
-                          priority: false
-                          sound_file: !lambda return id(center_button_triple_press_sound);
-                - media_player.volume_down:
-                    id: external_media_player
-      - timing: [ON for at least 1s]
-        then:
-          - if:
-              condition: {lambda: return !id(init_in_progress);}
-              then:
-                - if:
-                    condition: {switch.is_on: button_sound}
-                    then:
-                      - script.execute:
-                          id: play_sound
-                          priority: false
-                          sound_file: !lambda return id(center_button_long_press_sound);
-                - light.turn_off: led_respeaker_onboard
-      - timing: [ON for at least 10s]
-        then:
-          - light.turn_on:
-              brightness: 100%
-              id: led_respeaker_onboard
-              effect: "Factory Reset Coming Up"
-          - script.execute:
-              id: play_sound
-              priority: true
-              sound_file: !lambda return id(factory_reset_initiated_sound);
-          - wait_until: {binary_sensor.is_off: user_button}
-          - if:
-              condition: {lambda: return !id(factory_reset_requested);}
-              then:
-                - light.turn_off: led_respeaker_onboard
-                - script.execute:
-                    id: play_sound
-                    priority: true
-                    sound_file: !lambda return id(factory_reset_cancelled_sound);
-      - timing: [ON for at least 22s]
-        then:
-          - script.execute:
-              id: play_sound
-              priority: true
-              sound_file: !lambda return id(factory_reset_confirmed_sound);
-          - light.turn_on:
-              brightness: 100%
-              red: 1
-              green: 0
-              blue: 0
-              id: led_respeaker_onboard
-              effect: "none"
+                          priority: true
+                          sound_file: !lambda return id(center_button_press_sound);
+                      - delay: 300ms
+                - voice_assistant.start:
+                    silence_detection: True
 
 light:
   - platform: esp32_rmt_led_strip
@@ -589,6 +491,7 @@ script:
             ESP_LOGD("control_leds", "wifi_connected: %d", id(wifi_id).is_connected());
             ESP_LOGD("control_leds", "api_connected: %d", id(api_id).is_connected());
             ESP_LOGD("control_leds", "user_button_state: %d", id(user_button).state);
+            ESP_LOGD("control_leds", "mic_mute_state: %d", id(mic_mute_switch).state);
             ESP_LOGD("control_leds", "low_battery_alert: %d", id(low_battery_alert));
             ESP_LOGD("control_leds", "timer_ringing: %d", id(timer_ringing).state);
             ESP_LOGD("control_leds", "media_player_state: %d", (int)id(external_media_player).state);
@@ -893,9 +796,17 @@ microphone:
     channel_0:
       id: nabu_mic_va
       amplify_shift: 0
+      on_raw_audio:
+        - logger.log:
+            format: "Mic VA raw audio sample: %d"
+            args: ["x"]
     channel_1:
       id: nabu_mic_mww
       amplify_shift: 2
+      on_raw_audio:
+        - logger.log:
+            format: "Mic MWW raw audio sample: %d"
+            args: ["x"]
 
 speaker:
   - platform: i2s_audio
@@ -989,7 +900,6 @@ media_player:
       - id: wake_word_triggered_sound
         file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/wake_word_triggered.flac
 
-
 respeaker_lite:
   id: respeaker
   reset_pin: GPIO2
@@ -1052,12 +962,21 @@ micro_wake_word:
   models:
     - model: https://github.com/kahrendt/microWakeWord/releases/download/okay_nabu_20241226.3/okay_nabu.json
       id: okay_nabu
+      probability_cutoff: 0.75  # Reduced from 0.85 for better sensitivity
     - model: https://github.com/kahrendt/microWakeWord/releases/download/stop/stop.json
       id: stop_model
       internal: true
+      probability_cutoff: 0.50
   vad:
   microphone: nabu_mic_mww
+  on_state:
+    - logger.log:
+        format: "MicroWakeWord state: %s"
+        args: ["x.c_str()"]
   on_wake_word_detected:
+    - logger.log:
+        format: "Wake word detected: %s"
+        args: ["wake_word.c_str()"]
     - if:
         condition: {switch.is_off: mic_mute_switch}
         then:
@@ -1104,7 +1023,10 @@ voice_assistant:
             - switch.is_on: mic_mute_switch
         then: [switch.turn_off: mic_mute_switch]
     - lambda: id(init_in_progress) = false;
+    - micro_wake_word.stop:  # Reset wake word component
+    - delay: 1s
     - micro_wake_word.start:
+    - logger.log: "Wake word detection started"
     - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
     - script.execute: control_leds
   on_client_disconnected:
@@ -1122,12 +1044,14 @@ voice_assistant:
           - lambda: id(voice_assistant_phase) = ${voice_assist_error_phase_id};
           - script.execute: control_leds
   on_start:
+    - lambda: id(voice_assistant_phase) = ${voice_assist_waiting_for_command_phase_id};
     - mixer_speaker.apply_ducking:
         id: media_mixing_input
         decibel_reduction: 20
         duration: 0.0s
+    - script.execute: control_leds
   on_listening:
-    - lambda: id(voice_assistant_phase) = ${voice_assist_waiting_for_command_phase_id};
+    - lambda: id(voice_assistant_phase) = ${voice_assist_listening_for_command_phase_id};
     - script.execute: control_leds
   on_stt_vad_start:
     - lambda: id(voice_assistant_phase) = ${voice_assist_listening_for_command_phase_id};
