@@ -1,46 +1,40 @@
+# Configuration settings for Respeaker Lite Satellite
 substitutions:
-  # Phases of the Voice Assistant
-  # The voice assistant is ready to be triggered by a wake word
   voice_assist_idle_phase_id: '1'
-  # The voice assistant is waiting for a voice command (after being triggered by the wake word)
   voice_assist_waiting_for_command_phase_id: '2'
-  # The voice assistant is listening for a voice command
   voice_assist_listening_for_command_phase_id: '3'
-  # The voice assistant is currently processing the command
   voice_assist_thinking_phase_id: '4'
-  # The voice assistant is replying to the command
   voice_assist_replying_phase_id: '5'
-  # The voice assistant is not ready
   voice_assist_not_ready_phase_id: '10'
-  # The voice assistant encountered an error
   voice_assist_error_phase_id: '11'
-  # Change this to true in case you ahve a hidden SSID at home.
   hidden_ssid: "false"
 
 esphome:
-  project: 
-    name: formatbce.Respeaker Lite Satellite
+  name: respeaker-lite-satellite
+  friendly_name: Respeaker Lite Satellite
+  project:
+    name: formatbce.respeaker-lite-satellite
     version: 2025.2.2
   min_version: 2025.2.0
   on_boot:
     priority: 375
     then:
+      - logger.log: "Booting ReSpeaker Lite Satellite"
       - sensor.template.publish:
           id: next_timer
           state: -1
-      # Run the script to refresh the LED status
       - script.execute: control_leds
-      # If after 10 minutes, the device is still initializing (It did not yet connect to Home Assistant), turn off the init_in_progress variable and run the script to refresh the LED status
       - delay: 10min
       - if:
           condition:
             lambda: return id(init_in_progress);
           then:
+            - logger.log: "Initialization completed after 10min delay"
             - lambda: id(init_in_progress) = false;
             - script.execute: control_leds
   on_shutdown:
     then:
-      # Prevent loud noise on software restart
+      - logger.log: "Shutting down - Muting speaker"
       - lambda: id(respeaker).mute_speaker();
 
 esp32:
@@ -55,28 +49,44 @@ esp32:
       CONFIG_ESP32S3_DATA_CACHE_64KB: "y"
       CONFIG_ESP32S3_DATA_CACHE_LINE_64B: "y"
       CONFIG_ESP32S3_INSTRUCTION_CACHE_32KB: "y"
-
       CONFIG_BT_ALLOCATION_FROM_SPIRAM_FIRST: "y"
       CONFIG_BT_BLE_DYNAMIC_ENV_MEMORY: "y"
-
       CONFIG_MBEDTLS_EXTERNAL_MEM_ALLOC: "y"
-      CONFIG_MBEDTLS_SSL_PROTO_TLS1_3: "y"  # TLS1.3 support isn't enabled by default in IDF 5.1.5
+      CONFIG_MBEDTLS_SSL_PROTO_TLS1_3: "y"
 
 wifi:
+  networks:
+    - ssid: !secret wifi_ssid
+      password: !secret wifi_password
   id: wifi_id
-  fast_connect: ${hidden_ssid}
+  fast_connect: true
   on_connect:
+    - logger.log: "Wi-Fi connected"
     - lambda: id(improv_ble_in_progress) = false;
     - script.execute: control_leds
   on_disconnect:
+    - logger.log: "Wi-Fi disconnected"
     - script.execute: control_leds
+  ap:
+    ssid: "Respeaker-Satellite"
+    password: "lNw0AP2PKQGR"
 
 logger:
-  level: debug
-  initial_level: debug
+  level: DEBUG  # Changed to DEBUG for full verbosity
+  initial_level: DEBUG
   logs:
-    sensor: WARN  # avoids logging debug sensor updates
-#  hardware_uart: uart0  #Uncomment to see serial logs via USB connection. Comment out after debufgging - this line introduces noise on speaker...
+    sensor: WARN
+    micro_wake_word: DEBUG  # Wake word detection
+    voice_assistant: DEBUG  # Voice assistant pipeline
+    binary_sensor: DEBUG    # Button events
+    script: DEBUG          # Script executions
+    light: DEBUG           # LED states
+    media_player: DEBUG    # Media playback
+    switch: DEBUG          # Switch states
+    respeaker_lite: DEBUG  # ReSpeaker component
+    i2s_audio: DEBUG       # Audio I/O
+    wifi: DEBUG            # Wi-Fi events
+    api: DEBUG             # API interactions
 
 select:
   - platform: logger
@@ -85,22 +95,24 @@ select:
     disabled_by_default: true
 
 api:
+  encryption:
+    key: "ZCgwWwJTbF0/EQpyOkSOl+nYyghZdE9n5tRAoEMnWDk="
   id: api_id
   actions:
     - action: start_va
-      then:
-        - voice_assistant.start
+      then: 
+        - logger.log: "API action: Starting voice assistant"
+        - voice_assistant.start:
     - action: stop_va
-      then:
-        - voice_assistant.stop
+      then: 
+        - logger.log: "API action: Stopping voice assistant"
+        - voice_assistant.stop:
   on_client_connected:
+    - logger.log: "API client connected"
     - script.execute: control_leds
   on_client_disconnected:
+    - logger.log: "API client disconnected"
     - script.execute: control_leds
-
-# Uncomment this, if you have problems with text-to-speech because of Home Assistant HTTPS internal URL
-# http_request:
-#   verify_ssl: false
 
 ota:
   - platform: esphome
@@ -122,90 +134,112 @@ globals:
     type: bool
     restore_value: no
     initial_value: 'true'
-  # Global variable storing the state of ImprovBLE. Used to draw different LED animations
   - id: improv_ble_in_progress
     type: bool
     restore_value: no
     initial_value: 'false'
-  # Global variable tracking the phase of the voice assistant (defined above). Initialized to not_ready
   - id: voice_assistant_phase
     type: int
     restore_value: no
     initial_value: ${voice_assist_not_ready_phase_id}
-  # Global variable storing the first active timer
   - id: first_active_timer
     type: voice_assistant::Timer
     restore_value: false
-  # Global variable storing if a timer is active
   - id: is_timer_active
     type: bool
     restore_value: false
-  # Global variable storing if a factory reset was requested. If it is set to true, the device will factory reset once the center button is released
   - id: factory_reset_requested
     type: bool
     restore_value: no
     initial_value: 'false'
+  - id: low_battery_alert
+    type: bool
+    restore_value: no
+    initial_value: 'false'
+  - id: debug_mode
+    type: bool
+    restore_value: no
+    initial_value: 'true'
 
 switch:
-  # Hardware speaker mute
   - platform: template
     id: speaker_mute_switch
     name: Speaker mute
     icon: mdi:volume-mute
     internal: true
     optimistic: true
-    turn_on_action:
+    turn_on_action: 
+      - logger.log: "Muting speaker"
       - lambda: id(respeaker).mute_speaker();
-    turn_off_action:
+    turn_off_action: 
+      - logger.log: "Unmuting speaker"
       - lambda: id(respeaker).unmute_speaker();
-  # stateless momentary mic mute switch
   - platform: gpio
     internal: true
-    pin: 
-      number: GPIO4 # D3
+    pin:
+      number: GPIO4
       inverted: true
     id: mute_toggle
     on_turn_on:
+      - logger.log: "Mute toggle ON"
       - delay: 300ms
       - switch.turn_off: mute_toggle
-  # stateful user facing mic mute switch
   - platform: template
     id: mic_mute_switch
     name: Mic mute
     icon: mdi:microphone-off
     lambda: |-
-      if (id(mute_state).state) {
-        return true;
-      } else {
-        return false;
-      }
+      return id(mute_state).state;
     on_turn_on:
+      - logger.log: "Mic mute ON"
+      - light.turn_on:
+          id: led_respeaker_onboard
+          brightness: 50%
+          red: 1
+          green: 0
+          blue: 0
+          effect: none
+      - delay: 0.5s
       - if:
           condition:
             and:
               - lambda: return !id(init_in_progress);
               - switch.is_on: mute_sound
           then:
+            - logger.log: "Playing mute ON sound"
             - script.execute:
                 id: play_sound
                 priority: false
                 sound_file: !lambda return id(mute_switch_on_sound);
+      - script.execute: control_leds
     on_turn_off:
+      - logger.log: "Mic mute OFF"
+      - light.turn_on:
+          id: led_respeaker_onboard
+          brightness: 50%
+          red: 0
+          green: 1
+          blue: 0
+          effect: none
+      - delay: 0.5s
       - if:
           condition:
             and:
               - lambda: return !id(init_in_progress);
               - switch.is_on: mute_sound
           then:
+            - logger.log: "Playing mute OFF sound"
             - script.execute:
                 id: play_sound
                 priority: false
                 sound_file: !lambda return id(mute_switch_off_sound);
-    turn_on_action:
+      - script.execute: control_leds
+    turn_on_action: 
+      - logger.log: "Triggering mute toggle ON"
       - switch.turn_on: mute_toggle
-    turn_off_action:
+    turn_off_action: 
+      - logger.log: "Triggering mute toggle OFF"
       - switch.turn_on: mute_toggle
-  # Button click Sounds Switch.
   - platform: template
     id: button_sound
     name: Button click sounds
@@ -213,7 +247,6 @@ switch:
     entity_category: config
     optimistic: true
     restore_mode: RESTORE_DEFAULT_ON
-  # Mute Sound Switch.
   - platform: template
     id: mute_sound
     name: Mute/unmute sound
@@ -221,7 +254,6 @@ switch:
     entity_category: config
     optimistic: true
     restore_mode: RESTORE_DEFAULT_ON
-  # Wake Word Sound Switch.
   - platform: template
     id: wake_sound
     name: Wake sound
@@ -229,115 +261,118 @@ switch:
     entity_category: config
     optimistic: true
     restore_mode: RESTORE_DEFAULT_ON
-  # Internal switch to track when a timer is ringing on the device.
   - platform: template
     id: timer_ringing
     optimistic: true
     internal: true
     restore_mode: ALWAYS_OFF
     on_turn_off:
-      # Disable stop wake word
-      - lambda: id(stop).disable();
+      - logger.log: "Timer ringing OFF"
+      - lambda: id(stop_model).disable();
       - script.execute: disable_repeat
-      # Stop any current annoucement (ie: stop the timer ring mid playback)
       - if:
-          condition:
-            media_player.is_announcing:
-          then:
-            media_player.stop:
-              announcement: true
-      # Set back ducking ratio to zero
+          condition: {media_player.is_announcing:}
+          then: 
+            - logger.log: "Stopping announcement due to timer off"
+            - media_player.stop: {announcement: true}
       - mixer_speaker.apply_ducking:
           id: media_mixing_input
           decibel_reduction: 0
           duration: 1.0s
-      # Refresh the LED ring
       - script.execute: control_leds
     on_turn_on:
-      # Duck audio
+      - logger.log: "Timer ringing ON"
       - mixer_speaker.apply_ducking:
           id: media_mixing_input
           decibel_reduction: 20
           duration: 0.0s
-      # Enable stop wake word
-      - lambda: id(stop).enable();
-      # Ring timer
+      - lambda: id(stop_model).enable();
       - script.execute: ring_timer
-      # Refresh LED
       - script.execute: control_leds
-      # If 15 minutes have passed and the timer is still ringing, stop it.
       - delay: 15min
       - switch.turn_off: timer_ringing
+  - platform: template
+    id: is_question_response_switch
+    name: "Is Question Response"
+    internal: false
+    optimistic: true
+    restore_mode: ALWAYS_OFF
+  - platform: template
+    id: debug_switch
+    name: "Debug Mode"
+    icon: "mdi:bug"
+    entity_category: config
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+    lambda: return id(debug_mode);
+    turn_on_action:
+      - logger.log: "Debug mode enabled"
+      - lambda: id(debug_mode) = true;
+    turn_off_action:
+      - logger.log: "Debug mode disabled"
+      - lambda: id(debug_mode) = false;
 
 binary_sensor:
-  # User Button. Used for many things (See on_multi_click)
   - platform: gpio
     id: user_button
     pin:
-      number: GPIO3 # D2
+      number: GPIO3
+      mode: INPUT_PULLUP
       inverted: true
     name: "User button"
-    on_press:
+    on_press: 
+      - logger.log: "User button pressed"
       - script.execute: control_leds
     on_release:
+      - logger.log: "User button released"
       - script.execute: control_leds
-      # If a factory reset is requested, factory reset on release
       - if:
-          condition:
-            lambda: return id(factory_reset_requested);
-          then:
+          condition: {lambda: return id(factory_reset_requested);}
+          then: 
+            - logger.log: "Factory reset requested on button release"
             - button.press: factory_reset_button
     on_multi_click:
-      # Simple Click:
-      #   - Abort "things" in order
-      #     - Timer
-      #     - Announcements
-      #     - Voice Assistant Pipeline run
-      #     - Music
-      #   - Starts the voice assistant if it is not yet running and if the device is not muted.
       - timing:
           - ON for at most 1s
           - OFF for at least 0.25s
         then:
+          - logger.log: "Single click detected"
           - if:
-              condition:
-                lambda: return !id(init_in_progress);
+              condition: {lambda: return !id(init_in_progress);}
               then:
                 - if:
-                    condition:
-                      switch.is_on: timer_ringing
-                    then:
+                    condition: {switch.is_on: timer_ringing}
+                    then: 
+                      - logger.log: "Stopping timer ringing"
                       - switch.turn_off: timer_ringing
                     else:
                       - if:
-                          condition:
-                            media_player.is_announcing:
-                          then:
-                            media_player.stop:
-                              announcement: true
+                          condition: {media_player.is_announcing:}
+                          then: 
+                            - logger.log: "Stopping announcement"
+                            - media_player.stop: {announcement: true}
                           else:
                             - if:
-                                condition:
-                                  voice_assistant.is_running:
-                                then:
+                                condition: {voice_assistant.is_running:}
+                                then: 
+                                  - logger.log: "Stopping voice assistant"
                                   - voice_assistant.stop:
                                 else:
                                   - if:
-                                      condition:
-                                        media_player.is_playing:
-                                      then:
+                                      condition: {media_player.is_playing:}
+                                      then: 
+                                        - logger.log: "Pausing media player"
                                         - media_player.pause:
                                       else:
                                         - if:
                                             condition:
                                               and:
                                                 - switch.is_off: mic_mute_switch
-                                                - not:
-                                                    voice_assistant.is_running
+                                                - not: {voice_assistant.is_running}
                                             then:
+                                              - logger.log: "Starting voice assistant from button"
                                               - if:
-                                                  condition:
-                                                    switch.is_on: button_sound
+                                                  condition: {switch.is_on: button_sound}
                                                   then:
                                                     - script.execute:
                                                         id: play_sound
@@ -345,31 +380,28 @@ binary_sensor:
                                                         sound_file: !lambda return id(center_button_press_sound);
                                                     - delay: 300ms
                                               - voice_assistant.start:
-      # Double Click
-      #  . Exposed as an event entity. To be used in automations inside Home Assistant
+                                                  silence_detection: True
       - timing:
           - ON for at most 1s
           - OFF for at most 0.25s
           - ON for at most 1s
           - OFF for at least 0.25s
         then:
+          - logger.log: "Double click detected"
           - if:
-              condition:
-                lambda: return !id(init_in_progress);
+              condition: {lambda: return !id(init_in_progress);}
               then:
                 - if:
-                    condition:
-                      switch.is_on: button_sound
+                    condition: {switch.is_on: button_sound}
                     then:
+                      - logger.log: "Playing double press sound"
                       - script.execute:
                           id: play_sound
                           priority: false
                           sound_file: !lambda return id(center_button_double_press_sound);
-                - event.trigger:
-                    id: button_press_event
-                    event_type: "double_press"
-      # Triple Click
-      #  . Exposed as an event entity. To be used in automations inside Home Assistant
+                - logger.log: "Increasing media player volume"
+                - media_player.volume_up:
+                    id: external_media_player
       - timing:
           - ON for at most 1s
           - OFF for at most 0.25s
@@ -378,47 +410,39 @@ binary_sensor:
           - ON for at most 1s
           - OFF for at least 0.25s
         then:
+          - logger.log: "Triple click detected"
           - if:
-              condition:
-                lambda: return !id(init_in_progress);
+              condition: {lambda: return !id(init_in_progress);}
               then:
                 - if:
-                    condition:
-                      switch.is_on: button_sound
+                    condition: {switch.is_on: button_sound}
                     then:
+                      - logger.log: "Playing triple press sound"
                       - script.execute:
                           id: play_sound
                           priority: false
                           sound_file: !lambda return id(center_button_triple_press_sound);
-                - event.trigger:
-                    id: button_press_event
-                    event_type: "triple_press"
-      # Long Press
-      #  . Exposed as an event entity. To be used in automations inside Home Assistant
-      - timing:
-          - ON for at least 1s
+                - logger.log: "Decreasing media player volume"
+                - media_player.volume_down:
+                    id: external_media_player
+      - timing: [ON for at least 1s]
         then:
+          - logger.log: "Long press (1s) detected"
           - if:
-              condition:
-                lambda: return !id(init_in_progress);
+              condition: {lambda: return !id(init_in_progress);}
               then:
                 - if:
-                    condition:
-                      switch.is_on: button_sound
+                    condition: {switch.is_on: button_sound}
                     then:
+                      - logger.log: "Playing long press sound"
                       - script.execute:
                           id: play_sound
                           priority: false
                           sound_file: !lambda return id(center_button_long_press_sound);
                 - light.turn_off: led_respeaker_onboard
-                - event.trigger:
-                    id: button_press_event
-                    event_type: "long_press"
-      # Factory Reset Warning
-      #  . Audible and Visible warning.
-      - timing:
-          - ON for at least 10s
+      - timing: [ON for at least 10s]
         then:
+          - logger.log: "Long press (10s) detected - Factory reset warning"
           - light.turn_on:
               brightness: 100%
               id: led_respeaker_onboard
@@ -427,35 +451,30 @@ binary_sensor:
               id: play_sound
               priority: true
               sound_file: !lambda return id(factory_reset_initiated_sound);
-          - wait_until:
-              binary_sensor.is_off: user_button
+          - wait_until: {binary_sensor.is_off: user_button}
           - if:
-              condition:
-                lambda: return !id(factory_reset_requested);
+              condition: {lambda: return !id(factory_reset_requested);}
               then:
+                - logger.log: "Factory reset cancelled"
                 - light.turn_off: led_respeaker_onboard
                 - script.execute:
                     id: play_sound
                     priority: true
                     sound_file: !lambda return id(factory_reset_cancelled_sound);
-      # Factory Reset Confirmed.
-      #  . Audible warning to prompt user to release the button
-      #  . Set factory_reset_requested to true
-      - timing:
-          - ON for at least 22s
+      - timing: [ON for at least 22s]
         then:
+          - logger.log: "Long press (22s) detected - Factory reset confirmed"
           - script.execute:
               id: play_sound
               priority: true
               sound_file: !lambda return id(factory_reset_confirmed_sound);
           - light.turn_on:
               brightness: 100%
-              red: 100%
-              green: 0%
-              blue: 0%
+              red: 1
+              green: 0
+              blue: 0
               id: led_respeaker_onboard
               effect: "none"
-          - lambda: id(factory_reset_requested) = true;
 
 light:
   - platform: esp32_rmt_led_strip
@@ -472,17 +491,86 @@ light:
     default_transition_length: 0s
     effects:
       - pulse:
-          name: "Fast Pulse"
-          transition_length: 100ms
-          update_interval: 100ms
-          min_brightness: 50%
-          max_brightness: 100%
+          name: "Idle Breathing"
+          transition_length: 2000ms
+          update_interval: 50ms
+          min_brightness: 0%
+          max_brightness: 20%
       - pulse:
           name: "Slow Pulse"
           transition_length: 500ms
           update_interval: 500ms
           min_brightness: 50%
           max_brightness: 100%
+      - pulse:
+          name: "Fast Pulse"
+          transition_length: 100ms
+          update_interval: 100ms
+          min_brightness: 50%
+          max_brightness: 100%
+      - pulse:
+          name: "Listening Pulse"
+          transition_length: 1000ms
+          update_interval: 1000ms
+          min_brightness: 40%
+          max_brightness: 60%
+      - lambda:
+          name: "Replying Alternate"
+          update_interval: 1000ms
+          lambda: |-
+            static bool state = false;
+            state = !state;
+            auto call = id(led_respeaker_onboard).turn_on();
+            if (state) {
+              call.set_red(0.0);
+              call.set_green(1.0);
+              call.set_blue(1.0);
+            } else {
+              call.set_red(0.0);
+              call.set_green(1.0);
+              call.set_blue(0.0);
+            }
+            call.set_brightness(0.5);
+            call.perform();
+      - lambda:
+          name: "Error Flash"
+          update_interval: 500ms
+          lambda: |-
+            static bool state = false;
+            state = !state;
+            if (state) {
+              id(led_respeaker_onboard).turn_on().set_red(1.0).set_green(0.0).set_blue(0.0).set_brightness(1.0).perform();
+            } else {
+              id(led_respeaker_onboard).turn_off().perform();
+            }
+      - pulse:
+          name: "Factory Reset Coming Up"
+          transition_length: 250ms
+          update_interval: 250ms
+          min_brightness: 0%
+          max_brightness: 100%
+      - lambda:
+          name: "Question Response"
+          update_interval: 750ms
+          lambda: |-
+            static int state = 0;
+            state = (state + 1) % 3;
+            auto call = id(led_respeaker_onboard).turn_on();
+            if (state == 0) {
+              call.set_red(0.0);
+              call.set_green(0.0);
+              call.set_blue(1.0);
+            } else if (state == 1) {
+              call.set_red(0.0);
+              call.set_green(1.0);
+              call.set_blue(0.0);
+            } else {
+              call.set_red(1.0);
+              call.set_green(0.0);
+              call.set_blue(0.0);
+            }
+            call.set_brightness(0.75);
+            call.perform();
 
 sensor:
   - platform: template
@@ -493,6 +581,37 @@ sensor:
     device_class: duration
     unit_of_measurement: s
     icon: "mdi:timer"
+  - platform: adc
+    id: battery_voltage
+    pin: GPIO10
+    name: "Battery Voltage"
+    unit_of_measurement: "V"
+    update_interval: 60s
+    accuracy_decimals: 2
+    filters:
+      - multiply: 2
+    on_value:
+      - logger.log:
+          format: "Battery voltage: %.2f V"
+          args: ["x"]
+      - if:
+          condition: 
+            lambda: return x < 0.05;
+          then:
+            - logger.log: "Low battery alert triggered"
+            - lambda: id(low_battery_alert) = true;
+            - script.execute: control_leds
+          else:
+            - logger.log: "Battery level normal"
+            - lambda: id(low_battery_alert) = false;
+            - script.execute: control_leds
+  - platform: template
+    id: voice_assistant_phase_sensor
+    name: "Voice Assistant Phase"
+    lambda: return id(voice_assistant_phase);
+    update_interval: 1s
+    unit_of_measurement: ""
+    icon: "mdi:state-machine"
 
 text_sensor:
   - platform: template
@@ -504,10 +623,18 @@ text_sensor:
     id: tts_uri
     name: "TTS URI"
     disabled_by_default: true
+  - platform: template
+    id: last_led_trigger
+    name: "Last LED Trigger"
+    icon: "mdi:led-on"
+    update_interval: never
+  - platform: template
+    id: last_response_text
+    name: "Last Response Text"
+    internal: true
+    update_interval: never
 
 event:
-  # Event entity exposed to the user to automate on complex center button presses.
-  # The simple press is not exposed as it is used to control the device itself.
   - platform: template
     id: button_press_event
     name: "Button press"
@@ -519,243 +646,268 @@ event:
       - long_press
 
 script:
-  # Master script controlling the LEDs, based on different conditions : initialization in progress, wifi and api connected and voice assistant phase.
-  # For the sake of simplicity and re-usability, the script calls child scripts defined below.
-  # This script will be called every time one of these conditions is changing.
   - id: control_leds
     then:
-      - lambda: |
-          id(check_if_timers_active).execute();
-          if (id(is_timer_active)){
-            id(fetch_first_active_timer).execute();
-          }
-          if (id(improv_ble_in_progress)) {
-            id(control_leds_improv_ble_state).execute();
-          } else if (id(init_in_progress)) {
-            id(control_leds_init_state).execute();
-          } else if (!id(wifi_id).is_connected() || !id(api_id).is_connected()){
-            id(control_leds_no_ha_connection_state).execute();
-          } else if (id(user_button).state) {
-            id(control_leds_center_button_touched).execute();
-          } else if (id(timer_ringing).state) {
-            id(control_leds_timer_ringing).execute();
-          } else if (id(voice_assistant_phase) == ${voice_assist_waiting_for_command_phase_id}) {
-            id(control_leds_voice_assistant_waiting_for_command_phase).execute();
-          } else if (id(voice_assistant_phase) == ${voice_assist_listening_for_command_phase_id}) {
-            id(control_leds_voice_assistant_listening_for_command_phase).execute();
-          } else if (id(voice_assistant_phase) == ${voice_assist_thinking_phase_id}) {
-            id(control_leds_voice_assistant_thinking_phase).execute();
-          } else if (id(voice_assistant_phase) == ${voice_assist_replying_phase_id}) {
-            id(control_leds_voice_assistant_replying_phase).execute();
-          } else if (id(voice_assistant_phase) == ${voice_assist_error_phase_id}) {
-            id(control_leds_voice_assistant_error_phase).execute();
-          } else if (id(voice_assistant_phase) == ${voice_assist_not_ready_phase_id}) {
-            id(control_leds_voice_assistant_not_ready_phase).execute();
-          } else if (id(is_timer_active)) {
-            id(control_leds_timer_ticking).execute();
-          } else if (id(voice_assistant_phase) == ${voice_assist_idle_phase_id}) {
-            id(control_leds_voice_assistant_idle_phase).execute();
-          }
-
-  # Script executed during Improv BLE
-  # Warm White slow pulse
-  - id: control_leds_improv_ble_state
-    then:
-      - light.turn_on:
-          brightness: 50%
-          red: 100%
-          green: 89%
-          blue: 71%
-          id: led_respeaker_onboard
-          effect: "Slow Pulse"
-
-  # Script executed during initialization
-  # Fast Blue pulse if Wifi is connected, Else slow blue pulse
-  - id: control_leds_init_state
-    then:
+      - logger.log: "Starting control_leds script execution"
       - if:
           condition:
-            wifi.connected:
+            lambda: return id(debug_mode);
           then:
-            - light.turn_on:
-                brightness: 50%
-                red: 9.4%
-                green: 73.3%
-                blue: 94.9%
-                id: led_respeaker_onboard
-                effect: "Fast pulse"
-          else:
-            - light.turn_on:
-                brightness: 50%
-                red: 9.4%
-                green: 73.3%
-                blue: 94.9%
-                id: led_respeaker_onboard
-                effect: "Slow Pulse"
-  # Script executed when the device has no connection to Home Assistant
-  # Red slow pulse (This will be visible during HA updates for example)
+            - lambda: |-
+                ESP_LOGD("control_leds", "voice_assistant_phase: %d", id(voice_assistant_phase));
+                ESP_LOGD("control_leds", "improv_ble_in_progress: %d", id(improv_ble_in_progress));
+                ESP_LOGD("control_leds", "init_in_progress: %d", id(init_in_progress));
+                ESP_LOGD("control_leds", "wifi_connected: %d", id(wifi_id).is_connected());
+                ESP_LOGD("control_leds", "api_connected: %d", id(api_id).is_connected());
+                ESP_LOGD("control_leds", "user_button_state: %d", id(user_button).state);
+                ESP_LOGD("control_leds", "low_battery_alert: %d", id(low_battery_alert));
+                ESP_LOGD("control_leds", "timer_ringing: %d", id(timer_ringing).state);
+                ESP_LOGD("control_leds", "media_player_state: %d", (int)id(external_media_player).state);
+                ESP_LOGD("control_leds", "is_timer_active: %d", id(is_timer_active));
+      - lambda: |-
+          if (id(improv_ble_in_progress)) {
+            ESP_LOGD("control_leds", "Executing: improv_ble_in_progress (Solid Blue)");
+            id(control_leds_improv_ble_state).execute();
+            id(last_led_trigger).publish_state("Improv BLE");
+          }
+          else if (id(init_in_progress)) {
+            ESP_LOGD("control_leds", "Executing: init_in_progress (Pulsing Blue)");
+            id(control_leds_init_state).execute();
+            id(last_led_trigger).publish_state("Initializing");
+          }
+          else if (!id(wifi_id).is_connected() || !id(api_id).is_connected()) {
+            ESP_LOGD("control_leds", "Executing: no_ha_connection (Flashing Blue)");
+            id(control_leds_no_ha_connection_state).execute();
+            id(last_led_trigger).publish_state("No Connection");
+          }
+          else if (id(user_button).state) {
+            ESP_LOGD("control_leds", "Executing: user_button_pressed (Solid Cyan)");
+            id(control_leds_center_button_touched).execute();
+            id(last_led_trigger).publish_state("Button Pressed");
+          }
+          else if (id(low_battery_alert)) {
+            ESP_LOGD("control_leds", "Executing: low_battery (Flashing Red)");
+            id(control_leds_low_battery).execute();
+            id(last_led_trigger).publish_state("Low Battery");
+          }
+          else if (id(timer_ringing).state) {
+            ESP_LOGD("control_leds", "Executing: timer_ringing (Pulsing Yellow)");
+            id(control_leds_timer_ringing).execute();
+            id(last_led_trigger).publish_state("Timer Ringing");
+          }
+          else if (id(voice_assistant_phase) == 2) {
+            ESP_LOGD("control_leds", "Executing: va_waiting_for_command (Slow Pulse Pink)");
+            id(control_leds_voice_assistant_waiting_for_command_phase).execute();
+            id(last_led_trigger).publish_state("Waiting for Command");
+          }
+          else if (id(voice_assistant_phase) == 3) {
+            ESP_LOGD("control_leds", "Executing: va_listening (Green Pulse)");
+            id(control_leds_voice_assistant_listening_for_command_phase).execute();
+            id(last_led_trigger).publish_state("Listening");
+          }
+          else if (id(voice_assistant_phase) == 4) {
+            ESP_LOGD("control_leds", "Executing: va_thinking (Fast Pulse Purple)");
+            id(control_leds_voice_assistant_thinking_phase).execute();
+            id(last_led_trigger).publish_state("Thinking");
+          }
+          else if (id(voice_assistant_phase) == 5) {
+            ESP_LOGD("control_leds", "Executing: va_replying (Green-Cyan Alternate)");
+            id(control_leds_voice_assistant_replying_phase).execute();
+            id(last_led_trigger).publish_state("Speaking");
+          }
+          else if (id(voice_assistant_phase) == 11) {
+            ESP_LOGD("control_leds", "Executing: va_error (Flashing Red)");
+            id(control_leds_voice_assistant_error_phase).execute();
+            id(last_led_trigger).publish_state("Error");
+          }
+          else if (id(voice_assistant_phase) == 10) {
+            ESP_LOGD("control_leds", "Executing: va_not_ready (Solid Orange)");
+            id(control_leds_voice_assistant_not_ready_phase).execute();
+            id(last_led_trigger).publish_state("Not Ready");
+          }
+          else if (id(is_timer_active)) {
+            ESP_LOGD("control_leds", "Executing: timer_ticking (Slow Pulse Yellow)");
+            id(control_leds_timer_ticking).execute();
+            id(last_led_trigger).publish_state("Timer Ticking");
+          }
+          else if (id(external_media_player).state == media_player::MediaPlayerState::MEDIA_PLAYER_STATE_PLAYING) {
+            ESP_LOGD("control_leds", "Executing: media_playing (Breathing Green)");
+            id(control_leds_media_playing).execute();
+            id(last_led_trigger).publish_state("Media Playing");
+          }
+          else {
+            ESP_LOGD("control_leds", "Executing: idle (LED Off)");
+            id(control_leds_voice_assistant_idle_phase).execute();
+            id(last_led_trigger).publish_state("Idle");
+          }
+      - logger.log: "Finished control_leds script execution"
+  - id: control_leds_improv_ble_state
+    then:
+      - logger.log: "Setting LED: Improv BLE state (Solid Blue)"
+      - light.turn_on:
+          id: led_respeaker_onboard
+          red: 0
+          green: 0
+          blue: 1.0
+          effect: none
+  - id: control_leds_init_state
+    then:
+      - logger.log: "Setting LED: Init state (Pulsing Blue)"
+      - light.turn_on:
+          id: led_respeaker_onboard
+          red: 0
+          green: 0
+          blue: 1.0
+          effect: "Slow Pulse"
   - id: control_leds_no_ha_connection_state
     then:
+      - logger.log: "Setting LED: No HA connection (Flashing Blue)"
       - light.turn_on:
-          brightness: 50%
-          red: 1
-          green: 0
-          blue: 0
           id: led_respeaker_onboard
-          effect: "Slow Pulse"
-
-  # Script executed when the voice assistant is idle (waiting for a wake word)
-  # Nothing
+          red: 0
+          green: 0
+          blue: 1.0
+          effect: "Fast Pulse"
   - id: control_leds_voice_assistant_idle_phase
     then:
-      - light.turn_off: led_respeaker_onboard
-
-  # Script executed when the voice assistant is waiting for a command (After the wake word)
-  # Slow purple pulse
+      - logger.log: "Setting LED: VA idle (Off)"
+      - light.turn_off:
+          id: led_respeaker_onboard
   - id: control_leds_voice_assistant_waiting_for_command_phase
     then:
+      - logger.log: "Setting LED: VA waiting (Slow Pulse Pink)"
       - light.turn_on:
-          brightness: 50%
-          red: 1
-          green: 0.2
-          blue: 1
           id: led_respeaker_onboard
+          red: 1.0
+          green: 0.2
+          blue: 1.0
           effect: "Slow Pulse"
-
-  # Script executed when the voice assistant is listening to a command
-  # Slow purple pulse
   - id: control_leds_voice_assistant_listening_for_command_phase
     then:
+      - logger.log: "Setting LED: VA listening (Green Pulse)"
       - light.turn_on:
-          brightness: 50%
-          red: 1
-          green: 0.2
-          blue: 1
           id: led_respeaker_onboard
-          effect: "Slow Pulse"
-
-  # Script executed when the voice assistant is thinking to a command
-  # Fast purple pulse
+          red: 0
+          green: 1.0
+          blue: 0
+          effect: "Listening Pulse"
   - id: control_leds_voice_assistant_thinking_phase
     then:
+      - logger.log: "Setting LED: VA thinking (Fast Pulse Purple)"
       - light.turn_on:
-          brightness: 50%
-          red: 1
-          green: 0.2
-          blue: 1
           id: led_respeaker_onboard
+          red: 0.5
+          green: 0
+          blue: 0.5
           effect: "Fast Pulse"
-
-  # Script executed when the voice assistant is replying to a command
-  # Slow cyan pulse
   - id: control_leds_voice_assistant_replying_phase
     then:
+      - logger.log: "Setting LED: VA replying (Green-Cyan Alternate)"
       - light.turn_on:
-          brightness: 50%
-          red: 0.2
-          green: 1
-          blue: 1
           id: led_respeaker_onboard
-          effect: "Slow Pulse"
-
-  # Script executed when the voice assistant is in error
-  # Fast Red Pulse
+          effect: "Replying Alternate"
   - id: control_leds_voice_assistant_error_phase
     then:
+      - logger.log: "Setting LED: VA error (Flashing Red)"
       - light.turn_on:
-          brightness: 50%
-          red: 1
-          green: 0
-          blue: 0
           id: led_respeaker_onboard
-          effect: "Fast Pulse"
-
-  # Script executed when the voice assistant is not ready
+          effect: "Error Flash"
   - id: control_leds_voice_assistant_not_ready_phase
     then:
+      - logger.log: "Setting LED: VA not ready (Solid Orange)"
       - light.turn_on:
-          brightness: 50%
-          red: 1
-          green: 0
-          blue: 0
           id: led_respeaker_onboard
-          effect: "Slow Pulse"
-
-  # Script executed when the center button is touched
-  # The LED turns on blue
+          red: 1.0
+          green: 0.5
+          blue: 0
+          effect: none
   - id: control_leds_center_button_touched
     then:
+      - logger.log: "Setting LED: Button touched (Solid Cyan)"
       - light.turn_on:
-          brightness: 80%
-          red: 0
-          green: 0
-          blue: 1
           id: led_respeaker_onboard
-
-  # Script executed when the timer is ringing, to control the LEDs
-  # The LED blinks green.
+          red: 0
+          green: 1.0
+          blue: 1.0
+          effect: none
   - id: control_leds_timer_ringing
     then:
+      - logger.log: "Setting LED: Timer ringing (Pulsing Yellow)"
       - light.turn_on:
-          brightness: 50%
-          red: 0
-          green: 1
-          blue: 0
           id: led_respeaker_onboard
-          effect: "Fast Pulse"
-
-  # Script executed when the timer is ticking, to control the LEDs
-  # Slow dim while pulse.
+          red: 1.0
+          green: 1.0
+          blue: 0
+          effect: "Slow Pulse"
   - id: control_leds_timer_ticking
     then:
+      - logger.log: "Setting LED: Timer ticking (Slow Pulse Yellow)"
       - light.turn_on:
-          brightness: 50%
-          red: 0.3
-          green: 0.3
-          blue: 0.3
           id: led_respeaker_onboard
+          red: 1.0
+          green: 1.0
+          blue: 0
           effect: "Slow Pulse"
-
-
-  # Script executed when the timer is ringing, to playback sounds.
+  - id: control_leds_media_playing
+    then:
+      - logger.log: "Setting LED: Media playing (Breathing Green)"
+      - light.turn_on:
+          id: led_respeaker_onboard
+          red: 0
+          green: 1.0
+          blue: 0
+          effect: "Idle Breathing"
+  - id: control_leds_low_battery
+    then:
+      - logger.log: "Setting LED: Low battery (Flashing Red)"
+      - light.turn_on:
+          id: led_respeaker_onboard
+          red: 1.0
+          green: 0
+          blue: 0
+          effect: "Fast Pulse"
+  - id: control_leds_question_response_state
+    then:
+      - logger.log: "Setting LED: Question response (RGB Cycle)"
+      - light.turn_on:
+          id: led_respeaker_onboard
+          effect: "Question Response"
   - id: ring_timer
     then:
+      - logger.log: "Ringing timer"
       - script.execute: enable_repeat_one
       - script.execute:
           id: play_sound
           priority: true
           sound_file: !lambda return id(timer_finished_sound);
-
-  # Script executed when the timer is ringing, to repeat the timer finished sound.
   - id: enable_repeat_one
     then:
-      # Turn on the repeat mode and pause for 500 ms between playlist items/repeats
+      - logger.log: "Enabling repeat one for media player"
       - lambda: |-
-            id(external_media_player)
-              ->make_call()
-              .set_command(media_player::MediaPlayerCommand::MEDIA_PLAYER_COMMAND_REPEAT_ONE)
-              .set_announcement(true)
-              .perform();
-            id(external_media_player)->set_playlist_delay_ms(speaker::AudioPipelineType::ANNOUNCEMENT, 500);
-
-  # Script execute when the timer is done ringing, to disable repeat mode.
+          id(external_media_player)
+            ->make_call()
+            .set_command(media_player::MediaPlayerCommand::MEDIA_PLAYER_COMMAND_REPEAT_ONE)
+            .set_announcement(true)
+            .perform();
+          id(external_media_player)->set_playlist_delay_ms(speaker::AudioPipelineType::ANNOUNCEMENT, 500);
   - id: disable_repeat
     then:
-      # Turn off the repeat mode and pause for 0 ms between playlist items/repeats
+      - logger.log: "Disabling repeat for media player"
       - lambda: |-
-            id(external_media_player)
-              ->make_call()
-              .set_command(media_player::MediaPlayerCommand::MEDIA_PLAYER_COMMAND_REPEAT_OFF)
-              .set_announcement(true)
-              .perform();
-            id(external_media_player)->set_playlist_delay_ms(speaker::AudioPipelineType::ANNOUNCEMENT, 0);
-
-  # Script executed when we want to play sounds on the device.
+          id(external_media_player)
+            ->make_call()
+            .set_command(media_player::MediaPlayerCommand::MEDIA_PLAYER_COMMAND_REPEAT_OFF)
+            .set_announcement(true)
+            .perform();
+          id(external_media_player)->set_playlist_delay_ms(speaker::AudioPipelineType::ANNOUNCEMENT, 0);
   - id: play_sound
     parameters:
       priority: bool
       sound_file: "audio::AudioFile*"
     then:
+      - logger.log:
+          format: "Playing sound: priority=%d"
+          args: ["priority"]
       - lambda: |-
           if (priority) {
             id(external_media_player)
@@ -764,15 +916,13 @@ script:
               .set_announcement(true)
               .perform();
           }
-          if ( (id(external_media_player).state != media_player::MediaPlayerState::MEDIA_PLAYER_STATE_ANNOUNCING ) || priority) {
-            id(external_media_player)
-              ->play_file(sound_file, true, false);
+          if ((id(external_media_player).state != media_player::MediaPlayerState::MEDIA_PLAYER_STATE_ANNOUNCING) || priority) {
+            id(external_media_player)->play_file(sound_file, true, false);
           }
-
-  # Script used to fetch the first active timer (Stored in global first_active_timer)
   - id: fetch_first_active_timer
     then:
-      - lambda: |
+      - logger.log: "Fetching first active timer"
+      - lambda: |-
           const auto timers = id(va).get_timers();
           auto output_timer = timers.begin()->second;
           for (auto &iterable_timer : timers) {
@@ -781,52 +931,45 @@ script:
             }
           }
           id(first_active_timer) = output_timer;
-
-  # Script used to check if a timer is active (Stored in global is_timer_active)
   - id: check_if_timers_active
     then:
-      - lambda: |
+      - logger.log: "Checking if timers are active"
+      - lambda: |-
           const auto timers = id(va).get_timers();
           bool output = false;
           if (timers.size() > 0) {
             for (auto &iterable_timer : timers) {
-              if(iterable_timer.second.is_active) {
+              if (iterable_timer.second.is_active) {
                 output = true;
               }
             }
           }
           id(is_timer_active) = output;
-
-  # Script used activate the stop word if the TTS step is long.
-  # Why is this wrapped on a script?
-  #   Becasue we want to stop the sequence if the TTS step is faster than that.
-  #   This allows us to prevent having the deactivation of the stop word before its own activation.
   - id: activate_stop_word_if_tts_step_is_long
     then:
+      - logger.log: "Activating stop word after delay"
       - delay: 1s
-      # Enable stop wake word
-      - lambda: id(stop).enable();
+      - lambda: id(stop_model).enable();
 
 i2s_audio:
   - id: i2s_output
-    i2s_lrclk_pin: 
+    i2s_lrclk_pin:
       number: GPIO7
       allow_other_uses: true
-    i2s_bclk_pin:  
+    i2s_bclk_pin:
       number: GPIO8
       allow_other_uses: true
-    i2s_mclk_pin:  
+    i2s_mclk_pin:
       number: GPIO9
       allow_other_uses: true
-
   - id: i2s_input
-    i2s_lrclk_pin:  
+    i2s_lrclk_pin:
       number: GPIO7
       allow_other_uses: true
-    i2s_bclk_pin:  
+    i2s_bclk_pin:
       number: GPIO8
       allow_other_uses: true
-    i2s_mclk_pin:  
+    i2s_mclk_pin:
       number: GPIO9
       allow_other_uses: true
 
@@ -845,9 +988,8 @@ microphone:
     channel_1:
       id: nabu_mic_mww
       amplify_shift: 2
-      
+
 speaker:
-  # Hardware speaker output
   - platform: i2s_audio
     id: i2s_audio_speaker
     sample_rate: 48000
@@ -860,8 +1002,6 @@ speaker:
     timeout: never
     buffer_duration: 100ms
     audio_dac: aic3204_dac
-
-  # Virtual speakers to combine the announcement and media streams together into one output
   - platform: mixer
     id: mixing_speaker
     output_speaker: i2s_audio_speaker
@@ -871,8 +1011,6 @@ speaker:
         timeout: never
       - id: media_mixing_input
         timeout: never
-
-  # Vritual speakers to resample each pipelines' audio, if necessary, as the mixer speaker requires the same sample rate
   - platform: resampler
     id: announcement_resampling_speaker
     output_speaker: announcement_mixing_input
@@ -888,39 +1026,42 @@ media_player:
   - platform: speaker
     id: external_media_player
     name: Media Player
-    internal: False
+    internal: false
     volume_increment: 0.05
     volume_min: 0.4
     volume_max: 0.85
     announcement_pipeline:
       speaker: announcement_resampling_speaker
-      format: FLAC     # FLAC is the least processor intensive codec
-      num_channels: 1  # Stereo audio is unnecessary for announcements
+      format: FLAC
+      num_channels: 1
       sample_rate: 48000
     media_pipeline:
       speaker: media_resampling_speaker
-      format: FLAC     # FLAC is the least processor intensive codec
+      format: FLAC
       num_channels: 2
       sample_rate: 48000
     on_announcement:
+      - logger.log: "Media player announcement started"
       - mixer_speaker.apply_ducking:
           id: media_mixing_input
           decibel_reduction: 20
           duration: 0.0s
     on_state:
-      if:
-        condition:
-          and:
-            - switch.is_off: timer_ringing
-            - not:
-                voice_assistant.is_running:
-            - not:
-                media_player.is_announcing:
-        then:
-          - mixer_speaker.apply_ducking:
-              id: media_mixing_input
-              decibel_reduction: 0
-              duration: 1.0s
+      - logger.log:
+          format: "Media player state changed: %d"
+          args: ["(int)id(external_media_player).state"]
+      - if:
+          condition:
+            and:
+              - switch.is_off: timer_ringing
+              - not: {voice_assistant.is_running:}
+              - not: {media_player.is_announcing:}
+          then:
+            - logger.log: "Removing ducking from media player"
+            - mixer_speaker.apply_ducking:
+                id: media_mixing_input
+                decibel_reduction: 0
+                duration: 1.0s
     files:
       - id: center_button_press_sound
         file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/center_button_press.flac
@@ -957,63 +1098,47 @@ respeaker_lite:
     internal: false
     id: firmware_version
   firmware:
-    url: https://github.com/formatBCE/Respeaker-Lite-ESPHome-integration/raw/refs/heads/main/respeaker_lite_i2s_dfu_firmware_48k_v1.1.0.bin
+    url: https://github.com/ArMaTeC/SmartRespeaker/raw/refs/heads/main/firmware/respeaker_lite_i2s_dfu_firmware_48k_v1.1.0.bin
     version: "1.1.0"
     md5: 9297155d1bf3eb21a9d4db52a89ea0c6
     on_begin:
+      - logger.log: "Firmware update started"
       - light.turn_on:
           brightness: 50%
-          red: 50%
-          green: 50%
-          blue: 50%
+          red: 0.5
+          green: 0.5
+          blue: 0.5
           id: led_respeaker_onboard
           effect: "Slow Pulse"
     on_end:
+      - logger.log: "Firmware update completed"
       - light.turn_on:
           brightness: 50%
-          red: 0%
-          green: 100%
-          blue: 0%
+          red: 0
+          green: 1
+          blue: 0
           id: led_respeaker_onboard
           effect: "Fast Pulse"
       - delay: 3s
-      - light.turn_off:
-          id: led_respeaker_onboard
+      - light.turn_off: led_respeaker_onboard
     on_error:
+      - logger.log: "Firmware update failed"
       - light.turn_on:
           brightness: 50%
-          red: 100%
-          green: 0%
-          blue: 0%
+          red: 1
+          green: 0
+          blue: 0
           id: led_respeaker_onboard
           effect: "Fast Pulse"
       - delay: 3s
-      - light.turn_off:
-          id: led_respeaker_onboard
+      - light.turn_off: led_respeaker_onboard
 
 external_components:
   - source:
       type: git
-      url: https://github.com/esphome/home-assistant-voice-pe
-      ref: dev
-    components:
-      - micro_wake_word
-      - microphone
-      - voice_assistant
-    refresh: 0s
-  - source:
-      type: git
-      url: https://github.com/formatBCE/home-assistant-voice-pe
-      ref: 48kHz_mic_support
-    components:
-      - nabu_microphone
-    refresh: 0s
-  - source:
-      type: git
-      url: https://github.com/formatBCE/Respeaker-Lite-ESPHome-integration
+      url: https://github.com/ArMaTeC/SmartRespeaker
       ref: main
-    components: 
-      - respeaker_lite
+    components: [respeaker_lite, nabu_microphone, micro_wake_word, microphone, voice_assistant]
     refresh: 0s
 
 audio_dac:
@@ -1025,75 +1150,86 @@ micro_wake_word:
   id: mww
   models:
     - model: https://github.com/kahrendt/microWakeWord/releases/download/okay_nabu_20241226.3/okay_nabu.json
-      # probability_cutoff: 0.8
       id: okay_nabu
-    - model: hey_jarvis
-      id: hey_jarvis
-    - model: hey_mycroft
-      id: hey_mycroft
-    - model: https://github.com/kahrendt/microWakeWord/releases/download/stop/stop.json
-      id: stop
       internal: true
+      probability_cutoff: 0.75
+    - model: https://github.com/kahrendt/microWakeWord/releases/download/stop/stop.json
+      id: stop_model
+      internal: true
+      probability_cutoff: 0.75
   vad:
   microphone: nabu_mic_mww
   on_wake_word_detected:
-    # If the wake word is detected when the device is muted (Possible with the software mute switch): Do nothing
+    - logger.log:
+        format: "Wake word detected: %s"
+        args: ["wake_word.c_str()"]
     - if:
-        condition:
-          switch.is_off: mic_mute_switch
+        condition: {switch.is_off: mic_mute_switch}
         then:
-          # If a timer is ringing: Stop it, do not start the voice assistant (We can stop timer from voice!)
           - if:
-              condition:
-                switch.is_on: timer_ringing
-              then:
+              condition: {switch.is_on: timer_ringing}
+              then: 
+                - logger.log: "Stopping timer ringing due to wake word"
                 - switch.turn_off: timer_ringing
-              # Start voice assistant, stop current announcement.
               else:
                 - if:
-                    condition:
-                      media_player.is_announcing:
-                    then:
-                      media_player.stop:
-                        announcement: true
+                    condition: {media_player.is_announcing:}
+                    then: 
+                      - logger.log: "Stopping announcement due to wake word"
+                      - media_player.stop: {announcement: true}
                     else:
                       - if:
                           condition:
-                            switch.is_on: wake_sound
+                            lambda: return wake_word == "stop";
                           then:
-                            - script.execute:
-                                id: play_sound
-                                priority: true
-                                sound_file: !lambda return id(wake_word_triggered_sound);
-                            - delay: 300ms
-                      - voice_assistant.start:
-                          wake_word: !lambda return wake_word;
+                            - logger.log: "Stop wake word detected - Stopping VA"
+                            - voice_assistant.stop:
+                          else:
+                            - logger.log: "Starting VA due to wake word"
+                            - if:
+                                condition: {switch.is_on: wake_sound}
+                                then:
+                                  - script.execute:
+                                      id: play_sound
+                                      priority: true
+                                      sound_file: !lambda return id(wake_word_triggered_sound);
+                                  - delay: 300ms
+                            - voice_assistant.start:
+                                silence_detection: True
+                                wake_word: !lambda return wake_word;
 
 voice_assistant:
   id: va
   microphone: nabu_mic_va
   media_player: external_media_player
   micro_wake_word: mww
-  use_wake_word: false
+  use_wake_word: true
   noise_suppression_level: 0
   auto_gain: 0 dbfs
   volume_multiplier: 1
   on_client_connected:
+    - logger.log: "VA client connected"
     - if:
         condition:
-          - lambda: return id(init_in_progress);
-          - switch.is_on: mic_mute_switch
-        then:
+          and:
+            - lambda: return id(init_in_progress);
+            - switch.is_on: mic_mute_switch
+        then: 
+          - logger.log: "Unmuting mic on client connect during init"
           - switch.turn_off: mic_mute_switch
     - lambda: id(init_in_progress) = false;
     - micro_wake_word.start:
     - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
     - script.execute: control_leds
   on_client_disconnected:
+    - logger.log: "VA client disconnected"
     - voice_assistant.stop:
     - lambda: id(voice_assistant_phase) = ${voice_assist_not_ready_phase_id};
     - script.execute: control_leds
   on_error:
+    - logger.log:
+        format: "VA error: code=%s, message=%s"
+        args: ["code.c_str()", "message.c_str()"]
     - if:
         condition:
           and:
@@ -1103,84 +1239,116 @@ voice_assistant:
         then:
           - lambda: id(voice_assistant_phase) = ${voice_assist_error_phase_id};
           - script.execute: control_leds
-  # When the voice assistant starts: Play a wake up sound, duck audio.
   on_start:
+    - logger.log: "VA started"
     - mixer_speaker.apply_ducking:
         id: media_mixing_input
-        decibel_reduction: 20  # Number of dB quieter; higher implies more quiet, 0 implies full volume
-        duration: 0.0s         # The duration of the transition (default is no transition)
+        decibel_reduction: 20
+        duration: 0.0s
   on_listening:
+    - logger.log: "VA listening"
     - lambda: id(voice_assistant_phase) = ${voice_assist_waiting_for_command_phase_id};
     - script.execute: control_leds
   on_stt_vad_start:
+    - logger.log: "VA STT VAD started"
     - lambda: id(voice_assistant_phase) = ${voice_assist_listening_for_command_phase_id};
     - script.execute: control_leds
   on_stt_vad_end:
+    - logger.log: "VA STT VAD ended"
     - lambda: id(voice_assistant_phase) = ${voice_assist_thinking_phase_id};
     - script.execute: control_leds
   on_tts_start:
+    - logger.log: "VA TTS started"
     - lambda: id(voice_assistant_phase) = ${voice_assist_replying_phase_id};
     - script.execute: control_leds
-    # Start a script that would potentially enable the stop word if the response is longer than a second
     - script.execute: activate_stop_word_if_tts_step_is_long
+    - text_sensor.template.publish:
+        id: last_response_text
+        state: !lambda 'return x;'
   on_tts_end:
+    - logger.log: "VA TTS ended"
     - text_sensor.template.publish:
         id: tts_uri
         state: !lambda 'return x;'
-    
-  # When the voice assistant ends ...
+    - lambda: |-
+        ESP_LOGD("voice_assistant", "TTS ended. Last response: '%s'", id(last_response_text).state.c_str());
+        ESP_LOGD("voice_assistant", "Checking if last char is '?': %d", id(last_response_text).state.back() == '?');
+    - if:
+        condition:
+          lambda: 'return !id(last_response_text).state.empty() && id(last_response_text).state.back() == ''?'';'
+        then:
+          - logger.log: "Response ends with '?'. Restarting VA"
+          - switch.turn_on: is_question_response_switch
+          - script.execute: control_leds_question_response_state
+          - if:
+              condition: {switch.is_on: wake_sound}
+              then:
+                - script.execute:
+                    id: play_sound
+                    priority: true
+                    sound_file: !lambda return id(wake_word_triggered_sound);
+                - delay: 300ms
+          - voice_assistant.start:
+              silence_detection: True
+        else:
+          - logger.log: "Response does not end with '?'. Not restarting"
+          - switch.turn_off: is_question_response_switch
   on_end:
+    - logger.log: "VA ended"
     - wait_until:
-        not:
-          voice_assistant.is_running:
-    # Stop ducking audio.
+        condition:
+          not:
+            voice_assistant.is_running:
     - mixer_speaker.apply_ducking:
         id: media_mixing_input
         decibel_reduction: 0
-        duration: 1.0s
-    # Stop the script that would potentially enable the stop word if the response is longer than a second
+        duration: 1s
     - script.stop: activate_stop_word_if_tts_step_is_long
-    # Disable the stop word (If the tiemr is not ringing)
     - if:
         condition:
-          switch.is_off: timer_ringing
+          switch.is_off:
+            id: timer_ringing
         then:
-          - lambda: id(stop).disable();
-    # If the end happened because of an error, let the error phase on for a second
+          - logger.log: "Disabling stop model"
+          - lambda: id(stop_model).disable();
     - if:
         condition:
-          lambda: return id(voice_assistant_phase) == ${voice_assist_error_phase_id};
+          lambda: 'return id(voice_assistant_phase) == ${voice_assist_error_phase_id};'
         then:
           - delay: 1s
-    # Reset the voice assistant phase id and reset the LED animations.
     - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
     - script.execute: control_leds
   on_timer_finished:
+    - logger.log: "Timer finished"
     - switch.turn_on: timer_ringing
     - lambda: |
         id(next_timer).publish_state(-1);
         id(next_timer_name).publish_state("-");
   on_timer_started:
+    - logger.log: "Timer started"
     - script.execute: control_leds
     - lambda: |
         id(next_timer).publish_state(id(first_active_timer).seconds_left);
         id(next_timer_name).publish_state(id(first_active_timer).name);
   on_timer_cancelled:
+    - logger.log: "Timer cancelled"
     - script.execute: control_leds
     - lambda: |
         id(next_timer).publish_state(id(first_active_timer).seconds_left);
         id(next_timer_name).publish_state(id(first_active_timer).name);
   on_timer_updated:
+    - logger.log: "Timer updated"
     - script.execute: control_leds
     - lambda: |
         id(next_timer).publish_state(id(first_active_timer).seconds_left);
         id(next_timer_name).publish_state(id(first_active_timer).name);
   on_timer_tick:
+    - logger.log: "Timer tick"
     - script.execute: control_leds
-    - lambda: | 
+    - lambda: |
         int seconds_left = id(first_active_timer).seconds_left;
         if (std::abs(seconds_left) % 5 == 0) {
-          id(next_timer).publish_state(seconds_left); 
+          id(next_timer).publish_state(seconds_left);
         }
 
 button:
