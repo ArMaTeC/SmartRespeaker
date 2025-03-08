@@ -318,7 +318,7 @@ binary_sensor:
     pin:
       number: GPIO3
       inverted: true
-      mode: INPUT_PULLUP  # Fix 1: Ensure button releases properly
+      mode: INPUT_PULLUP
     name: "User button"
     on_press: 
       - logger.log: "User button pressed"
@@ -1136,9 +1136,21 @@ respeaker_lite:
 external_components:
   - source:
       type: git
-      url: https://github.com/ArMaTeC/SmartRespeaker
+      url: https://github.com/esphome/home-assistant-voice-pe
+      ref: dev
+    components: [micro_wake_word, microphone, voice_assistant]
+    refresh: 0s
+  - source:
+      type: git
+      url: https://github.com/formatBCE/home-assistant-voice-pe
+      ref: 48kHz_mic_support
+    components: [nabu_microphone]
+    refresh: 0s
+  - source:
+      type: git
+      url: https://github.com/formatBCE/Respeaker-Lite-ESPHome-integration
       ref: main
-    components: [respeaker_lite, nabu_microphone, micro_wake_word, microphone, voice_assistant]
+    components: [respeaker_lite]
     refresh: 0s
 
 audio_dac:
@@ -1197,7 +1209,6 @@ micro_wake_word:
                             - voice_assistant.start:
                                 silence_detection: True
                                 wake_word: !lambda return wake_word;
-
 voice_assistant:
   id: va
   microphone: nabu_mic_va
@@ -1205,8 +1216,8 @@ voice_assistant:
   micro_wake_word: mww
   use_wake_word: false
   noise_suppression_level: 0
-  auto_gain: 0 dbfs
-  volume_multiplier: 1
+  auto_gain: 10 dbfs  # Increase gain to improve STT recognition
+  volume_multiplier: 2  # Boost volume for clearer audio
   on_client_connected:
     - logger.log: "VA client connected"
     - if:
@@ -1235,10 +1246,50 @@ voice_assistant:
           and:
             - lambda: return !id(init_in_progress);
             - lambda: return code != "duplicate_wake_up_detected";
-            - lambda: return code != "stt-no-text-recognized";
         then:
-          - lambda: id(voice_assistant_phase) = ${voice_assist_error_phase_id};
-          - script.execute: control_leds
+          - if:
+              condition:
+                and:
+                  - lambda: 'return code == "stt-no-text-recognized";'
+                  - switch.is_on: is_question_response_switch
+              then:
+                - logger.log: "STT failed after question, retrying"
+                - voice_assistant.stop:
+                - micro_wake_word.stop:
+                - delay: 100ms
+                - micro_wake_word.start:
+                - delay: 500ms
+                - voice_assistant.start:
+                    silence_detection: True
+                - delay: 1s
+                - if:
+                    condition:
+                      not:
+                        voice_assistant.is_running:
+                    then:
+                      - logger.log: "Retry failed, resetting to idle"
+                      - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
+                      - script.execute: control_leds
+              else:
+                - logger.log: "Unhandled error, resetting to idle"
+                - lambda: id(voice_assistant_phase) = ${voice_assist_error_phase_id};
+                - script.execute: control_leds
+                - voice_assistant.stop:
+                - micro_wake_word.stop:
+                - delay: 100ms
+                - micro_wake_word.start:
+                - delay: 500ms
+                - voice_assistant.start:
+                    silence_detection: True
+                - delay: 1s
+                - if:
+                    condition:
+                      not:
+                        voice_assistant.is_running:
+                    then:
+                      - logger.log: "VA failed to recover, resetting to idle"
+                      - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
+                      - script.execute: control_leds
   on_start:
     - logger.log: "VA started"
     - mixer_speaker.apply_ducking:
@@ -1249,6 +1300,7 @@ voice_assistant:
     - logger.log: "VA listening"
     - lambda: id(voice_assistant_phase) = ${voice_assist_waiting_for_command_phase_id};
     - script.execute: control_leds
+    - logger.log: "VA successfully restarted and streaming"
   on_stt_vad_start:
     - logger.log: "VA STT VAD started"
     - lambda: id(voice_assistant_phase) = ${voice_assist_listening_for_command_phase_id};
@@ -1286,7 +1338,7 @@ voice_assistant:
               condition:
                 not:
                   media_player.is_announcing:
-              timeout: 10s  # Max wait time to avoid hanging
+              timeout: 10s
           - logger.log: "TTS playback finished"
           - if:
               condition: {switch.is_on: mic_mute_switch}
@@ -1302,19 +1354,47 @@ voice_assistant:
                     sound_file: !lambda return id(wake_word_triggered_sound);
                 - delay: 500ms
           - voice_assistant.stop:
-          - delay: 500ms  # Increased delay for clean reset
-          - micro_wake_word.stop:  # Ensure wake word resets
+          - delay: 500ms  # Ensure clean stop
+          - micro_wake_word.stop:
+          - delay: 100ms  # Reset wake word
           - micro_wake_word.start:
-          - lambda: id(voice_assistant_phase) = ${voice_assist_waiting_for_command_phase_id};
+          - delay: 500ms  # Allow stabilization
+          - lambda: |-
+              id(voice_assistant_phase) = ${voice_assist_waiting_for_command_phase_id};
+              ESP_LOGD("voice_assistant", "Restarting VA with silence detection");
           - voice_assistant.start:
               silence_detection: True
           - logger.log: "VA restarted for question response"
-          - script.execute: control_leds  # Force LED update
+          - script.execute: control_leds
+          - delay: 1s  # Give VA time to start
+          - if:
+              condition:
+                not:
+                  voice_assistant.is_running:
+              then:
+                - logger.log: "VA restart failed, forcing recovery"
+                - voice_assistant.stop:
+                - micro_wake_word.stop:
+                - delay: 100ms
+                - micro_wake_word.start:
+                - delay: 500ms
+                - voice_assistant.start:
+                    silence_detection: True
+                - delay: 1s
+                - if:
+                    condition:
+                      not:
+                        voice_assistant.is_running:
+                    then:
+                      - logger.log: "VA recovery failed, resetting to idle"
+                      - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
+                      - script.execute: control_leds
         else:
           - logger.log: "Response does not end with '?'. Not restarting"
           - switch.turn_off: is_question_response_switch
   on_end:
     - logger.log: "VA ended"
+    - delay: 2s  # Wait for on_tts_end to complete if restarting
     - wait_until:
         condition:
           not:
@@ -1336,8 +1416,12 @@ voice_assistant:
           lambda: 'return id(voice_assistant_phase) == ${voice_assist_error_phase_id};'
         then:
           - delay: 1s
-    - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
-    - script.execute: control_leds
+    - if:
+        condition:
+          lambda: 'return id(voice_assistant_phase) != ${voice_assist_waiting_for_command_phase_id} && !id(is_question_response_switch).state;'
+        then:
+          - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
+          - script.execute: control_leds
   on_timer_finished:
     - logger.log: "Timer finished"
     - switch.turn_on: timer_ringing
