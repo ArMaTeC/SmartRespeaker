@@ -1,0 +1,1699 @@
+INFO ESPHome 2025.2.2
+INFO Reading configuration SmartReSpeaker.yaml...
+INFO Updating https://github.com/ArMaTeC/SmartRespeaker@main
+WARNING GPIO3 is a strapping PIN and should only be used for I/O with care.
+Attaching external pullup/down resistors to strapping pins can cause unexpected failures.
+See https://esphome.io/guides/faq.html#why-am-i-getting-a-warning-about-strapping-pins
+INFO Generating C++ source...
+INFO Updating https://github.com/espressif/esp-protocols.git@mdns-v1.5.1
+INFO Updating https://github.com/espressif/esp-tflite-micro@v1.3.1
+INFO Compiling app...
+Processing respeaker-lite-satellite (board: esp32-s3-devkitc-1; framework: espidf; platform: https://github.com/pioarduino/platform-espressif32.git#51.03.07)
+--------------------------------------------------------------------------------
+HARDWARE: ESP32S3 240MHz, 320KB RAM, 8MB Flash
+ - framework-espidf @ 3.50105.0 (5.1.5) 
+ - tool-cmake @ 3.21.3 
+ - tool-esptoolpy @ 4.8.1 
+ - tool-mklittlefs @ 3.2.0 
+ - tool-ninja @ 1.9.0 
+ - tool-riscv32-esp-elf-gdb @ 11.2.0+20220823 
+ - tool-xtensa-esp-elf-gdb @ 11.2.0+20230208 
+ - toolchain-esp32ulp @ 2.35.0-20220830 
+ - toolchain-riscv32-esp @ 12.2.0+20230208 
+ - toolchain-xtensa-esp32s3 @ 12.2.0+20230208
+Reading CMake configuration...
+Dependency Graph
+|-- esp-audio-libs @ 1.1.1
+|-- noise-c @ 0.1.6
+|-- ESPMicroSpeechFeatures @ 1.1.0
+Compiling .pioenvs\respeaker-lite-satellite\src\main.cpp.o
+In file included from src/esphome\components\adc\adc_sensor.h:9,
+                 from src/esphome.h:3,
+                 from src/main.cpp:3:
+C:/Users/karll/.platformio/packages/framework-espidf/components/esp_adc/deprecated/include/esp_adc_cal.h:17:2: warning: #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h" [-Wcpp]
+   17 | #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h"
+      |  ^~~~~~~
+In file included from src/esphome\components\adc\adc_sensor.h:10:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/adc.h:19:2: warning: #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively" [-Wcpp]
+   19 | #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively"
+      |  ^~~~~~~
+In file included from src/esphome\components\i2s_audio\i2s_audio.h:5,
+                 from src/esphome.h:45:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/i2s.h:27:2: warning: #warning "This set of I2S APIs has been deprecated, please include 'driver/i2s_std.h', 'driver/i2s_pdm.h' or 'driver/i2s_tdm.h' instead. if you want to keep using the old APIs and ignore this warning, you can enable 'Suppress leagcy driver deprecated warning' option under 'I2S Configuration' menu in Kconfig" [-Wcpp]
+   27 | #warning "This set of I2S APIs has been deprecated, \
+      |  ^~~~~~~
+In file included from components/esp-tflite-micro/tensorflow/lite/micro/tflite_bridge/flatbuffer_conversions_bridge.h:19,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_allocator.h:26,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_interpreter.h:26,
+                 from src/esphome\components\micro_wake_word\streaming_model.h:10,
+                 from src/esphome\components\micro_wake_word\micro_wake_word.h:6,
+                 from src/esphome.h:72:
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h: In member function 'T* tflite::BuiltinDataAllocator::AllocatePOD()':
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h:46:24: warning: 'template<class _Tp> struct std::is_pod' is deprecated: use is_standard_layout && is_trivial instead [-Wdeprecated-declarations]
+   46 |     static_assert(std::is_pod<T>::value, "Builtin data structure must be POD.");
+      |                        ^~~~~~
+In file included from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\bits\char_traits.h:42,
+                 from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\string:40,
+                 from src/esphome/core/log.h:7,
+                 from src/esphome/components/sensor/sensor.h:3,
+                 from src/esphome\components\adc\adc_sensor.h:3:
+c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\type_traits:757:5: note: declared here
+  757 |     is_pod
+      |     ^~~~~~
+Linking .pioenvs\respeaker-lite-satellite\firmware.elf
+RAM:   [=         ]  12.3% (used 40348 bytes from 327680 bytes)
+Flash: [======    ]  63.9% (used 2513517 bytes from 3932160 bytes)
+Building .pioenvs\respeaker-lite-satellite\firmware.bin
+Creating esp32s3 image...
+Successfully created esp32s3 image.
+esp32_create_combined_bin([".pioenvs\respeaker-lite-satellite\firmware.bin"], [".pioenvs\respeaker-lite-satellite\firmware.elf"])
+Wrote 0x275be0 bytes to file H:\source\SmartRespeaker\.esphome\build\respeaker-lite-satellite\.pioenvs\respeaker-lite-satellite/firmware.factory.bin, ready to flash to offset 0x0
+esp32_copy_ota_bin([".pioenvs\respeaker-lite-satellite\firmware.bin"], [".pioenvs\respeaker-lite-satellite\firmware.elf"])
+========================= [SUCCESS] Took 35.33 seconds =========================
+INFO Successfully compiled program.
+INFO Resolving IP address of respeaker-lite-satellite.local in mDNS
+INFO Connecting to 192.168.1.242 port 3232...
+INFO Connected to 192.168.1.242
+INFO Uploading H:\source\SmartRespeaker\.esphome\build\respeaker-lite-satellite\.pioenvs\respeaker-lite-satellite\firmware.bin (2513888 bytes)
+Uploading: [                                                            ] 0% Uploading: [=                                                           ] 1% Uploading: [=                                                           ] 2% Uploading: [==                                                          ] 3% Uploading: [===                                                         ] 4% Uploading: [===                                                         ] 5% Uploading: [====                                                        ] 6% Uploading: [====                                                        ] 7% Uploading: [=====                                                       ] 8% Uploading: [=====                                                       ] 9% Uploading: [======                                                      ] 10% Uploading: [=======                                                     ] 11% Uploading: [=======                                                     ] 12% Uploading: [========                                                    ] 13% Uploading: [========                                                    ] 14% Uploading: [=========                                                   ] 15% Uploading: [==========                                                  ] 16% Uploading: [==========                                                  ] 17% Uploading: [===========                                                 ] 18% Uploading: [============                                                ] 19% Uploading: [============                                                ] 20% Uploading: [=============                                               ] 21% Uploading: [=============                                               ] 22% Uploading: [==============                                              ] 23% Uploading: [==============                                              ] 24% Uploading: [===============                                             ] 25% Uploading: [================                                            ] 26% Uploading: [================                                            ] 27% Uploading: [=================                                           ] 28% Uploading: [=================                                           ] 29% Uploading: [==================                                          ] 30% Uploading: [===================                                         ] 31% Uploading: [===================                                         ] 32% Uploading: [====================                                        ] 33% Uploading: [=====================                                       ] 34% Uploading: [=====================                                       ] 35% Uploading: [======================                                      ] 36% Uploading: [======================                                      ] 37% Uploading: [=======================                                     ] 38% Uploading: [=======================                                     ] 39% Uploading: [========================                                    ] 40% Uploading: [=========================                                   ] 41% Uploading: [=========================                                   ] 42% Uploading: [==========================                                  ] 43% Uploading: [===========================                                 ] 44% Uploading: [===========================                                 ] 45% Uploading: [============================                                ] 46% Uploading: [============================                                ] 47% Uploading: [=============================                               ] 48% Uploading: [==============================                              ] 49% Uploading: [==============================                              ] 50% Uploading: [===============================                             ] 51% Uploading: [===============================                             ] 52% Uploading: [================================                            ] 53% Uploading: [================================                            ] 54% Uploading: [=================================                           ] 55% Uploading: [==================================                          ] 56% Uploading: [==================================                          ] 57% Uploading: [===================================                         ] 58% Uploading: [====================================                        ] 59% Uploading: [====================================                        ] 60% Uploading: [=====================================                       ] 61% Uploading: [=====================================                       ] 62% Uploading: [======================================                      ] 63% Uploading: [=======================================                     ] 64% Uploading: [=======================================                     ] 65% Uploading: [========================================                    ] 66% Uploading: [========================================                    ] 67% Uploading: [=========================================                   ] 68% Uploading: [=========================================                   ] 69% Uploading: [==========================================                  ] 70% Uploading: [===========================================                 ] 71% Uploading: [===========================================                 ] 72% Uploading: [============================================                ] 73% Uploading: [=============================================               ] 74% Uploading: [=============================================               ] 75% Uploading: [==============================================              ] 76% Uploading: [==============================================              ] 77% Uploading: [===============================================             ] 78% Uploading: [================================================            ] 79% Uploading: [================================================            ] 80% Uploading: [=================================================           ] 81% Uploading: [=================================================           ] 82% Uploading: [==================================================          ] 83% Uploading: [==================================================          ] 84% Uploading: [===================================================         ] 85% Uploading: [====================================================        ] 86% Uploading: [====================================================        ] 87% Uploading: [=====================================================       ] 88% Uploading: [======================================================      ] 89% Uploading: [======================================================      ] 90% Uploading: [=======================================================     ] 91% Uploading: [=======================================================     ] 92% Uploading: [========================================================    ] 93% Uploading: [=========================================================   ] 94% Uploading: [=========================================================   ] 95% Uploading: [==========================================================  ] 96% Uploading: [==========================================================  ] 97% Uploading: [=========================================================== ] 98% Uploading: [=========================================================== ] 99% Uploading: [============================================================] 100% Done...
+
+INFO Upload took 7.85 seconds, waiting for result...
+INFO OTA successful
+INFO Successfully uploaded program.
+INFO Starting log output from respeaker-lite-satellite.local using esphome API
+INFO Successfully connected to respeaker-lite-satellite @ 192.168.1.242 in 9.835s
+INFO Successful handshake with respeaker-lite-satellite @ 192.168.1.242 in 0.764s
+[07:45:58][I][app:100]: ESPHome version 2025.2.2 compiled on Mar  9 2025, 07:45:04
+[07:45:58][I][app:102]: Project formatbce.respeaker-lite-satellite version 2025.2.2
+[07:45:58][C][wifi:600]: WiFi:
+[07:45:58][C][wifi:428]:   Local MAC: 98:3D:AE:ED:BC:FC
+[07:45:58][C][wifi:433]:   SSID: 'ParkerLife_2G'
+[07:45:58][C][wifi:436]:   IP Address: 192.168.1.242
+[07:45:58][C][wifi:439]:   BSSID: 80:CC:9C:8C:D2:CE
+[07:45:58][C][wifi:441]:   Hostname: 'respeaker-lite-satellite'
+[07:45:58][C][wifi:443]:   Signal strength: -51 dB ERROR Exception in callback _ProactorReadPipeTransport._loop_reading()
+handle: <Handle _ProactorReadPipeTransport._loop_reading()>
+Traceback (most recent call last):
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 325, in _loop_reading
+    self._data_received(data, length)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 274, in _data_received
+    self._protocol.data_received(data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "aioesphomeapi\\_frame_helper\\noise.py", line 197, in aioesphomeapi._frame_helper.noise.APINoiseFrameHelper.data_received
+  File "aioesphomeapi\\_frame_helper\\noise.py", line 367, in aioesphomeapi._frame_helper.noise.APINoiseFrameHelper._handle_frame
+  File "aioesphomeapi\\connection.py", line 939, in aioesphomeapi.connection.APIConnection.process_packet
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\site-packages\esphome\components\api\client.py", line 51, in on_log
+    print(f"[{time_.hour:02}:{time_.minute:02}:{time_.second:02}]{text}")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\site-packages\colorama\ansitowin32.py", line 47, in write
+    self.__convertor.write(text)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\site-packages\colorama\ansitowin32.py", line 177, in write
+    self.write_and_convert(text)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\site-packages\colorama\ansitowin32.py", line 202, in write_and_convert
+    self.write_plain_text(text, cursor, start)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\site-packages\colorama\ansitowin32.py", line 210, in write_plain_text
+    self.wrapped.write(text[start:end])
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 0-2: character maps to <undefined>
+WARNING respeaker-lite-satellite @ 192.168.1.242: Connection error occurred: respeaker-lite-satellite @ 192.168.1.242: Encryption error: received_name=respeaker-lite-satellite
+INFO Processing unexpected disconnect from ESPHome API for respeaker-lite-satellite @ 192.168.1.242
+WARNING Disconnected from API
+INFO Successfully connected to respeaker-lite-satellite @ 192.168.1.242 in 0.254s
+INFO Successful handshake with respeaker-lite-satellite @ 192.168.1.242 in 1.163s
+[07:46:20][W][respeaker_lite:341]: Request mic mute state failed
+[07:46:27][D][esp-idf:000][wifi]: I (40773) wifi:
+[07:46:27][D][esp-idf:000][wifi]: <ba-add>idx:1 (ifx:0, 80:cc:9c:8c:d2:ce), tid:6, ssn:0, winSize:64
+[07:46:27][D][esp-idf:000][wifi]: 
+
+[07:46:27][W][component:237]: Component respeaker_lite took a long time for an operation (63 ms).
+[07:46:27][W][component:238]: Components should block for at most 30 ms.
+[07:46:28][W][respeaker_lite:341]: Request mic mute state failed
+[07:46:29][W][respeaker_lite:347]: Read mic mute state failed
+[07:46:29][W][respeaker_lite:347]: Read mic mute state failed
+[07:46:30][W][respeaker_lite:347]: Read mic mute state failed
+[07:46:31][W][respeaker_lite:347]: Read mic mute state failed
+[07:46:32][D][esp32.preferences:114]: Saving 6 preferences to flash...
+[07:46:33][D][esp32.preferences:142]: Saving 6 preferences to flash: 5 cached, 1 written, 0 failed
+[07:46:33][W][respeaker_lite:347]: Read mic mute state failed
+[07:46:34][W][respeaker_lite:347]: Read mic mute state failed
+[07:46:36][W][respeaker_lite:347]: Read mic mute state failed
+[07:46:37][W][respeaker_lite:341]: Request mic mute state failed
+[07:46:47][I][safe_mode:041]: Boot seems successful; resetting boot loop counter
+[07:46:47][D][esp32.preferences:114]: Saving 1 preferences to flash...
+[07:46:48][D][esp32.preferences:142]: Saving 1 preferences to flash: 0 cached, 1 written, 0 failed
+[07:46:49][D][main:707]: Battery voltage: 0.28 V
+[07:46:49][D][main:721]: Battery level normal
+[07:46:49][D][main:1452]: Starting control_leds script execution
+[07:46:49][D][control_leds:770]: voice_assistant_phase: 1
+[07:46:49][D][control_leds:771]: improv_ble_in_progress: 0
+[07:46:49][D][control_leds:772]: init_in_progress: 0
+[07:46:49][D][control_leds:773]: wifi_connected: 1
+[07:46:49][D][control_leds:774]: api_connected: 1
+[07:46:49][D][control_leds:775]: user_button_state: 0
+[07:46:49][D][control_leds:776]: low_battery_alert: 0
+[07:46:49][D][control_leds:777]: timer_ringing: 0
+[07:46:49][D][control_leds:778]: media_player_state: 1
+[07:46:49][D][control_leds:779]: is_timer_active: 0
+[07:46:49][D][control_leds:852]: Executing: idle (LED Off)
+[07:46:49][D][main:885]: Setting LED: VA idle (Off)
+[07:46:49][D][light:036]: 'LED Respeaker onboard' Setting:
+[07:46:49][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[07:46:49][D][main:858]: Finished control_leds script execution
+[07:46:49][W][component:237]: Component adc.sensor took a long time for an operation (135 ms).
+[07:46:49][W][component:238]: Components should block for at most 30 ms.
+[07:46:49][W][respeaker_lite:347]: Read mic mute state failed
+[07:46:56][W][respeaker_lite:347]: Read mic mute state failed
+[07:47:09][W][respeaker_lite:347]: Read mic mute state failed
+[07:47:11][W][respeaker_lite:347]: Read mic mute state failed
+[07:47:16][W][respeaker_lite:341]: Request mic mute state failed
+[07:47:18][I][respeaker_lite:354]: Mic mute state: 0
+[07:47:18][D][binary_sensor:036]: 'mute_state': Sending state OFF
+[07:47:18][D][switch:055]: 'Mic mute': Sending state OFF
+[07:47:18][D][main:238]: Mic mute OFF
+[07:47:18][D][light:036]: 'LED Respeaker onboard' Setting:
+[07:47:18][D][light:047]:   State: ON
+[07:47:18][D][light:051]:   Brightness: 50%
+[07:47:18][D][light:058]:   Red: 0%, Green: 100%, Blue: 0%
+[07:47:18][W][component:237]: Component template.switch took a long time for an operation (51 ms).
+[07:47:18][W][component:238]: Components should block for at most 30 ms.
+[07:47:18][D][main:250]: Playing mute OFF sound
+[07:47:18][D][main:1010]: Playing sound: priority=0
+[07:47:18][D][main:1452]: Starting control_leds script execution
+[07:47:18][D][control_leds:770]: voice_assistant_phase: 1
+[07:47:18][D][control_leds:771]: improv_ble_in_progress: 0
+[07:47:18][D][control_leds:772]: init_in_progress: 0
+[07:47:18][D][control_leds:773]: wifi_connected: 1
+[07:47:18][D][control_leds:774]: api_connected: 1
+[07:47:18][D][control_leds:775]: user_button_state: 0
+[07:47:18][D][control_leds:776]: low_battery_alert: 0
+[07:47:18][D][control_leds:777]: timer_ringing: 0
+[07:47:18][D][control_leds:778]: media_player_state: 1
+[07:47:18][D][control_leds:779]: is_timer_active: 0
+[07:47:18][D][control_leds:852]: Executing: idle (LED Off)
+[07:47:18][D][main:885]: Setting LED: VA idle (Off)
+[07:47:18][D][light:036]: 'LED Respeaker onboard' Setting:
+[07:47:18][D][light:047]:   State: OFF
+[07:47:18][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[07:47:18][D][main:858]: Finished control_leds script execution
+[07:47:18][W][component:237]: Component switch took a long time for an operation (135 ms).
+[07:47:18][W][component:238]: Components should block for at most 30 ms.
+[07:47:18][D][main:1778]: Media player state changed: 4
+[07:47:18][D][main:241]: Media player announcement started
+[07:47:18][D][speaker_media_player:420]: State changed to ANNOUNCING
+[07:47:18][D][speaker_media_player.pipeline:114]: Reading FLAC file type
+[07:47:18][D][speaker_media_player.pipeline:124]: Decoded audio has 1 channels, 48000 Hz sample rate, and 16 bits per sample
+[07:47:18][D][ring_buffer:034]: Created ring buffer with size 9600
+[07:47:18][D][ring_buffer:034][speaker_task]: Created ring buffer with size 19200
+[07:47:19][W][component:237]: Component respeaker_lite took a long time for an operation (69 ms).
+[07:47:19][W][component:238]: Components should block for at most 30 ms.
+[07:47:19][D][speaker_mixer:306]: Starting speaker mixer
+[07:47:19][D][speaker_mixer:314]: Started speaker mixer
+[07:47:19][D][i2s_audio.speaker:111]: Starting Speaker
+[07:47:19][D][i2s_audio.speaker:116]: Started Speaker
+[07:47:20][D][main:1778]: Media player state changed: 1
+[07:47:20][D][main:230]: Removing ducking from media player
+[07:47:21][D][speaker_media_player:420]: State changed to IDLE
+[07:47:21][D][speaker_mixer:319]: Stopping speaker mixer
+[07:47:35][D][light:036]: 'LED Respeaker onboard' Setting:
+[07:47:35][D][light:047]:   State: ON
+[07:47:35][D][light:109]:   Effect: 'Rotating Colors'
+[07:47:39][W][respeaker_lite:341]: Request mic mute state failed
+[07:47:41][W][respeaker_lite:341]: Request mic mute state failed
+[07:47:42][W][respeaker_lite:341]: Request mic mute state failed
+[07:47:45][W][respeaker_lite:347]: Read mic mute state failed
+[07:47:48][D][main:707]: Battery voltage: 0.39 V
+[07:47:48][D][main:721]: Battery level normal
+[07:47:48][D][main:1452]: Starting control_leds script execution
+[07:47:48][D][control_leds:770]: voice_assistant_phase: 1
+[07:47:48][D][control_leds:771]: improv_ble_in_progress: 0
+[07:47:48][D][control_leds:772]: init_in_progress: 0
+[07:47:48][D][control_leds:773]: wifi_connected: 1
+[07:47:48][D][control_leds:774]: api_connected: 1
+[07:47:48][D][control_leds:775]: user_button_state: 0
+[07:47:49][D][control_leds:776]: low_battery_alert: 0
+[07:47:49][D][control_leds:777]: timer_ringing: 0
+[07:47:49][D][control_leds:778]: media_player_state: 1
+[07:47:49][D][control_leds:779]: is_timer_active: 0
+[07:47:49][D][control_leds:852]: Executing: idle (LED Off)
+[07:47:49][D][main:885]: Setting LED: VA idle (Off)
+[07:47:49][D][light:036]: 'LED Respeaker onboard' Setting:
+[07:47:49][D][light:047]:   State: OFF
+[07:47:49][D][light:109]:   Effect: 'None'
+[07:47:49][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[07:47:49][D][main:858]: Finished control_leds script execution
+[07:47:49][W][component:237]: Component adc.sensor took a long time for an operation (184 ms).
+[07:47:49][W][component:238]: Components should block for at most 30 ms.
+[07:47:51][D][light:036]: 'LED Respeaker onboard' Setting:
+[07:47:51][D][light:047]:   State: ON
+[07:47:51][D][light:109]:   Effect: 'Clock Face'
+[07:47:52][W][respeaker_lite:347]: Read mic mute state failed
+[07:47:56][W][respeaker_lite:347]: Read mic mute state failed
+[07:47:57][W][respeaker_lite:341]: Request mic mute state failed
+[07:48:00][W][respeaker_lite:347]: Read mic mute state failed
+[07:48:02][W][respeaker_lite:347]: Read mic mute state failed
+[07:48:05][W][respeaker_lite:341]: Request mic mute state failed
+[07:48:08][W][respeaker_lite:341]: Request mic mute state failed
+[07:48:09][W][respeaker_lite:341]: Request mic mute state failed
+[07:48:09][W][respeaker_lite:341]: Request mic mute state failed
+[07:48:09][W][respeaker_lite:341]: Request mic mute state failed
+[07:48:09][W][respeaker_lite:341]: Request mic mute state failed
+[07:48:09][W][respeaker_lite:347]: Read mic mute state failed
+[07:48:27][W][respeaker_lite:341]: Request mic mute state failed
+[07:48:27][W][respeaker_lite:341]: Request mic mute state failed
+[07:48:34][W][respeaker_lite:341]: Request mic mute state failed
+[07:48:36][W][respeaker_lite:341]: Request mic mute state failed
+[07:48:38][W][respeaker_lite:341]: Request mic mute state failed
+[07:48:39][W][respeaker_lite:341]: Request mic mute state failed
+[07:48:40][W][respeaker_lite:347]: Read mic mute state failed
+[07:48:41][W][respeaker_lite:341]: Request mic mute state failed
+[07:48:43][W][respeaker_lite:347]: Read mic mute state failed
+[07:48:45][W][respeaker_lite:347]: Read mic mute state failed
+[07:48:47][W][respeaker_lite:341]: Request mic mute state failed
+[07:48:48][W][respeaker_lite:347]: Read mic mute state failed
+[07:48:48][D][main:707]: Battery voltage: 0.31 V
+[07:48:48][D][main:721]: Battery level normal
+[07:48:48][D][main:1452]: Starting control_leds script execution
+[07:48:48][D][control_leds:770]: voice_assistant_phase: 1
+[07:48:49][D][control_leds:771]: improv_ble_in_progress: 0
+[07:48:49][D][control_leds:772]: init_in_progress: 0
+[07:48:49][D][control_leds:773]: wifi_connected: 1
+[07:48:49][D][control_leds:774]: api_connected: 1
+[07:48:49][D][control_leds:775]: user_button_state: 0
+[07:48:49][D][control_leds:776]: low_battery_alert: 0
+[07:48:49][D][control_leds:777]: timer_ringing: 0
+[07:48:49][D][control_leds:778]: media_player_state: 1
+[07:48:49][D][control_leds:779]: is_timer_active: 0
+[07:48:49][D][control_leds:852]: Executing: idle (LED Off)
+[07:48:49][D][main:885]: Setting LED: VA idle (Off)
+[07:48:49][D][light:036]: 'LED Respeaker onboard' Setting:
+[07:48:49][D][light:047]:   State: OFF
+[07:48:49][D][light:109]:   Effect: 'None'
+[07:48:49][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[07:48:49][D][main:858]: Finished control_leds script execution
+[07:48:49][W][component:237]: Component adc.sensor took a long time for an operation (199 ms).
+[07:48:49][W][component:238]: Components should block for at most 30 ms.
+[07:49:20][W][respeaker_lite:347]: Read mic mute state failed
+[07:49:21][W][respeaker_lite:347]: Read mic mute state failed
+[07:49:24][W][respeaker_lite:341]: Request mic mute state failed
+[07:49:25][D][light:036]: 'LED Respeaker onboard' Setting:
+[07:49:25][D][light:047]:   State: ON
+[07:49:25][D][light:109]:   Effect: 'Ring Chase'
+[07:49:26][W][respeaker_lite:341]: Request mic mute state failed
+[07:49:34][W][respeaker_lite:341]: Request mic mute state failed
+[07:49:34][D][light:036]: 'LED Respeaker onboard' Setting:
+[07:49:34][D][light:109]:   Effect: 'Question Response'
+[07:49:35][D][light:036]: 'LED Respeaker onboard' Setting:
+[07:49:35][D][light:051]:   Brightness: 75%
+[07:49:35][D][light:058]:   Red: 0%, Green: 100%, Blue: 0%
+[07:49:35][W][respeaker_lite:347]: Read mic mute state failed
+[07:49:35][W][respeaker_lite:341]: Request mic mute state failed
+[07:49:35][W][respeaker_lite:341]: Request mic mute state failed
+[07:49:35][D][light:036]: 'LED Respeaker onboard' Setting:
+[07:49:35][D][light:051]:   Brightness: 75%
+[07:49:35][D][light:058]:   Red: 100%, Green: 0%, Blue: 0%
+[07:49:35][W][respeaker_lite:341]: Request mic mute state failed
+[07:49:35][D][light:036]: 'LED Respeaker onboard' Setting:
+[07:49:36][D][light:051]:   Brightness: 75%
+[07:49:36][D][light:058]:   Red: 0%, Green: 0%, Blue: 100%
+[07:49:37][W][respeaker_lite:341]: Request mic mute state failed
+[07:49:37][D][light:036]: 'LED Respeaker onboard' Setting:
+[07:49:37][D][light:051]:   Brightness: 75%
+[07:49:37][D][light:058]:   Red: 0%, Green: 100%, Blue: 0%
+[07:49:37][W][respeaker_lite:341]: Request mic mute state failed
+[07:49:37][D][light:036]: 'LED Respeaker onboard' Setting:
+[07:49:37][D][light:051]:   Brightness: 75%
+[07:49:37][D][light:058]:   Red: 100%, Green: 0%, Blue: 0%
+[07:49:38][D][light:036]: 'LED Respeaker onboard' Setting:
+[07:49:38][D][light:051]:   Brightness: 75%
+[07:49:38][D][light:058]:   Red: 0%, Green: 0%, Blue: 100%
+[07:49:39][D][light:036]: 'LED Respeaker onboard' Setting:
+[07:49:39][D][light:051]:   Brightness: 75%
+[07:49:39][D][light:058]:   Red: 0%, Green: 100%, Blue: 0%
+[07:49:39][D][light:036]: 'LED Respeaker onboard' Setting:
+[07:49:39][D][light:109]:   Effect: 'Rainbow Cycle'
+[07:49:41][W][respeaker_lite:347]: Read mic mute state failed
+[07:49:42][W][respeaker_lite:347]: Read mic mute state failed
+[07:49:48][D][main:707]: Battery voltage: 0.43 V
+[07:49:48][D][main:721]: Battery level normal
+[07:49:48][D][main:1452]: Starting control_leds script execution
+[07:49:49][D][control_leds:770]: voice_assistant_phase: 1
+[07:49:49][D][control_leds:771]: improv_ble_in_progress: 0
+[07:49:49][D][control_leds:772]: init_in_progress: 0
+[07:49:49][D][control_leds:773]: wifi_connected: 1
+[07:49:49][D][control_leds:774]: api_connected: 1
+[07:49:49][D][control_leds:775]: user_button_state: 0
+[07:49:49][D][control_leds:776]: low_battery_alert: 0
+[07:49:49][D][control_leds:777]: timer_ringing: 0
+[07:49:49][D][control_leds:778]: media_player_state: 1
+[07:49:49][D][control_leds:779]: is_timer_active: 0
+[07:49:49][D][control_leds:852]: Executing: idle (LED Off)
+[07:49:49][D][main:885]: Setting LED: VA idle (Off)
+[07:49:49][D][light:036]: 'LED Respeaker onboard' Setting:
+[07:49:49][D][light:047]:   State: OFF
+[07:49:49][D][light:109]:   Effect: 'None'
+[07:49:49][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[07:49:49][D][main:858]: Finished control_leds script execution
+[07:49:49][W][component:237]: Component adc.sensor took a long time for an operation (121 ms).
+[07:49:49][W][component:238]: Components should block for at most 30 ms.
+[07:49:53][W][respeaker_lite:341]: Request mic mute state failed
+[07:50:04][W][respeaker_lite:347]: Read mic mute state failed
+[07:50:21][W][respeaker_lite:341]: Request mic mute state failed
+[07:50:26][W][respeaker_lite:341]: Request mic mute state failed
+[07:50:27][W][respeaker_lite:341]: Request mic mute state failed
+[07:50:28][W][respeaker_lite:341]: Request mic mute state failed
+[07:50:32][W][respeaker_lite:347]: Read mic mute state failed
+[07:50:34][W][respeaker_lite:347]: Read mic mute state failed
+[07:50:34][W][respeaker_lite:347]: Read mic mute state failed
+[07:50:35][W][respeaker_lite:341]: Request mic mute state failed
+[07:50:43][W][respeaker_lite:347]: Read mic mute state failed
+[07:50:49][D][main:707]: Battery voltage: 0.44 V
+[07:50:49][D][main:721]: Battery level normal
+[07:50:49][D][main:1452]: Starting control_leds script execution
+[07:50:49][D][control_leds:770]: voice_assistant_phase: 1
+[07:50:49][D][control_leds:771]: improv_ble_in_progress: 0
+[07:50:49][D][control_leds:772]: init_in_progress: 0
+[07:50:49][D][control_leds:773]: wifi_connected: 1
+[07:50:49][D][control_leds:774]: api_connected: 1
+[07:50:49][D][control_leds:775]: user_button_state: 0
+[07:50:49][D][control_leds:776]: low_battery_alert: 0
+[07:50:49][D][control_leds:777]: timer_ringing: 0
+[07:50:49][D][control_leds:778]: media_player_state: 1
+[07:50:49][D][control_leds:779]: is_timer_active: 0
+[07:50:49][D][control_leds:852]: Executing: idle (LED Off)
+[07:50:49][D][main:885]: Setting LED: VA idle (Off)
+[07:50:49][D][light:036]: 'LED Respeaker onboard' Setting:
+[07:50:49][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[07:50:49][D][main:858]: Finished control_leds script execution
+[07:50:49][W][component:237]: Component adc.sensor took a long time for an operation (96 ms).
+[07:50:49][W][component:238]: Components should block for at most 30 ms.
+[07:50:57][W][respeaker_lite:341]: Request mic mute state failed
+[07:51:10][W][respeaker_lite:341]: Request mic mute state failed
+[07:51:21][W][respeaker_lite:341]: Request mic mute state failed
+[07:51:23][W][respeaker_lite:341]: Request mic mute state failed
+[07:51:23][W][respeaker_lite:341]: Request mic mute state failed
+[07:51:24][W][respeaker_lite:341]: Request mic mute state failed
+[07:51:25][W][respeaker_lite:341]: Request mic mute state failed
+[07:51:25][W][respeaker_lite:347]: Read mic mute state failed
+[07:51:26][W][respeaker_lite:341]: Request mic mute state failed
+[07:51:26][W][respeaker_lite:347]: Read mic mute state failed
+[07:51:27][W][respeaker_lite:341]: Request mic mute state failed
+[07:51:30][W][respeaker_lite:347]: Read mic mute state failed
+[07:51:30][W][respeaker_lite:341]: Request mic mute state failed
+[07:51:30][W][respeaker_lite:347]: Read mic mute state failed
+[07:51:49][D][main:707]: Battery voltage: 0.15 V
+[07:51:49][D][main:721]: Battery level normal
+[07:51:49][D][main:1452]: Starting control_leds script execution
+[07:51:49][D][control_leds:770]: voice_assistant_phase: 1
+[07:51:49][D][control_leds:771]: improv_ble_in_progress: 0
+[07:51:49][D][control_leds:772]: init_in_progress: 0
+[07:51:49][D][control_leds:773]: wifi_connected: 1
+[07:51:49][D][control_leds:774]: api_connected: 1
+[07:51:49][D][control_leds:775]: user_button_state: 0
+[07:51:49][D][control_leds:776]: low_battery_alert: 0
+[07:51:49][D][control_leds:777]: timer_ringing: 0
+[07:51:49][D][control_leds:778]: media_player_state: 1
+[07:51:49][D][control_leds:779]: is_timer_active: 0
+[07:51:49][D][control_leds:852]: Executing: idle (LED Off)
+[07:51:49][D][main:885]: Setting LED: VA idle (Off)
+[07:51:49][D][light:036]: 'LED Respeaker onboard' Setting:
+[07:51:49][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[07:51:49][D][main:858]: Finished control_leds script execution
+[07:51:49][W][component:237]: Component adc.sensor took a long time for an operation (119 ms).
+[07:51:49][W][component:238]: Components should block for at most 30 ms.
+[07:51:49][W][respeaker_lite:341]: Request mic mute state failed
+[07:51:52][W][respeaker_lite:341]: Request mic mute state failed
+[07:52:06][W][respeaker_lite:347]: Read mic mute state failed
+[07:52:06][W][respeaker_lite:341]: Request mic mute state failed
+[07:52:14][W][respeaker_lite:341]: Request mic mute state failed
+[07:52:14][W][respeaker_lite:341]: Request mic mute state failed
+[07:52:19][W][respeaker_lite:347]: Read mic mute state failed
+[07:52:20][W][respeaker_lite:341]: Request mic mute state failed
+[07:52:20][W][respeaker_lite:341]: Request mic mute state failed
+[07:52:20][W][respeaker_lite:341]: Request mic mute state failed
+[07:52:20][W][respeaker_lite:341]: Request mic mute state failed
+[07:52:21][W][respeaker_lite:341]: Request mic mute state failed
+[07:52:21][W][respeaker_lite:341]: Request mic mute state failed
+[07:52:21][W][respeaker_lite:341]: Request mic mute state failed
+[07:52:21][W][respeaker_lite:341]: Request mic mute state failed
+[07:52:21][W][respeaker_lite:341]: Request mic mute state failed
+[07:52:21][W][respeaker_lite:341]: Request mic mute state failed
+[07:52:21][W][respeaker_lite:341]: Request mic mute state failed
+[07:52:21][W][respeaker_lite:341]: Request mic mute state failed
+[07:52:22][W][respeaker_lite:341]: Request mic mute state failed
+[07:52:24][W][respeaker_lite:347]: Read mic mute state failed
+[07:52:25][W][respeaker_lite:347]: Read mic mute state failed
+[07:52:26][W][respeaker_lite:347]: Read mic mute state failed
+[07:52:28][W][respeaker_lite:347]: Read mic mute state failed
+[07:52:32][W][respeaker_lite:341]: Request mic mute state failed
+[07:52:48][W][respeaker_lite:341]: Request mic mute state failed
+[07:52:49][D][main:707]: Battery voltage: 0.16 V
+[07:52:49][D][main:721]: Battery level normal
+[07:52:49][D][main:1452]: Starting control_leds script execution
+[07:52:49][D][control_leds:770]: voice_assistant_phase: 1
+[07:52:49][D][control_leds:771]: improv_ble_in_progress: 0
+[07:52:49][D][control_leds:772]: init_in_progress: 0
+[07:52:49][D][control_leds:773]: wifi_connected: 1
+[07:52:49][D][control_leds:774]: api_connected: 1
+[07:52:49][D][control_leds:775]: user_button_state: 0
+[07:52:49][D][control_leds:776]: low_battery_alert: 0
+[07:52:49][D][control_leds:777]: timer_ringing: 0
+[07:52:49][D][control_leds:778]: media_player_state: 1
+[07:52:49][D][control_leds:779]: is_timer_active: 0
+[07:52:49][D][control_leds:852]: Executing: idle (LED Off)
+[07:52:49][D][main:885]: Setting LED: VA idle (Off)
+[07:52:49][D][light:036]: 'LED Respeaker onboard' Setting:
+[07:52:49][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[07:52:49][D][main:858]: Finished control_leds script execution
+[07:52:49][W][component:237]: Component adc.sensor took a long time for an operation (109 ms).
+[07:52:49][W][component:238]: Components should block for at most 30 ms.
+[07:52:53][W][respeaker_lite:341]: Request mic mute state failed
+[07:53:04][W][respeaker_lite:341]: Request mic mute state failed
+[07:53:04][W][respeaker_lite:341]: Request mic mute state failed
+[07:53:20][W][respeaker_lite:347]: Read mic mute state failed
+[07:53:24][W][respeaker_lite:347]: Read mic mute state failed
+[07:53:25][W][respeaker_lite:341]: Request mic mute state failed
+[07:53:32][W][respeaker_lite:347]: Read mic mute state failed
+[07:53:32][W][respeaker_lite:341]: Request mic mute state failed
+[07:53:46][W][respeaker_lite:341]: Request mic mute state failed
+[07:53:48][W][respeaker_lite:347]: Read mic mute state failed
+[07:53:49][D][main:707]: Battery voltage: 0.41 V
+[07:53:49][D][main:721]: Battery level normal
+[07:53:49][D][main:1452]: Starting control_leds script execution
+[07:53:49][D][control_leds:770]: voice_assistant_phase: 1
+[07:53:49][D][control_leds:771]: improv_ble_in_progress: 0
+[07:53:49][D][control_leds:772]: init_in_progress: 0
+[07:53:49][D][control_leds:773]: wifi_connected: 1
+[07:53:49][D][control_leds:774]: api_connected: 1
+[07:53:49][D][control_leds:775]: user_button_state: 0
+[07:53:49][D][control_leds:776]: low_battery_alert: 0
+[07:53:49][D][control_leds:777]: timer_ringing: 0
+[07:53:49][D][control_leds:778]: media_player_state: 1
+[07:53:49][D][control_leds:779]: is_timer_active: 0
+[07:53:49][D][control_leds:852]: Executing: idle (LED Off)
+[07:53:49][D][main:885]: Setting LED: VA idle (Off)
+[07:53:49][D][light:036]: 'LED Respeaker onboard' Setting:
+[07:53:49][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[07:53:49][D][main:858]: Finished control_leds script execution
+[07:53:49][W][component:237]: Component adc.sensor took a long time for an operation (109 ms).
+[07:53:49][W][component:238]: Components should block for at most 30 ms.
+[07:53:51][W][respeaker_lite:341]: Request mic mute state failed
+[07:54:09][W][respeaker_lite:341]: Request mic mute state failed
+[07:54:11][W][respeaker_lite:341]: Request mic mute state failed
+[07:54:14][W][respeaker_lite:347]: Read mic mute state failed
+[07:54:16][W][respeaker_lite:347]: Read mic mute state failed
+[07:54:17][W][respeaker_lite:347]: Read mic mute state failed
+[07:54:18][W][respeaker_lite:347]: Read mic mute state failed
+[07:54:27][W][respeaker_lite:341]: Request mic mute state failed
+[07:54:32][W][respeaker_lite:341]: Request mic mute state failed
+[07:54:32][W][respeaker_lite:341]: Request mic mute state failed
+[07:54:32][W][respeaker_lite:341]: Request mic mute state failed
+[07:54:32][W][respeaker_lite:341]: Request mic mute state failed
+[07:54:32][W][respeaker_lite:347]: Read mic mute state failed
+[07:54:49][D][main:707]: Battery voltage: 0.31 V
+[07:54:49][D][main:721]: Battery level normal
+[07:54:49][D][main:1452]: Starting control_leds script execution
+[07:54:49][D][control_leds:770]: voice_assistant_phase: 1
+[07:54:49][D][control_leds:771]: improv_ble_in_progress: 0
+[07:54:49][D][control_leds:772]: init_in_progress: 0
+[07:54:49][D][control_leds:773]: wifi_connected: 1
+[07:54:49][D][control_leds:774]: api_connected: 1
+[07:54:49][D][control_leds:775]: user_button_state: 0
+[07:54:49][D][control_leds:776]: low_battery_alert: 0
+[07:54:49][D][control_leds:777]: timer_ringing: 0
+[07:54:49][D][control_leds:778]: media_player_state: 1
+[07:54:49][D][control_leds:779]: is_timer_active: 0
+[07:54:49][D][control_leds:852]: Executing: idle (LED Off)
+[07:54:49][D][main:885]: Setting LED: VA idle (Off)
+[07:54:49][D][light:036]: 'LED Respeaker onboard' Setting:
+[07:54:49][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[07:54:49][D][main:858]: Finished control_leds script execution
+[07:54:49][W][component:237]: Component adc.sensor took a long time for an operation (112 ms).
+[07:54:49][W][component:238]: Components should block for at most 30 ms.
+[07:54:50][W][respeaker_lite:341]: Request mic mute state failed
+[07:54:54][W][respeaker_lite:341]: Request mic mute state failed
+[07:55:01][W][respeaker_lite:341]: Request mic mute state failed
+[07:55:02][W][respeaker_lite:347]: Read mic mute state failed
+[07:55:03][W][respeaker_lite:341]: Request mic mute state failed
+[07:55:05][W][respeaker_lite:341]: Request mic mute state failed
+[07:55:05][W][respeaker_lite:341]: Request mic mute state failed
+[07:55:05][W][respeaker_lite:341]: Request mic mute state failed
+[07:55:06][W][respeaker_lite:341]: Request mic mute state failed
+[07:55:06][W][respeaker_lite:341]: Request mic mute state failed
+[07:55:06][W][respeaker_lite:341]: Request mic mute state failed
+[07:55:07][W][respeaker_lite:341]: Request mic mute state failed
+[07:55:11][W][respeaker_lite:347]: Read mic mute state failed
+[07:55:17][W][respeaker_lite:347]: Read mic mute state failed
+[07:55:25][W][respeaker_lite:347]: Read mic mute state failed
+[07:55:40][W][respeaker_lite:347]: Read mic mute state failed
+[07:55:48][W][respeaker_lite:347]: Read mic mute state failed
+[07:55:49][D][main:707]: Battery voltage: 0.39 V
+[07:55:49][D][main:721]: Battery level normal
+[07:55:49][D][main:1452]: Starting control_leds script execution
+[07:55:49][D][control_leds:770]: voice_assistant_phase: 1
+[07:55:49][D][control_leds:771]: improv_ble_in_progress: 0
+[07:55:49][D][control_leds:772]: init_in_progress: 0
+[07:55:49][D][control_leds:773]: wifi_connected: 1
+[07:55:49][D][control_leds:774]: api_connected: 1
+[07:55:49][D][control_leds:775]: user_button_state: 0
+[07:55:49][D][control_leds:776]: low_battery_alert: 0
+[07:55:49][D][control_leds:777]: timer_ringing: 0
+[07:55:49][D][control_leds:778]: media_player_state: 1
+[07:55:49][D][control_leds:779]: is_timer_active: 0
+[07:55:49][D][control_leds:852]: Executing: idle (LED Off)
+[07:55:49][D][main:885]: Setting LED: VA idle (Off)
+[07:55:49][D][light:036]: 'LED Respeaker onboard' Setting:
+[07:55:49][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[07:55:49][D][main:858]: Finished control_leds script execution
+[07:55:49][W][component:237]: Component adc.sensor took a long time for an operation (84 ms).
+[07:55:49][W][component:238]: Components should block for at most 30 ms.
+[07:55:55][W][respeaker_lite:341]: Request mic mute state failed
+[07:55:55][W][respeaker_lite:347]: Read mic mute state failed
+[07:55:55][W][respeaker_lite:341]: Request mic mute state failed
+[07:56:00][W][respeaker_lite:341]: Request mic mute state failed
+[07:56:01][W][respeaker_lite:341]: Request mic mute state failed
+[07:56:05][W][respeaker_lite:347]: Read mic mute state failed
+[07:56:07][W][respeaker_lite:347]: Read mic mute state failed
+[07:56:07][W][respeaker_lite:347]: Read mic mute state failed
+[07:56:08][W][respeaker_lite:347]: Read mic mute state failed
+[07:56:41][W][respeaker_lite:347]: Read mic mute state failed
+[07:56:44][W][respeaker_lite:347]: Read mic mute state failed
+[07:56:48][W][respeaker_lite:341]: Request mic mute state failed
+[07:56:48][D][main:707]: Battery voltage: 0.38 V
+[07:56:48][D][main:721]: Battery level normal
+[07:56:48][D][main:1452]: Starting control_leds script execution
+[07:56:49][D][control_leds:770]: voice_assistant_phase: 1
+[07:56:49][D][control_leds:771]: improv_ble_in_progress: 0
+[07:56:49][D][control_leds:772]: init_in_progress: 0
+[07:56:49][D][control_leds:773]: wifi_connected: 1
+[07:56:49][D][control_leds:774]: api_connected: 1
+[07:56:49][D][control_leds:775]: user_button_state: 0
+[07:56:49][D][control_leds:776]: low_battery_alert: 0
+[07:56:49][D][control_leds:777]: timer_ringing: 0
+[07:56:49][D][control_leds:778]: media_player_state: 1
+[07:56:49][D][control_leds:779]: is_timer_active: 0
+[07:56:49][D][control_leds:852]: Executing: idle (LED Off)
+[07:56:49][D][main:885]: Setting LED: VA idle (Off)
+[07:56:49][D][light:036]: 'LED Respeaker onboard' Setting:
+[07:56:49][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[07:56:49][D][main:858]: Finished control_leds script execution
+[07:56:49][W][component:237]: Component adc.sensor took a long time for an operation (163 ms).
+[07:56:49][W][component:238]: Components should block for at most 30 ms.
+[07:56:53][W][respeaker_lite:341]: Request mic mute state failed
+[07:56:56][W][respeaker_lite:347]: Read mic mute state failed
+[07:56:57][W][respeaker_lite:341]: Request mic mute state failed
+[07:56:58][W][respeaker_lite:341]: Request mic mute state failed
+[07:57:01][W][respeaker_lite:347]: Read mic mute state failed
+[07:57:01][W][respeaker_lite:341]: Request mic mute state failed
+[07:57:03][W][respeaker_lite:347]: Read mic mute state failed
+[07:57:03][W][respeaker_lite:347]: Read mic mute state failed
+[07:57:39][W][respeaker_lite:341]: Request mic mute state failed
+[07:57:49][D][main:707]: Battery voltage: 0.35 V
+[07:57:49][D][main:721]: Battery level normal
+[07:57:49][D][main:1452]: Starting control_leds script execution
+[07:57:49][D][control_leds:770]: voice_assistant_phase: 1
+[07:57:49][D][control_leds:771]: improv_ble_in_progress: 0
+[07:57:49][D][control_leds:772]: init_in_progress: 0
+[07:57:49][D][control_leds:773]: wifi_connected: 1
+[07:57:49][D][control_leds:774]: api_connected: 1
+[07:57:49][D][control_leds:775]: user_button_state: 0
+[07:57:49][D][control_leds:776]: low_battery_alert: 0
+[07:57:49][D][control_leds:777]: timer_ringing: 0
+[07:57:49][D][control_leds:778]: media_player_state: 1
+[07:57:49][D][control_leds:779]: is_timer_active: 0
+[07:57:49][D][control_leds:852]: Executing: idle (LED Off)
+[07:57:49][D][main:885]: Setting LED: VA idle (Off)
+[07:57:49][D][light:036]: 'LED Respeaker onboard' Setting:
+[07:57:49][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[07:57:49][D][main:858]: Finished control_leds script execution
+[07:57:49][W][component:237]: Component adc.sensor took a long time for an operation (124 ms).
+[07:57:49][W][component:238]: Components should block for at most 30 ms.
+[07:57:50][W][respeaker_lite:341]: Request mic mute state failed
+[07:57:52][W][respeaker_lite:341]: Request mic mute state failed
+[07:57:52][W][respeaker_lite:341]: Request mic mute state failed
+WARNING respeaker-lite-satellite @ 192.168.1.242: Connection error occurred: [WinError 121] The semaphore timeout period has expired
+INFO Processing unexpected disconnect from ESPHome API for respeaker-lite-satellite @ 192.168.1.242
+WARNING Disconnected from API
+WARNING Can't connect to ESPHome API for respeaker-lite-satellite @ 192.168.1.242: Timeout while resolving IP address for ['respeaker-lite-satellite.local'] (ResolveTimeoutAPIError)
+INFO Trying to connect to respeaker-lite-satellite @ 192.168.1.242 in the background
+INFO Successfully connected to respeaker-lite-satellite @ 192.168.1.242 in 0.423s
+INFO Successful handshake with respeaker-lite-satellite @ 192.168.1.242 in 0.643s
+[08:06:45][D][sntp:066]: Synchronized time: 2025-03-09 08:06:44
+[08:06:45][D][main:2021]: Time synchronized
+[08:07:00][W][respeaker_lite:347]: Read mic mute state failed
+[08:07:10][D][esp32.preferences:114]: Saving 5 preferences to flash...
+[08:07:10][D][esp32.preferences:142]: Saving 5 preferences to flash: 5 cached, 0 written, 0 failed
+[08:07:12][W][respeaker_lite:341]: Request mic mute state failed
+[08:07:13][W][respeaker_lite:347]: Read mic mute state failed
+[08:07:13][W][respeaker_lite:341]: Request mic mute state failed
+[08:07:16][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:07:16][D][light:047]:   State: ON
+[08:07:17][D][light:109]:   Effect: 'Rotating Colors'
+[08:07:21][D][main:707]: Battery voltage: 0.23 V
+[08:07:21][D][main:721]: Battery level normal
+[08:07:21][D][main:1452]: Starting control_leds script execution
+[08:07:21][D][control_leds:770]: voice_assistant_phase: 1
+[08:07:21][D][control_leds:771]: improv_ble_in_progress: 0
+[08:07:21][D][control_leds:772]: init_in_progress: 0
+[08:07:21][D][control_leds:773]: wifi_connected: 1
+[08:07:21][D][control_leds:774]: api_connected: 1
+[08:07:21][D][control_leds:775]: user_button_state: 0
+[08:07:21][D][control_leds:776]: low_battery_alert: 0
+[08:07:21][D][control_leds:777]: timer_ringing: 0
+[08:07:21][D][control_leds:778]: media_player_state: 1
+[08:07:21][D][control_leds:779]: is_timer_active: 0
+[08:07:21][D][control_leds:852]: Executing: idle (LED Off)
+[08:07:21][D][main:885]: Setting LED: VA idle (Off)
+[08:07:21][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:07:21][D][light:047]:   State: OFF
+[08:07:21][D][light:109]:   Effect: 'None'
+[08:07:21][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[08:07:21][D][main:858]: Finished control_leds script execution
+[08:07:21][W][component:237]: Component adc.sensor took a long time for an operation (96 ms).
+[08:07:21][W][component:238]: Components should block for at most 30 ms.
+[08:07:22][D][esp-idf:000][wifi]: I (48993) wifi:
+[08:07:22][D][esp-idf:000][wifi]: <ba-add>idx:1 (ifx:0, 80:cc:9c:8c:d2:ce), tid:6, ssn:1, winSize:64
+[08:07:22][D][esp-idf:000][wifi]: 
+
+[08:07:34][I][safe_mode:041]: Boot seems successful; resetting boot loop counter
+[08:07:35][D][esp32.preferences:114]: Saving 1 preferences to flash...
+[08:07:35][D][esp32.preferences:142]: Saving 1 preferences to flash: 0 cached, 1 written, 0 failed
+[08:07:35][W][component:237]: Component safe_mode took a long time for an operation (77 ms).
+[08:07:35][W][component:238]: Components should block for at most 30 ms.
+INFO ESPHome 2025.2.2
+INFO Reading configuration SmartReSpeaker.yaml...
+INFO Updating https://github.com/ArMaTeC/SmartRespeaker@main
+WARNING GPIO3 is a strapping PIN and should only be used for I/O with care.
+Attaching external pullup/down resistors to strapping pins can cause unexpected failures.
+See https://esphome.io/guides/faq.html#why-am-i-getting-a-warning-about-strapping-pins
+INFO Generating C++ source...
+INFO Updating https://github.com/espressif/esp-protocols.git@mdns-v1.5.1
+INFO Updating https://github.com/espressif/esp-tflite-micro@v1.3.1
+INFO Compiling app...
+Processing respeaker-lite-satellite (board: esp32-s3-devkitc-1; framework: espidf; platform: https://github.com/pioarduino/platform-espressif32.git#51.03.07)
+--------------------------------------------------------------------------------
+HARDWARE: ESP32S3 240MHz, 320KB RAM, 8MB Flash
+ - framework-espidf @ 3.50105.0 (5.1.5) 
+ - tool-cmake @ 3.21.3 
+ - tool-esptoolpy @ 4.8.1 
+ - tool-mklittlefs @ 3.2.0 
+ - tool-ninja @ 1.9.0 
+ - tool-riscv32-esp-elf-gdb @ 11.2.0+20220823 
+ - tool-xtensa-esp-elf-gdb @ 11.2.0+20230208 
+ - toolchain-esp32ulp @ 2.35.0-20220830 
+ - toolchain-riscv32-esp @ 12.2.0+20230208 
+ - toolchain-xtensa-esp32s3 @ 12.2.0+20230208
+Reading CMake configuration...
+Dependency Graph
+|-- esp-audio-libs @ 1.1.1
+|-- noise-c @ 0.1.6
+|-- ESPMicroSpeechFeatures @ 1.1.0
+Compiling .pioenvs\respeaker-lite-satellite\src\main.cpp.o
+In file included from src/esphome\components\adc\adc_sensor.h:9,
+                 from src/esphome.h:3,
+                 from src/main.cpp:3:
+C:/Users/karll/.platformio/packages/framework-espidf/components/esp_adc/deprecated/include/esp_adc_cal.h:17:2: warning: #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h" [-Wcpp]
+   17 | #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h"
+      |  ^~~~~~~
+In file included from src/esphome\components\adc\adc_sensor.h:10:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/adc.h:19:2: warning: #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively" [-Wcpp]
+   19 | #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively"
+      |  ^~~~~~~
+In file included from src/esphome\components\i2s_audio\i2s_audio.h:5,
+                 from src/esphome.h:45:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/i2s.h:27:2: warning: #warning "This set of I2S APIs has been deprecated, please include 'driver/i2s_std.h', 'driver/i2s_pdm.h' or 'driver/i2s_tdm.h' instead. if you want to keep using the old APIs and ignore this warning, you can enable 'Suppress leagcy driver deprecated warning' option under 'I2S Configuration' menu in Kconfig" [-Wcpp]
+   27 | #warning "This set of I2S APIs has been deprecated, \
+      |  ^~~~~~~
+In file included from components/esp-tflite-micro/tensorflow/lite/micro/tflite_bridge/flatbuffer_conversions_bridge.h:19,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_allocator.h:26,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_interpreter.h:26,
+                 from src/esphome\components\micro_wake_word\streaming_model.h:10,
+                 from src/esphome\components\micro_wake_word\micro_wake_word.h:6,
+                 from src/esphome.h:72:
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h: In member function 'T* tflite::BuiltinDataAllocator::AllocatePOD()':
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h:46:24: warning: 'template<class _Tp> struct std::is_pod' is deprecated: use is_standard_layout && is_trivial instead [-Wdeprecated-declarations]
+   46 |     static_assert(std::is_pod<T>::value, "Builtin data structure must be POD.");
+      |                        ^~~~~~
+In file included from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\bits\char_traits.h:42,
+                 from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\string:40,
+                 from src/esphome/core/log.h:7,
+                 from src/esphome/components/sensor/sensor.h:3,
+                 from src/esphome\components\adc\adc_sensor.h:3:
+c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\type_traits:757:5: note: declared here
+  757 |     is_pod
+      |     ^~~~~~
+SmartReSpeaker.yaml: In lambda function:
+SmartReSpeaker.yaml:935:36: error: 'class esphome::light::ESPColorView' has no member named 'r'
+SmartReSpeaker.yaml:935:51: error: 'class esphome::light::ESPColorView' has no member named 'g'
+SmartReSpeaker.yaml:935:60: error: 'class esphome::light::ESPColorView' has no member named 'b'
+*** [.pioenvs\respeaker-lite-satellite\src\main.cpp.o] Error 1
+========================= [FAILED] Took 14.57 seconds =========================
+INFO ESPHome 2025.2.2
+INFO Reading configuration SmartReSpeaker.yaml...
+INFO Updating https://github.com/ArMaTeC/SmartRespeaker@main
+WARNING GPIO3 is a strapping PIN and should only be used for I/O with care.
+Attaching external pullup/down resistors to strapping pins can cause unexpected failures.
+See https://esphome.io/guides/faq.html#why-am-i-getting-a-warning-about-strapping-pins
+INFO Generating C++ source...
+INFO Updating https://github.com/espressif/esp-protocols.git@mdns-v1.5.1
+INFO Updating https://github.com/espressif/esp-tflite-micro@v1.3.1
+INFO Compiling app...
+Processing respeaker-lite-satellite (board: esp32-s3-devkitc-1; framework: espidf; platform: https://github.com/pioarduino/platform-espressif32.git#51.03.07)
+--------------------------------------------------------------------------------
+HARDWARE: ESP32S3 240MHz, 320KB RAM, 8MB Flash
+ - framework-espidf @ 3.50105.0 (5.1.5) 
+ - tool-cmake @ 3.21.3 
+ - tool-esptoolpy @ 4.8.1 
+ - tool-mklittlefs @ 3.2.0 
+ - tool-ninja @ 1.9.0 
+ - tool-riscv32-esp-elf-gdb @ 11.2.0+20220823 
+ - tool-xtensa-esp-elf-gdb @ 11.2.0+20230208 
+ - toolchain-esp32ulp @ 2.35.0-20220830 
+ - toolchain-riscv32-esp @ 12.2.0+20230208 
+ - toolchain-xtensa-esp32s3 @ 12.2.0+20230208
+Reading CMake configuration...
+Dependency Graph
+|-- esp-audio-libs @ 1.1.1
+|-- noise-c @ 0.1.6
+|-- ESPMicroSpeechFeatures @ 1.1.0
+Compiling .pioenvs\respeaker-lite-satellite\src\main.cpp.o
+In file included from src/esphome\components\adc\adc_sensor.h:9,
+                 from src/esphome.h:3,
+                 from src/main.cpp:3:
+C:/Users/karll/.platformio/packages/framework-espidf/components/esp_adc/deprecated/include/esp_adc_cal.h:17:2: warning: #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h" [-Wcpp]
+   17 | #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h"
+      |  ^~~~~~~
+In file included from src/esphome\components\adc\adc_sensor.h:10:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/adc.h:19:2: warning: #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively" [-Wcpp]
+   19 | #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively"
+      |  ^~~~~~~
+In file included from src/esphome\components\i2s_audio\i2s_audio.h:5,
+                 from src/esphome.h:45:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/i2s.h:27:2: warning: #warning "This set of I2S APIs has been deprecated, please include 'driver/i2s_std.h', 'driver/i2s_pdm.h' or 'driver/i2s_tdm.h' instead. if you want to keep using the old APIs and ignore this warning, you can enable 'Suppress leagcy driver deprecated warning' option under 'I2S Configuration' menu in Kconfig" [-Wcpp]
+   27 | #warning "This set of I2S APIs has been deprecated, \
+      |  ^~~~~~~
+In file included from components/esp-tflite-micro/tensorflow/lite/micro/tflite_bridge/flatbuffer_conversions_bridge.h:19,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_allocator.h:26,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_interpreter.h:26,
+                 from src/esphome\components\micro_wake_word\streaming_model.h:10,
+                 from src/esphome\components\micro_wake_word\micro_wake_word.h:6,
+                 from src/esphome.h:72:
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h: In member function 'T* tflite::BuiltinDataAllocator::AllocatePOD()':
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h:46:24: warning: 'template<class _Tp> struct std::is_pod' is deprecated: use is_standard_layout && is_trivial instead [-Wdeprecated-declarations]
+   46 |     static_assert(std::is_pod<T>::value, "Builtin data structure must be POD.");
+      |                        ^~~~~~
+In file included from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\bits\char_traits.h:42,
+                 from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\string:40,
+                 from src/esphome/core/log.h:7,
+                 from src/esphome/components/sensor/sensor.h:3,
+                 from src/esphome\components\adc\adc_sensor.h:3:
+c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\type_traits:757:5: note: declared here
+  757 |     is_pod
+      |     ^~~~~~
+SmartReSpeaker.yaml: In lambda function:
+SmartReSpeaker.yaml:613:38: error: invalid operands of types 'double' and 'int' to binary 'operator%'
+*** [.pioenvs\respeaker-lite-satellite\src\main.cpp.o] Error 1
+========================= [FAILED] Took 14.21 seconds =========================
+INFO ESPHome 2025.2.2
+INFO Reading configuration SmartReSpeaker.yaml...
+INFO Updating https://github.com/ArMaTeC/SmartRespeaker@main
+WARNING GPIO3 is a strapping PIN and should only be used for I/O with care.
+Attaching external pullup/down resistors to strapping pins can cause unexpected failures.
+See https://esphome.io/guides/faq.html#why-am-i-getting-a-warning-about-strapping-pins
+INFO Generating C++ source...
+INFO Updating https://github.com/espressif/esp-protocols.git@mdns-v1.5.1
+INFO Updating https://github.com/espressif/esp-tflite-micro@v1.3.1
+INFO Compiling app...
+Processing respeaker-lite-satellite (board: esp32-s3-devkitc-1; framework: espidf; platform: https://github.com/pioarduino/platform-espressif32.git#51.03.07)
+--------------------------------------------------------------------------------
+HARDWARE: ESP32S3 240MHz, 320KB RAM, 8MB Flash
+ - framework-espidf @ 3.50105.0 (5.1.5) 
+ - tool-cmake @ 3.21.3 
+ - tool-esptoolpy @ 4.8.1 
+ - tool-mklittlefs @ 3.2.0 
+ - tool-ninja @ 1.9.0 
+ - tool-riscv32-esp-elf-gdb @ 11.2.0+20220823 
+ - tool-xtensa-esp-elf-gdb @ 11.2.0+20230208 
+ - toolchain-esp32ulp @ 2.35.0-20220830 
+ - toolchain-riscv32-esp @ 12.2.0+20230208 
+ - toolchain-xtensa-esp32s3 @ 12.2.0+20230208
+Reading CMake configuration...
+Dependency Graph
+|-- esp-audio-libs @ 1.1.1
+|-- noise-c @ 0.1.6
+|-- ESPMicroSpeechFeatures @ 1.1.0
+Compiling .pioenvs\respeaker-lite-satellite\src\main.cpp.o
+In file included from src/esphome\components\adc\adc_sensor.h:9,
+                 from src/esphome.h:3,
+                 from src/main.cpp:3:
+C:/Users/karll/.platformio/packages/framework-espidf/components/esp_adc/deprecated/include/esp_adc_cal.h:17:2: warning: #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h" [-Wcpp]
+   17 | #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h"
+      |  ^~~~~~~
+In file included from src/esphome\components\adc\adc_sensor.h:10:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/adc.h:19:2: warning: #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively" [-Wcpp]
+   19 | #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively"
+      |  ^~~~~~~
+In file included from src/esphome\components\i2s_audio\i2s_audio.h:5,
+                 from src/esphome.h:45:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/i2s.h:27:2: warning: #warning "This set of I2S APIs has been deprecated, please include 'driver/i2s_std.h', 'driver/i2s_pdm.h' or 'driver/i2s_tdm.h' instead. if you want to keep using the old APIs and ignore this warning, you can enable 'Suppress leagcy driver deprecated warning' option under 'I2S Configuration' menu in Kconfig" [-Wcpp]
+   27 | #warning "This set of I2S APIs has been deprecated, \
+      |  ^~~~~~~
+In file included from components/esp-tflite-micro/tensorflow/lite/micro/tflite_bridge/flatbuffer_conversions_bridge.h:19,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_allocator.h:26,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_interpreter.h:26,
+                 from src/esphome\components\micro_wake_word\streaming_model.h:10,
+                 from src/esphome\components\micro_wake_word\micro_wake_word.h:6,
+                 from src/esphome.h:72:
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h: In member function 'T* tflite::BuiltinDataAllocator::AllocatePOD()':
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h:46:24: warning: 'template<class _Tp> struct std::is_pod' is deprecated: use is_standard_layout && is_trivial instead [-Wdeprecated-declarations]
+   46 |     static_assert(std::is_pod<T>::value, "Builtin data structure must be POD.");
+      |                        ^~~~~~
+In file included from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\bits\char_traits.h:42,
+                 from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\string:40,
+                 from src/esphome/core/log.h:7,
+                 from src/esphome/components/sensor/sensor.h:3,
+                 from src/esphome\components\adc\adc_sensor.h:3:
+c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\type_traits:757:5: note: declared here
+  757 |     is_pod
+      |     ^~~~~~
+SmartReSpeaker.yaml: In lambda function:
+SmartReSpeaker.yaml:613:38: error: invalid operands of types 'double' and 'int' to binary 'operator%'
+*** [.pioenvs\respeaker-lite-satellite\src\main.cpp.o] Error 1
+========================= [FAILED] Took 14.63 seconds =========================
+INFO ESPHome 2025.2.2
+INFO Reading configuration SmartReSpeaker.yaml...
+INFO Updating https://github.com/ArMaTeC/SmartRespeaker@main
+WARNING GPIO3 is a strapping PIN and should only be used for I/O with care.
+Attaching external pullup/down resistors to strapping pins can cause unexpected failures.
+See https://esphome.io/guides/faq.html#why-am-i-getting-a-warning-about-strapping-pins
+INFO Generating C++ source...
+INFO Updating https://github.com/espressif/esp-protocols.git@mdns-v1.5.1
+INFO Updating https://github.com/espressif/esp-tflite-micro@v1.3.1
+INFO Compiling app...
+Processing respeaker-lite-satellite (board: esp32-s3-devkitc-1; framework: espidf; platform: https://github.com/pioarduino/platform-espressif32.git#51.03.07)
+--------------------------------------------------------------------------------
+HARDWARE: ESP32S3 240MHz, 320KB RAM, 8MB Flash
+ - framework-espidf @ 3.50105.0 (5.1.5) 
+ - tool-cmake @ 3.21.3 
+ - tool-esptoolpy @ 4.8.1 
+ - tool-mklittlefs @ 3.2.0 
+ - tool-ninja @ 1.9.0 
+ - tool-riscv32-esp-elf-gdb @ 11.2.0+20220823 
+ - tool-xtensa-esp-elf-gdb @ 11.2.0+20230208 
+ - toolchain-esp32ulp @ 2.35.0-20220830 
+ - toolchain-riscv32-esp @ 12.2.0+20230208 
+ - toolchain-xtensa-esp32s3 @ 12.2.0+20230208
+Reading CMake configuration...
+Dependency Graph
+|-- esp-audio-libs @ 1.1.1
+|-- noise-c @ 0.1.6
+|-- ESPMicroSpeechFeatures @ 1.1.0
+Compiling .pioenvs\respeaker-lite-satellite\src\main.cpp.o
+In file included from src/esphome\components\adc\adc_sensor.h:9,
+                 from src/esphome.h:3,
+                 from src/main.cpp:3:
+C:/Users/karll/.platformio/packages/framework-espidf/components/esp_adc/deprecated/include/esp_adc_cal.h:17:2: warning: #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h" [-Wcpp]
+   17 | #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h"
+      |  ^~~~~~~
+In file included from src/esphome\components\adc\adc_sensor.h:10:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/adc.h:19:2: warning: #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively" [-Wcpp]
+   19 | #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively"
+      |  ^~~~~~~
+In file included from src/esphome\components\i2s_audio\i2s_audio.h:5,
+                 from src/esphome.h:45:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/i2s.h:27:2: warning: #warning "This set of I2S APIs has been deprecated, please include 'driver/i2s_std.h', 'driver/i2s_pdm.h' or 'driver/i2s_tdm.h' instead. if you want to keep using the old APIs and ignore this warning, you can enable 'Suppress leagcy driver deprecated warning' option under 'I2S Configuration' menu in Kconfig" [-Wcpp]
+   27 | #warning "This set of I2S APIs has been deprecated, \
+      |  ^~~~~~~
+In file included from components/esp-tflite-micro/tensorflow/lite/micro/tflite_bridge/flatbuffer_conversions_bridge.h:19,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_allocator.h:26,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_interpreter.h:26,
+                 from src/esphome\components\micro_wake_word\streaming_model.h:10,
+                 from src/esphome\components\micro_wake_word\micro_wake_word.h:6,
+                 from src/esphome.h:72:
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h: In member function 'T* tflite::BuiltinDataAllocator::AllocatePOD()':
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h:46:24: warning: 'template<class _Tp> struct std::is_pod' is deprecated: use is_standard_layout && is_trivial instead [-Wdeprecated-declarations]
+   46 |     static_assert(std::is_pod<T>::value, "Builtin data structure must be POD.");
+      |                        ^~~~~~
+In file included from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\bits\char_traits.h:42,
+                 from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\string:40,
+                 from src/esphome/core/log.h:7,
+                 from src/esphome/components/sensor/sensor.h:3,
+                 from src/esphome\components\adc\adc_sensor.h:3:
+c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\type_traits:757:5: note: declared here
+  757 |     is_pod
+      |     ^~~~~~
+Linking .pioenvs\respeaker-lite-satellite\firmware.elf
+RAM:   [=         ]  12.4% (used 40668 bytes from 327680 bytes)
+Flash: [======    ]  64.3% (used 2528853 bytes from 3932160 bytes)
+Building .pioenvs\respeaker-lite-satellite\firmware.bin
+Creating esp32s3 image...
+Successfully created esp32s3 image.
+esp32_create_combined_bin([".pioenvs\respeaker-lite-satellite\firmware.bin"], [".pioenvs\respeaker-lite-satellite\firmware.elf"])
+Wrote 0x2797c0 bytes to file H:\source\SmartRespeaker\.esphome\build\respeaker-lite-satellite\.pioenvs\respeaker-lite-satellite/firmware.factory.bin, ready to flash to offset 0x0
+esp32_copy_ota_bin([".pioenvs\respeaker-lite-satellite\firmware.bin"], [".pioenvs\respeaker-lite-satellite\firmware.elf"])
+========================= [SUCCESS] Took 33.74 seconds =========================
+INFO Successfully compiled program.
+INFO Resolving IP address of respeaker-lite-satellite.local in mDNS
+INFO Connecting to 192.168.1.242 port 3232...
+INFO Connected to 192.168.1.242
+INFO Uploading H:\source\SmartRespeaker\.esphome\build\respeaker-lite-satellite\.pioenvs\respeaker-lite-satellite\firmware.bin (2529216 bytes)
+Uploading: [                                                            ] 0% Uploading: [=                                                           ] 1% Uploading: [=                                                           ] 2% Uploading: [==                                                          ] 3% Uploading: [===                                                         ] 4% Uploading: [===                                                         ] 5% Uploading: [====                                                        ] 6% Uploading: [====                                                        ] 7% Uploading: [=====                                                       ] 8% Uploading: [=====                                                       ] 9% Uploading: [======                                                      ] 10% Uploading: [=======                                                     ] 11% Uploading: [=======                                                     ] 12% Uploading: [========                                                    ] 13% Uploading: [=========                                                   ] 14% Uploading: [=========                                                   ] 15% Uploading: [==========                                                  ] 16% Uploading: [==========                                                  ] 17% Uploading: [===========                                                 ] 18% Uploading: [===========                                                 ] 19% Uploading: [============                                                ] 20% Uploading: [=============                                               ] 21% Uploading: [=============                                               ] 22% Uploading: [==============                                              ] 23% Uploading: [===============                                             ] 24% Uploading: [===============                                             ] 25% Uploading: [================                                            ] 26% Uploading: [================                                            ] 27% Uploading: [=================                                           ] 28% Uploading: [=================                                           ] 29% Uploading: [==================                                          ] 30% Uploading: [===================                                         ] 31% Uploading: [===================                                         ] 32% Uploading: [====================                                        ] 33% Uploading: [====================                                        ] 34% Uploading: [=====================                                       ] 35% Uploading: [======================                                      ] 36% Uploading: [======================                                      ] 37% Uploading: [=======================                                     ] 38% Uploading: [========================                                    ] 39% Uploading: [========================                                    ] 40% Uploading: [=========================                                   ] 41% Uploading: [=========================                                   ] 42% Uploading: [==========================                                  ] 43% Uploading: [==========================                                  ] 44% Uploading: [===========================                                 ] 45% Uploading: [============================                                ] 46% Uploading: [============================                                ] 47% Uploading: [=============================                               ] 48% Uploading: [==============================                              ] 49% Uploading: [==============================                              ] 50% Uploading: [===============================                             ] 51% Uploading: [===============================                             ] 52% Uploading: [================================                            ] 53% Uploading: [================================                            ] 54% Uploading: [=================================                           ] 55% Uploading: [==================================                          ] 56% Uploading: [==================================                          ] 57% Uploading: [===================================                         ] 58% Uploading: [====================================                        ] 59% Uploading: [====================================                        ] 60% Uploading: [=====================================                       ] 61% Uploading: [=====================================                       ] 62% Uploading: [======================================                      ] 63% Uploading: [======================================                      ] 64% Uploading: [=======================================                     ] 65% Uploading: [========================================                    ] 66% Uploading: [========================================                    ] 67% Uploading: [=========================================                   ] 68% Uploading: [==========================================                  ] 69% Uploading: [==========================================                  ] 70% Uploading: [===========================================                 ] 71% Uploading: [===========================================                 ] 72% Uploading: [============================================                ] 73% Uploading: [=============================================               ] 74% Uploading: [=============================================               ] 75% Uploading: [==============================================              ] 76% Uploading: [==============================================              ] 77% Uploading: [===============================================             ] 78% Uploading: [===============================================             ] 79% Uploading: [================================================            ] 80% Uploading: [=================================================           ] 81% Uploading: [=================================================           ] 82% Uploading: [==================================================          ] 83% Uploading: [===================================================         ] 84% Uploading: [===================================================         ] 85% Uploading: [====================================================        ] 86% Uploading: [====================================================        ] 87% Uploading: [=====================================================       ] 88% Uploading: [=====================================================       ] 89% Uploading: [======================================================      ] 90% Uploading: [=======================================================     ] 91% Uploading: [=======================================================     ] 92% Uploading: [========================================================    ] 93% Uploading: [=========================================================   ] 94% Uploading: [=========================================================   ] 95% Uploading: [==========================================================  ] 96% Uploading: [==========================================================  ] 97% Uploading: [=========================================================== ] 98% Uploading: [=========================================================== ] 99% Uploading: [============================================================] 100% Done...
+
+INFO Upload took 36.34 seconds, waiting for result...
+INFO OTA successful
+INFO Successfully uploaded program.
+INFO Starting log output from respeaker-lite-satellite.local using esphome API
+INFO Successfully connected to respeaker-lite-satellite @ 192.168.1.242 in 12.541s
+INFO Successful handshake with respeaker-lite-satellite @ 192.168.1.242 in 5.693s
+[08:28:00][I][app:100]: ESPHome version 2025.2.2 compiled on Mar  9 2025, 08:26:29
+[08:28:00][I][app:102]: Project formatbce.respeaker-lite-satellite version 2025.2.2
+[08:28:00][C][wifi:600]: WiFi:
+[08:28:00][C][wifi:428]:   Local MAC: 98:3D:AE:ED:BC:FC
+[08:28:00][C][wifi:433]:   SSID: 'ParkerLife_2G'
+[08:28:00][C][wifi:436]:   IP Address: 192.168.1.242
+[08:28:00][C][wifi:439]:   BSSID: 80:CC:9C:8C:D2:CE
+[08:28:00][C][wifi:441]:   Hostname: 'respeaker-lite-satellite'
+[08:28:00][C][wifi:443]:   Signal strength: -45 dB ERROR Exception in callback _ProactorReadPipeTransport._loop_reading()
+handle: <Handle _ProactorReadPipeTransport._loop_reading()>
+Traceback (most recent call last):
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 325, in _loop_reading
+    self._data_received(data, length)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 274, in _data_received
+    self._protocol.data_received(data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "aioesphomeapi\\_frame_helper\\noise.py", line 197, in aioesphomeapi._frame_helper.noise.APINoiseFrameHelper.data_received
+  File "aioesphomeapi\\_frame_helper\\noise.py", line 367, in aioesphomeapi._frame_helper.noise.APINoiseFrameHelper._handle_frame
+  File "aioesphomeapi\\connection.py", line 939, in aioesphomeapi.connection.APIConnection.process_packet
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\site-packages\esphome\components\api\client.py", line 51, in on_log
+    print(f"[{time_.hour:02}:{time_.minute:02}:{time_.second:02}]{text}")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\site-packages\colorama\ansitowin32.py", line 47, in write
+    self.__convertor.write(text)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\site-packages\colorama\ansitowin32.py", line 177, in write
+    self.write_and_convert(text)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\site-packages\colorama\ansitowin32.py", line 202, in write_and_convert
+    self.write_plain_text(text, cursor, start)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\site-packages\colorama\ansitowin32.py", line 210, in write_plain_text
+    self.wrapped.write(text[start:end])
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 0-3: character maps to <undefined>
+WARNING respeaker-lite-satellite @ 192.168.1.242: Connection error occurred: respeaker-lite-satellite @ 192.168.1.242: Encryption error: received_name=respeaker-lite-satellite
+INFO Processing unexpected disconnect from ESPHome API for respeaker-lite-satellite @ 192.168.1.242
+WARNING Disconnected from API
+INFO Successfully connected to respeaker-lite-satellite @ 192.168.1.242 in 1.297s
+INFO Successful handshake with respeaker-lite-satellite @ 192.168.1.242 in 2.691s
+[08:28:06][D][esp-idf:000][wifi]: I (24604) wifi:
+[08:28:06][D][esp-idf:000][wifi]: <ba-add>idx:0 (ifx:0, 80:cc:9c:8c:d2:ce), tid:0, ssn:125, winSize:64
+[08:28:06][D][esp-idf:000][wifi]: 
+
+[08:28:17][D][esp-idf:000][wifi]: I (35831) wifi:
+[08:28:17][D][esp-idf:000][wifi]: <ba-add>idx:1 (ifx:0, 80:cc:9c:8c:d2:ce), tid:6, ssn:1, winSize:64
+[08:28:17][D][esp-idf:000][wifi]: 
+
+[08:28:29][D][main:707]: Battery voltage: 0.48 V
+[08:28:29][D][main:1101]: Battery level normal
+[08:28:29][D][main:1832]: Starting control_leds script execution
+[08:28:29][D][control_leds:1150]: voice_assistant_phase: 1
+[08:28:29][D][control_leds:1151]: improv_ble_in_progress: 0
+[08:28:29][D][control_leds:1152]: init_in_progress: 0
+[08:28:29][D][control_leds:1153]: wifi_connected: 1
+[08:28:29][D][control_leds:1154]: api_connected: 1
+[08:28:29][D][control_leds:1155]: user_button_state: 0
+[08:28:29][D][control_leds:1156]: low_battery_alert: 0
+[08:28:29][D][control_leds:1157]: timer_ringing: 0
+[08:28:29][D][control_leds:1158]: media_player_state: 1
+[08:28:29][D][control_leds:1159]: is_timer_active: 0
+[08:28:29][D][control_leds:1232]: Executing: idle (LED Off)
+[08:28:29][D][main:1265]: Setting LED: VA idle (Off)
+[08:28:29][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:28:29][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[08:28:29][D][main:1238]: Finished control_leds script execution
+[08:28:29][W][component:237]: Component adc.sensor took a long time for an operation (86 ms).
+[08:28:29][W][component:238]: Components should block for at most 30 ms.
+[08:28:34][D][esp32.preferences:114]: Saving 6 preferences to flash...
+[08:28:34][D][esp32.preferences:142]: Saving 6 preferences to flash: 4 cached, 2 written, 0 failed
+[08:28:43][I][safe_mode:041]: Boot seems successful; resetting boot loop counter
+[08:28:43][D][esp32.preferences:114]: Saving 1 preferences to flash...
+[08:28:43][D][esp32.preferences:142]: Saving 1 preferences to flash: 0 cached, 1 written, 0 failed
+[08:28:44][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:28:44][D][light:047]:   State: ON
+[08:28:44][D][light:109]:   Effect: 'Pulse Matrix'
+[08:28:54][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:28:54][D][light:109]:   Effect: 'Twilight Drift'
+[08:29:09][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:29:09][D][light:109]:   Effect: 'Sparkle Fade'
+[08:29:22][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:29:22][D][light:109]:   Effect: 'Color Bloom'
+[08:29:29][D][main:707]: Battery voltage: 0.44 V
+[08:29:29][D][main:1101]: Battery level normal
+[08:29:29][D][main:1832]: Starting control_leds script execution
+[08:29:29][D][control_leds:1150]: voice_assistant_phase: 1
+[08:29:29][D][control_leds:1151]: improv_ble_in_progress: 0
+[08:29:29][D][control_leds:1152]: init_in_progress: 0
+[08:29:29][D][control_leds:1153]: wifi_connected: 1
+[08:29:29][D][control_leds:1154]: api_connected: 1
+[08:29:29][D][control_leds:1155]: user_button_state: 0
+[08:29:29][D][control_leds:1156]: low_battery_alert: 0
+[08:29:29][D][control_leds:1157]: timer_ringing: 0
+[08:29:29][D][control_leds:1158]: media_player_state: 1
+[08:29:29][D][control_leds:1159]: is_timer_active: 0
+[08:29:29][D][control_leds:1232]: Executing: idle (LED Off)
+[08:29:29][D][main:1265]: Setting LED: VA idle (Off)
+[08:29:29][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:29:29][D][light:047]:   State: OFF
+[08:29:29][D][light:109]:   Effect: 'None'
+[08:29:29][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[08:29:29][D][main:1238]: Finished control_leds script execution
+[08:29:29][W][component:237]: Component adc.sensor took a long time for an operation (98 ms).
+[08:29:29][W][component:238]: Components should block for at most 30 ms.
+[08:29:29][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:29:38][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:29:38][D][light:047]:   State: ON
+[08:29:38][D][light:109]:   Effect: 'Color Bloom'
+[08:29:40][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:29:40][D][light:109]:   Effect: 'Glow Orbit'
+[08:29:46][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:29:46][D][light:109]:   Effect: 'Prism Split'
+[08:29:51][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:29:51][D][light:109]:   Effect: 'Chasing Waves'
+[08:29:58][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:29:58][D][light:109]:   Effect: 'Binary Clock'
+[08:30:10][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:30:10][D][light:109]:   Effect: 'Fractal Glow'
+[08:30:18][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:30:18][D][light:109]:   Effect: 'Solar Flare'
+[08:30:25][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:30:25][D][light:109]:   Effect: 'Ripple Echo'
+[08:30:29][D][main:707]: Battery voltage: 0.22 V
+[08:30:29][D][main:1101]: Battery level normal
+[08:30:29][D][main:1832]: Starting control_leds script execution
+[08:30:29][D][control_leds:1150]: voice_assistant_phase: 1
+[08:30:29][D][control_leds:1151]: improv_ble_in_progress: 0
+[08:30:29][D][control_leds:1152]: init_in_progress: 0
+[08:30:29][D][control_leds:1153]: wifi_connected: 1
+[08:30:29][D][control_leds:1154]: api_connected: 1
+[08:30:29][D][control_leds:1155]: user_button_state: 0
+[08:30:29][D][control_leds:1156]: low_battery_alert: 0
+[08:30:29][D][control_leds:1157]: timer_ringing: 0
+[08:30:29][D][control_leds:1158]: media_player_state: 1
+[08:30:29][D][control_leds:1159]: is_timer_active: 0
+[08:30:29][D][control_leds:1232]: Executing: idle (LED Off)
+[08:30:29][D][main:1265]: Setting LED: VA idle (Off)
+[08:30:29][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:30:29][D][light:047]:   State: OFF
+[08:30:29][D][light:109]:   Effect: 'None'
+[08:30:29][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[08:30:29][D][main:1238]: Finished control_leds script execution
+[08:30:29][W][component:237]: Component adc.sensor took a long time for an operation (100 ms).
+[08:30:29][W][component:238]: Components should block for at most 30 ms.
+[08:30:29][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:30:29][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:30:29][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:30:29][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:30:36][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:30:36][D][light:047]:   State: ON
+[08:30:36][D][light:109]:   Effect: 'Neon Chase'
+[08:30:46][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:30:46][D][light:109]:   Effect: 'Galactic Pulse'
+[08:30:54][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:30:54][D][light:109]:   Effect: 'Heartbeat'
+[08:31:01][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:31:01][D][light:109]:   Effect: 'Strobe Chaos'
+[08:31:04][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:31:04][D][light:109]:   Effect: 'Hypnotic Swirl'
+[08:31:09][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:31:09][D][light:109]:   Effect: 'Digital Rain'
+[08:31:14][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:31:14][D][light:109]:   Effect: 'Lava Flow'
+[08:31:22][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:31:22][D][light:109]:   Effect: 'Electric Storm'
+[08:31:29][D][main:707]: Battery voltage: 0.44 V
+[08:31:29][D][main:1101]: Battery level normal
+[08:31:29][D][main:1832]: Starting control_leds script execution
+[08:31:29][D][control_leds:1150]: voice_assistant_phase: 1
+[08:31:29][D][control_leds:1151]: improv_ble_in_progress: 0
+[08:31:29][D][control_leds:1152]: init_in_progress: 0
+[08:31:29][D][control_leds:1153]: wifi_connected: 1
+[08:31:29][D][control_leds:1154]: api_connected: 1
+[08:31:29][D][control_leds:1155]: user_button_state: 0
+[08:31:29][D][control_leds:1156]: low_battery_alert: 0
+[08:31:29][D][control_leds:1157]: timer_ringing: 0
+[08:31:29][D][control_leds:1158]: media_player_state: 1
+[08:31:29][D][control_leds:1159]: is_timer_active: 0
+[08:31:29][D][control_leds:1232]: Executing: idle (LED Off)
+[08:31:29][D][main:1265]: Setting LED: VA idle (Off)
+[08:31:29][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:31:29][D][light:047]:   State: OFF
+[08:31:29][D][light:109]:   Effect: 'None'
+[08:31:29][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[08:31:29][D][main:1238]: Finished control_leds script execution
+[08:31:29][W][component:237]: Component adc.sensor took a long time for an operation (99 ms).
+[08:31:29][W][component:238]: Components should block for at most 30 ms.
+[08:31:29][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:31:36][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:31:36][D][light:047]:   State: ON
+[08:31:36][D][light:109]:   Effect: 'Quantum Flux'
+[08:31:44][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:31:44][D][light:109]:   Effect: 'Wave Interference'
+[08:31:50][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:31:50][D][light:109]:   Effect: 'Particle Dance'
+[08:31:56][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:31:56][D][light:109]:   Effect: 'Kaleidoscope'
+[08:32:16][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:32:16][D][light:109]:   Effect: 'Color Vortex'
+[08:32:23][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:32:23][D][light:109]:   Effect: 'Meteor Shower'
+[08:32:29][D][main:707]: Battery voltage: 0.45 V
+[08:32:29][D][main:1101]: Battery level normal
+[08:32:29][D][main:1832]: Starting control_leds script execution
+[08:32:29][D][control_leds:1150]: voice_assistant_phase: 1
+[08:32:29][D][control_leds:1151]: improv_ble_in_progress: 0
+[08:32:29][D][control_leds:1152]: init_in_progress: 0
+[08:32:29][D][control_leds:1153]: wifi_connected: 1
+[08:32:29][D][control_leds:1154]: api_connected: 1
+[08:32:29][D][control_leds:1155]: user_button_state: 0
+[08:32:29][D][control_leds:1156]: low_battery_alert: 0
+[08:32:29][D][control_leds:1157]: timer_ringing: 0
+[08:32:29][D][control_leds:1158]: media_player_state: 1
+[08:32:29][D][control_leds:1159]: is_timer_active: 0
+[08:32:29][D][control_leds:1232]: Executing: idle (LED Off)
+[08:32:29][D][main:1265]: Setting LED: VA idle (Off)
+[08:32:29][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:32:29][D][light:047]:   State: OFF
+[08:32:29][D][light:109]:   Effect: 'None'
+[08:32:29][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[08:32:29][D][main:1238]: Finished control_leds script execution
+[08:32:29][W][component:237]: Component adc.sensor took a long time for an operation (100 ms).
+[08:32:29][W][component:238]: Components should block for at most 30 ms.
+[08:32:29][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:32:29][D][light:047]:   State: ON
+[08:32:29][D][light:109]:   Effect: 'Aurora Borealis'
+[08:32:29][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:32:29][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:32:29][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:32:29][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:32:29][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:32:34][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:32:34][D][light:109]:   Effect: 'Pulse Ripple'
+[08:32:40][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:32:40][D][light:109]:   Effect: 'Cosmic Spiral'
+[08:32:46][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:32:46][D][light:109]:   Effect: 'Fire Simulation'
+[08:33:16][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:33:16][D][light:109]:   Effect: 'Plasma Wave'
+[08:33:21][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:33:21][D][light:109]:   Effect: 'Clock Face'
+[08:33:29][D][main:707]: Battery voltage: 0.41 V
+[08:33:29][D][main:1101]: Battery level normal
+[08:33:29][D][main:1832]: Starting control_leds script execution
+[08:33:29][D][control_leds:1150]: voice_assistant_phase: 1
+[08:33:29][D][control_leds:1151]: improv_ble_in_progress: 0
+[08:33:29][D][control_leds:1152]: init_in_progress: 0
+[08:33:29][D][control_leds:1153]: wifi_connected: 1
+[08:33:29][D][control_leds:1154]: api_connected: 1
+[08:33:29][D][control_leds:1155]: user_button_state: 0
+[08:33:29][D][control_leds:1156]: low_battery_alert: 0
+[08:33:29][D][control_leds:1157]: timer_ringing: 0
+[08:33:29][D][control_leds:1158]: media_player_state: 1
+[08:33:29][D][control_leds:1159]: is_timer_active: 0
+[08:33:29][D][control_leds:1232]: Executing: idle (LED Off)
+[08:33:29][D][main:1265]: Setting LED: VA idle (Off)
+[08:33:29][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:33:29][D][light:047]:   State: OFF
+[08:33:29][D][light:109]:   Effect: 'None'
+[08:33:29][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[08:33:29][D][main:1238]: Finished control_leds script execution
+[08:33:29][W][component:237]: Component adc.sensor took a long time for an operation (95 ms).
+[08:33:29][W][component:238]: Components should block for at most 30 ms.
+[08:33:29][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:33:58][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:33:58][D][light:047]:   State: ON
+[08:33:58][D][light:109]:   Effect: 'Rainbow Cycle'
+[08:34:02][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:34:02][D][light:109]:   Effect: 'Factory Reset Coming Up'
+[08:34:06][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:34:06][D][light:109]:   Effect: 'Idle Breathing'
+[08:34:12][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:34:12][D][light:055]:   Color brightness: 100%
+[08:34:12][D][light:058]:   Red: 100%, Green: 89%, Blue: 81%
+[08:34:14][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:34:14][D][light:055]:   Color brightness: 100%
+[08:34:14][D][light:058]:   Red: 100%, Green: 62%, Blue: 95%
+[08:34:22][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:34:22][D][light:055]:   Color brightness: 100%
+[08:34:22][D][light:058]:   Red: 100%, Green: 54%, Blue: 5%
+[08:34:26][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:34:26][D][light:109]:   Effect: 'Slow Pulse'
+[08:34:29][D][main:707]: Battery voltage: 0.45 V
+[08:34:29][D][main:1101]: Battery level normal
+[08:34:29][D][main:1832]: Starting control_leds script execution
+[08:34:29][D][control_leds:1150]: voice_assistant_phase: 1
+[08:34:29][D][control_leds:1151]: improv_ble_in_progress: 0
+[08:34:29][D][control_leds:1152]: init_in_progress: 0
+[08:34:29][D][control_leds:1153]: wifi_connected: 1
+[08:34:29][D][control_leds:1154]: api_connected: 1
+[08:34:29][D][control_leds:1155]: user_button_state: 0
+[08:34:29][D][control_leds:1156]: low_battery_alert: 0
+[08:34:29][D][control_leds:1157]: timer_ringing: 0
+[08:34:29][D][control_leds:1158]: media_player_state: 1
+[08:34:29][D][control_leds:1159]: is_timer_active: 0
+[08:34:29][D][control_leds:1232]: Executing: idle (LED Off)
+[08:34:29][D][main:1265]: Setting LED: VA idle (Off)
+[08:34:29][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:34:29][D][light:047]:   State: OFF
+[08:34:29][D][light:109]:   Effect: 'None'
+[08:34:29][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[08:34:29][D][main:1238]: Finished control_leds script execution
+[08:34:29][W][component:237]: Component adc.sensor took a long time for an operation (107 ms).
+[08:34:29][W][component:238]: Components should block for at most 30 ms.
+[08:34:29][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:34:29][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:34:29][D][light:047]:   State: ON
+[08:34:29][D][light:055]:   Color brightness: 100%
+[08:34:29][D][light:058]:   Red: 100%, Green: 76%, Blue: 55%
+[08:34:32][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:34:32][D][light:109]:   Effect: 'Idle Breathing'
+[08:34:36][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:34:36][D][light:109]:   Effect: 'Fast Pulse'
+[08:34:36][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:34:36][D][light:055]:   Color brightness: 100%
+[08:34:36][D][light:058]:   Red: 100%, Green: 43%, Blue: 33%
+[08:34:38][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:34:38][D][light:055]:   Color brightness: 100%
+[08:34:38][D][light:058]:   Red: 100%, Green: 62%, Blue: 95%
+[08:34:39][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:34:39][D][light:055]:   Color brightness: 100%
+[08:34:39][D][light:058]:   Red: 84%, Green: 59%, Blue: 100%
+[08:34:42][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:34:42][D][light:055]:   Color brightness: 100%
+[08:34:42][D][light:058]:   Red: 100%, Green: 76%, Blue: 55%
+[08:34:43][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:34:43][D][light:055]:   Color brightness: 100%
+[08:34:43][D][light:058]:   Red: 100%, Green: 76%, Blue: 55%
+[08:34:46][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:34:46][D][light:109]:   Effect: 'Replying Alternate'
+[08:34:46][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:34:46][D][light:051]:   Brightness: 50%
+[08:34:46][D][light:058]:   Red: 0%, Green: 100%, Blue: 100%
+[08:34:47][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:34:47][D][light:051]:   Brightness: 50%
+[08:34:47][D][light:058]:   Red: 0%, Green: 100%, Blue: 0%
+[08:34:48][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:34:48][D][light:051]:   Brightness: 50%
+[08:34:48][D][light:058]:   Red: 0%, Green: 100%, Blue: 100%
+[08:34:49][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:34:49][D][light:051]:   Brightness: 50%
+[08:34:49][D][light:058]:   Red: 0%, Green: 100%, Blue: 0%
+[08:34:50][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:34:50][D][light:051]:   Brightness: 50%
+[08:34:50][D][light:058]:   Red: 0%, Green: 100%, Blue: 100%
+[08:34:51][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:34:51][D][light:051]:   Brightness: 50%
+[08:34:51][D][light:058]:   Red: 0%, Green: 100%, Blue: 0%
+[08:34:52][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:34:52][D][light:109]:   Effect: 'Clock Face'
+[08:35:29][D][main:707]: Battery voltage: 0.30 V
+[08:35:29][D][main:1101]: Battery level normal
+[08:35:29][D][main:1832]: Starting control_leds script execution
+[08:35:29][D][control_leds:1150]: voice_assistant_phase: 1
+[08:35:29][D][control_leds:1151]: improv_ble_in_progress: 0
+[08:35:29][D][control_leds:1152]: init_in_progress: 0
+[08:35:29][D][control_leds:1153]: wifi_connected: 1
+[08:35:29][D][control_leds:1154]: api_connected: 1
+[08:35:29][D][control_leds:1155]: user_button_state: 0
+[08:35:29][D][control_leds:1156]: low_battery_alert: 0
+[08:35:29][D][control_leds:1157]: timer_ringing: 0
+[08:35:29][D][control_leds:1158]: media_player_state: 1
+[08:35:29][D][control_leds:1159]: is_timer_active: 0
+[08:35:29][D][control_leds:1232]: Executing: idle (LED Off)
+[08:35:29][D][main:1265]: Setting LED: VA idle (Off)
+[08:35:29][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:35:29][D][light:047]:   State: OFF
+[08:35:29][D][light:109]:   Effect: 'None'
+[08:35:29][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[08:35:29][D][main:1238]: Finished control_leds script execution
+[08:35:29][W][component:237]: Component adc.sensor took a long time for an operation (113 ms).
+[08:35:29][W][component:238]: Components should block for at most 30 ms.
+[08:35:29][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:35:29][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:35:29][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:36:29][D][main:707]: Battery voltage: 0.32 V
+[08:36:29][D][main:1101]: Battery level normal
+[08:36:29][D][main:1832]: Starting control_leds script execution
+[08:36:29][D][control_leds:1150]: voice_assistant_phase: 1
+[08:36:29][D][control_leds:1151]: improv_ble_in_progress: 0
+[08:36:29][D][control_leds:1152]: init_in_progress: 0
+[08:36:29][D][control_leds:1153]: wifi_connected: 1
+[08:36:29][D][control_leds:1154]: api_connected: 1
+[08:36:29][D][control_leds:1155]: user_button_state: 0
+[08:36:29][D][control_leds:1156]: low_battery_alert: 0
+[08:36:29][D][control_leds:1157]: timer_ringing: 0
+[08:36:29][D][control_leds:1158]: media_player_state: 1
+[08:36:29][D][control_leds:1159]: is_timer_active: 0
+[08:36:29][D][control_leds:1232]: Executing: idle (LED Off)
+[08:36:29][D][main:1265]: Setting LED: VA idle (Off)
+[08:36:29][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:36:29][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[08:36:29][D][main:1238]: Finished control_leds script execution
+[08:36:29][W][component:237]: Component adc.sensor took a long time for an operation (107 ms).
+[08:36:29][W][component:238]: Components should block for at most 30 ms.
+[08:36:29][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:36:29][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:37:29][D][main:707]: Battery voltage: 0.38 V
+[08:37:29][D][main:1101]: Battery level normal
+[08:37:29][D][main:1832]: Starting control_leds script execution
+[08:37:29][D][control_leds:1150]: voice_assistant_phase: 1
+[08:37:29][D][control_leds:1151]: improv_ble_in_progress: 0
+[08:37:29][D][control_leds:1152]: init_in_progress: 0
+[08:37:29][D][control_leds:1153]: wifi_connected: 1
+[08:37:29][D][control_leds:1154]: api_connected: 1
+[08:37:29][D][control_leds:1155]: user_button_state: 0
+[08:37:29][D][control_leds:1156]: low_battery_alert: 0
+[08:37:29][D][control_leds:1157]: timer_ringing: 0
+[08:37:29][D][control_leds:1158]: media_player_state: 1
+[08:37:29][D][control_leds:1159]: is_timer_active: 0
+[08:37:29][D][control_leds:1232]: Executing: idle (LED Off)
+[08:37:29][D][main:1265]: Setting LED: VA idle (Off)
+[08:37:29][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:37:29][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[08:37:29][D][main:1238]: Finished control_leds script execution
+[08:37:29][W][component:237]: Component adc.sensor took a long time for an operation (81 ms).
+[08:37:29][W][component:238]: Components should block for at most 30 ms.
+[08:37:29][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:19][I][respeaker_lite:354]: Mic mute state: 1
+[08:38:19][D][binary_sensor:036]: 'mute_state': Sending state ON
+[08:38:19][D][switch:055]: 'Mic mute': Sending state ON
+[08:38:19][D][main:1347]: Mic mute ON
+[08:38:19][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:38:19][D][light:047]:   State: ON
+[08:38:19][D][light:051]:   Brightness: 50%
+[08:38:20][D][light:058]:   Red: 100%, Green: 0%, Blue: 0%
+[08:38:20][D][main:228]: Playing mute ON sound
+[08:38:20][D][main:1390]: Playing sound: priority=0
+[08:38:20][D][main:1832]: Starting control_leds script execution
+[08:38:20][D][control_leds:1150]: voice_assistant_phase: 1
+[08:38:20][D][control_leds:1151]: improv_ble_in_progress: 0
+[08:38:20][D][control_leds:1152]: init_in_progress: 0
+[08:38:20][D][control_leds:1153]: wifi_connected: 1
+[08:38:20][D][control_leds:1154]: api_connected: 1
+[08:38:20][D][control_leds:1155]: user_button_state: 0
+[08:38:20][D][control_leds:1156]: low_battery_alert: 0
+[08:38:20][D][control_leds:1157]: timer_ringing: 0
+[08:38:20][D][control_leds:1158]: media_player_state: 1
+[08:38:20][D][control_leds:1159]: is_timer_active: 0
+[08:38:20][D][control_leds:1232]: Executing: idle (LED Off)
+[08:38:20][D][main:1265]: Setting LED: VA idle (Off)
+[08:38:20][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:38:20][D][light:047]:   State: OFF
+[08:38:20][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[08:38:20][D][main:1238]: Finished control_leds script execution
+[08:38:20][W][component:237]: Component switch took a long time for an operation (88 ms).
+[08:38:20][W][component:238]: Components should block for at most 30 ms.
+[08:38:20][D][main:2158]: Media player state changed: 4
+[08:38:20][D][main:241]: Media player announcement started
+[08:38:20][D][speaker_media_player:420]: State changed to ANNOUNCING
+[08:38:20][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:20][D][speaker_media_player.pipeline:114]: Reading FLAC file type
+[08:38:20][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:20][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:20][D][speaker_media_player.pipeline:124]: Decoded audio has 1 channels, 48000 Hz sample rate, and 16 bits per sample
+[08:38:20][D][ring_buffer:034]: Created ring buffer with size 9600
+[08:38:20][D][speaker_mixer:306]: Starting speaker mixer
+[08:38:20][D][speaker_mixer:314]: Started speaker mixer
+[08:38:20][D][i2s_audio.speaker:111]: Starting Speaker
+[08:38:20][D][i2s_audio.speaker:116]: Started Speaker
+[08:38:21][D][main:2158]: Media player state changed: 1
+[08:38:21][D][main:230]: Removing ducking from media player
+[08:38:21][D][speaker_media_player:420]: State changed to IDLE
+[08:38:21][D][speaker_mixer:319]: Stopping speaker mixer
+[08:38:22][I][respeaker_lite:354]: Mic mute state: 0
+[08:38:22][D][binary_sensor:036]: 'mute_state': Sending state OFF
+[08:38:22][D][switch:055]: 'Mic mute': Sending state OFF
+[08:38:22][D][main:238]: Mic mute OFF
+[08:38:22][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:38:22][D][light:047]:   State: ON
+[08:38:22][D][light:051]:   Brightness: 50%
+[08:38:22][D][light:058]:   Red: 0%, Green: 100%, Blue: 0%
+[08:38:22][D][main:250]: Playing mute OFF sound
+[08:38:22][D][main:1390]: Playing sound: priority=0
+[08:38:22][D][main:1832]: Starting control_leds script execution
+[08:38:22][D][control_leds:1150]: voice_assistant_phase: 1
+[08:38:22][D][control_leds:1151]: improv_ble_in_progress: 0
+[08:38:22][D][control_leds:1152]: init_in_progress: 0
+[08:38:22][D][control_leds:1153]: wifi_connected: 1
+[08:38:22][D][control_leds:1154]: api_connected: 1
+[08:38:22][D][control_leds:1155]: user_button_state: 0
+[08:38:22][D][control_leds:1156]: low_battery_alert: 0
+[08:38:22][D][control_leds:1157]: timer_ringing: 0
+[08:38:22][D][control_leds:1158]: media_player_state: 1
+[08:38:22][D][control_leds:1159]: is_timer_active: 0
+[08:38:22][D][control_leds:1232]: Executing: idle (LED Off)
+[08:38:22][D][main:1265]: Setting LED: VA idle (Off)
+[08:38:22][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:38:22][D][light:047]:   State: OFF
+[08:38:22][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[08:38:22][D][main:1238]: Finished control_leds script execution
+[08:38:22][W][component:237]: Component switch took a long time for an operation (86 ms).
+[08:38:22][W][component:238]: Components should block for at most 30 ms.
+[08:38:22][D][main:2158]: Media player state changed: 4
+[08:38:22][D][main:241]: Media player announcement started
+[08:38:22][D][speaker_media_player:420]: State changed to ANNOUNCING
+[08:38:22][D][speaker_media_player.pipeline:114]: Reading FLAC file type
+[08:38:22][D][speaker_media_player.pipeline:124]: Decoded audio has 1 channels, 48000 Hz sample rate, and 16 bits per sample
+[08:38:22][D][ring_buffer:034]: Created ring buffer with size 9600
+[08:38:22][D][speaker_mixer:306]: Starting speaker mixer
+[08:38:22][D][speaker_mixer:314]: Started speaker mixer
+[08:38:22][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:22][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:23][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:23][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:23][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:23][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:23][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:24][D][main:2158]: Media player state changed: 1
+[08:38:24][D][main:230]: Removing ducking from media player
+[08:38:24][D][speaker_media_player:420]: State changed to IDLE
+[08:38:24][D][speaker_mixer:319]: Stopping speaker mixer
+[08:38:29][D][main:707]: Battery voltage: 0.07 V
+[08:38:29][D][main:1101]: Battery level normal
+[08:38:29][D][main:1832]: Starting control_leds script execution
+[08:38:29][D][control_leds:1150]: voice_assistant_phase: 1
+[08:38:29][D][control_leds:1151]: improv_ble_in_progress: 0
+[08:38:29][D][control_leds:1152]: init_in_progress: 0
+[08:38:29][D][control_leds:1153]: wifi_connected: 1
+[08:38:29][D][control_leds:1154]: api_connected: 1
+[08:38:29][D][control_leds:1155]: user_button_state: 0
+[08:38:29][D][control_leds:1156]: low_battery_alert: 0
+[08:38:29][D][control_leds:1157]: timer_ringing: 0
+[08:38:29][D][control_leds:1158]: media_player_state: 1
+[08:38:29][D][control_leds:1159]: is_timer_active: 0
+[08:38:29][D][control_leds:1232]: Executing: idle (LED Off)
+[08:38:29][D][main:1265]: Setting LED: VA idle (Off)
+[08:38:29][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:38:29][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[08:38:29][D][main:1238]: Finished control_leds script execution
+[08:38:29][W][component:237]: Component adc.sensor took a long time for an operation (94 ms).
+[08:38:29][W][component:238]: Components should block for at most 30 ms.
+[08:38:29][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:29][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:42][I][respeaker_lite:354]: Mic mute state: 1
+[08:38:42][D][binary_sensor:036]: 'mute_state': Sending state ON
+[08:38:42][D][switch:055]: 'Mic mute': Sending state ON
+[08:38:42][D][main:1347]: Mic mute ON
+[08:38:42][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:38:42][D][light:047]:   State: ON
+[08:38:42][D][light:051]:   Brightness: 50%
+[08:38:42][D][light:058]:   Red: 100%, Green: 0%, Blue: 0%
+[08:38:42][D][main:228]: Playing mute ON sound
+[08:38:42][D][main:1390]: Playing sound: priority=0
+[08:38:42][D][main:1832]: Starting control_leds script execution
+[08:38:42][D][control_leds:1150]: voice_assistant_phase: 1
+[08:38:42][D][control_leds:1151]: improv_ble_in_progress: 0
+[08:38:42][D][control_leds:1152]: init_in_progress: 0
+[08:38:42][D][control_leds:1153]: wifi_connected: 1
+[08:38:42][D][control_leds:1154]: api_connected: 1
+[08:38:42][D][control_leds:1155]: user_button_state: 0
+[08:38:42][D][control_leds:1156]: low_battery_alert: 0
+[08:38:42][D][control_leds:1157]: timer_ringing: 0
+[08:38:42][D][control_leds:1158]: media_player_state: 1
+[08:38:42][D][control_leds:1159]: is_timer_active: 0
+[08:38:42][D][control_leds:1232]: Executing: idle (LED Off)
+[08:38:42][D][main:1265]: Setting LED: VA idle (Off)
+[08:38:42][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:38:42][D][light:047]:   State: OFF
+[08:38:42][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[08:38:42][D][main:1238]: Finished control_leds script execution
+[08:38:42][W][component:237]: Component switch took a long time for an operation (87 ms).
+[08:38:42][W][component:238]: Components should block for at most 30 ms.
+[08:38:42][D][main:2158]: Media player state changed: 4
+[08:38:42][D][main:241]: Media player announcement started
+[08:38:42][D][speaker_media_player:420]: State changed to ANNOUNCING
+[08:38:42][D][speaker_media_player.pipeline:114]: Reading FLAC file type
+[08:38:42][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:42][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:42][D][speaker_media_player.pipeline:124]: Decoded audio has 1 channels, 48000 Hz sample rate, and 16 bits per sample
+[08:38:42][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:42][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:42][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:42][D][ring_buffer:034]: Created ring buffer with size 9600
+[08:38:42][D][speaker_mixer:306]: Starting speaker mixer
+[08:38:42][D][speaker_mixer:314]: Started speaker mixer
+[08:38:43][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:43][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:43][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:43][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:43][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:43][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:43][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:43][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:43][D][main:2158]: Media player state changed: 1
+[08:38:43][D][main:230]: Removing ducking from media player
+[08:38:43][D][speaker_media_player:420]: State changed to IDLE
+[08:38:43][D][speaker_mixer:319]: Stopping speaker mixer
+[08:38:44][I][respeaker_lite:354]: Mic mute state: 0
+[08:38:44][D][binary_sensor:036]: 'mute_state': Sending state OFF
+[08:38:44][D][switch:055]: 'Mic mute': Sending state OFF
+[08:38:44][D][main:238]: Mic mute OFF
+[08:38:44][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:38:45][D][light:047]:   State: ON
+[08:38:45][D][light:051]:   Brightness: 50%
+[08:38:45][D][light:058]:   Red: 0%, Green: 100%, Blue: 0%
+[08:38:45][D][main:250]: Playing mute OFF sound
+[08:38:45][D][main:1390]: Playing sound: priority=0
+[08:38:45][D][main:1832]: Starting control_leds script execution
+[08:38:45][D][control_leds:1150]: voice_assistant_phase: 1
+[08:38:45][D][control_leds:1151]: improv_ble_in_progress: 0
+[08:38:45][D][control_leds:1152]: init_in_progress: 0
+[08:38:45][D][control_leds:1153]: wifi_connected: 1
+[08:38:45][D][control_leds:1154]: api_connected: 1
+[08:38:45][D][control_leds:1155]: user_button_state: 0
+[08:38:45][D][control_leds:1156]: low_battery_alert: 0
+[08:38:45][D][control_leds:1157]: timer_ringing: 0
+[08:38:45][D][control_leds:1158]: media_player_state: 1
+[08:38:45][D][control_leds:1159]: is_timer_active: 0
+[08:38:45][D][control_leds:1232]: Executing: idle (LED Off)
+[08:38:45][D][main:1265]: Setting LED: VA idle (Off)
+[08:38:45][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:38:45][D][light:047]:   State: OFF
+[08:38:45][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[08:38:45][D][main:1238]: Finished control_leds script execution
+[08:38:45][W][component:237]: Component switch took a long time for an operation (87 ms).
+[08:38:45][W][component:238]: Components should block for at most 30 ms.
+[08:38:45][D][main:2158]: Media player state changed: 4
+[08:38:45][D][main:241]: Media player announcement started
+[08:38:45][D][speaker_media_player:420]: State changed to ANNOUNCING
+[08:38:45][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:45][D][speaker_media_player.pipeline:114]: Reading FLAC file type
+[08:38:45][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:45][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:45][D][speaker_media_player.pipeline:124]: Decoded audio has 1 channels, 48000 Hz sample rate, and 16 bits per sample
+[08:38:45][D][ring_buffer:034]: Created ring buffer with size 9600
+[08:38:45][D][speaker_mixer:306]: Starting speaker mixer
+[08:38:45][D][speaker_mixer:314]: Started speaker mixer
+[08:38:45][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:45][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:45][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:45][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:45][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:45][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:45][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:45][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:46][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:38:47][D][main:2158]: Media player state changed: 1
+[08:38:47][D][main:230]: Removing ducking from media player
+[08:38:47][D][speaker_media_player:420]: State changed to IDLE
+[08:38:47][D][speaker_mixer:319]: Stopping speaker mixer
+[08:39:29][D][main:707]: Battery voltage: 0.18 V
+[08:39:29][D][main:1101]: Battery level normal
+[08:39:29][D][main:1832]: Starting control_leds script execution
+[08:39:29][D][control_leds:1150]: voice_assistant_phase: 1
+[08:39:29][D][control_leds:1151]: improv_ble_in_progress: 0
+[08:39:29][D][control_leds:1152]: init_in_progress: 0
+[08:39:29][D][control_leds:1153]: wifi_connected: 1
+[08:39:29][D][control_leds:1154]: api_connected: 1
+[08:39:29][D][control_leds:1155]: user_button_state: 0
+[08:39:29][D][control_leds:1156]: low_battery_alert: 0
+[08:39:29][D][control_leds:1157]: timer_ringing: 0
+[08:39:29][D][control_leds:1158]: media_player_state: 1
+[08:39:29][D][control_leds:1159]: is_timer_active: 0
+[08:39:29][D][control_leds:1232]: Executing: idle (LED Off)
+[08:39:29][D][main:1265]: Setting LED: VA idle (Off)
+[08:39:29][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:39:29][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[08:39:29][D][main:1238]: Finished control_leds script execution
+[08:39:29][W][component:237]: Component adc.sensor took a long time for an operation (104 ms).
+[08:39:29][W][component:238]: Components should block for at most 30 ms.
+[08:39:29][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:39:29][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:40:07][D][switch:016]: 'Debug Mode' Turning OFF.
+[08:40:07][D][main:327]: Debug mode disabled
+[08:40:07][D][switch:055]: 'Debug Mode': Sending state OFF
+[08:40:18][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:40:18][D][light:047]:   State: ON
+[08:40:18][D][light:109]:   Effect: 'Clock Face'
+[08:40:29][D][main:707]: Battery voltage: 0.47 V
+[08:40:29][D][main:1101]: Battery level normal
+[08:40:29][D][main:1832]: Starting control_leds script execution
+[08:40:29][D][control_leds:1232]: Executing: idle (LED Off)
+[08:40:29][D][main:1265]: Setting LED: VA idle (Off)
+[08:40:29][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:40:29][D][light:047]:   State: OFF
+[08:40:29][D][light:109]:   Effect: 'None'
+[08:40:29][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[08:40:29][D][main:1238]: Finished control_leds script execution
+[08:40:29][W][component:237]: Component adc.sensor took a long time for an operation (61 ms).
+[08:40:29][W][component:238]: Components should block for at most 30 ms.
+[08:40:34][D][esp32.preferences:114]: Saving 1 preferences to flash...
+[08:40:34][D][esp32.preferences:142]: Saving 1 preferences to flash: 0 cached, 1 written, 0 failed
+[08:40:48][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:40:48][D][light:047]:   State: ON
+[08:40:48][D][light:109]:   Effect: 'Clock Face'
+[08:41:00][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:41:00][D][light:109]:   Effect: 'Rainbow Cycle'
+[08:41:04][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:41:04][D][light:109]:   Effect: 'Ring Chase'
+[08:41:06][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:41:06][D][light:109]:   Effect: 'Clock Face'
+[08:41:29][D][main:707]: Battery voltage: 0.48 V
+[08:41:29][D][main:1101]: Battery level normal
+[08:41:29][D][main:1832]: Starting control_leds script execution
+[08:41:29][D][control_leds:1232]: Executing: idle (LED Off)
+[08:41:29][D][main:1265]: Setting LED: VA idle (Off)
+[08:41:29][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:41:29][D][light:047]:   State: OFF
+[08:41:29][D][light:109]:   Effect: 'None'
+[08:41:29][D][text_sensor:064]: 'Last LED Trigger': Sending state 'Idle'
+[08:41:29][D][main:1238]: Finished control_leds script execution
+[08:41:29][W][component:237]: Component adc.sensor took a long time for an operation (61 ms).
+[08:41:29][W][component:238]: Components should block for at most 30 ms.
+[08:41:29][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:41:29][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[08:41:43][D][select:062]: 'Logger Level' - Setting
+[08:41:43][D][select:115]: 'Logger Level' - Set selected option to: NONE
+[08:42:02][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:42:02][D][light:047]:   State: ON
+[08:42:02][D][light:109]:   Effect: 'Clock Face'
+[08:42:29][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:42:29][D][light:047]:   State: OFF
+[08:42:29][D][light:109]:   Effect: 'None'
+[08:43:29][D][light:036]: 'LED Respeaker onboard' Setting:
+[08:44:29][D][light:036]: 'LED Respeaker onboard' Setting:

@@ -491,6 +491,15 @@ binary_sensor:
               blue: 0
               id: led_respeaker_onboard
               effect: "none"
+time:
+  - platform: sntp
+    id: esp32_time
+    servers:
+      - pool.ntp.org
+    timezone: UTC
+    on_time_sync:
+      then:
+        - logger.log: "Time synchronized"
 
 light:
   - platform: esp32_rmt_led_strip
@@ -500,7 +509,7 @@ light:
     internal: false
     rgb_order: GRB
     pin: GPIO1
-    num_leds: 12
+    num_leds: 16
     rmt_symbols: 192
     chipset: ws2812
     entity_category: config
@@ -538,9 +547,9 @@ light:
             state = !state;
             auto call = id(led_respeaker_onboard).turn_on();
             if (state) {
-              call.set_rgb(0.0, 1.0, 1.0); // Cyan for all LEDs
+              call.set_rgb(0.0, 1.0, 1.0);
             } else {
-              call.set_rgb(0.0, 1.0, 0.0); // Green for all LEDs
+              call.set_rgb(0.0, 1.0, 0.0);
             }
             call.set_brightness(0.5);
             call.perform();
@@ -551,9 +560,9 @@ light:
             static bool state = false;
             state = !state;
             if (state) {
-              id(led_respeaker_onboard).turn_on().set_rgb(1.0, 0.0, 0.0).set_brightness(1.0).perform(); // Red
+              id(led_respeaker_onboard).turn_on().set_rgb(1.0, 0.0, 0.0).set_brightness(1.0).perform();
             } else {
-              id(led_respeaker_onboard).turn_off().perform(); // Off
+              id(led_respeaker_onboard).turn_off().perform();
             }
       - pulse:
           name: "Factory Reset Coming Up"
@@ -569,44 +578,492 @@ light:
             state = (state + 1) % 3;
             auto call = id(led_respeaker_onboard).turn_on();
             if (state == 0) {
-              call.set_rgb(0.0, 0.0, 1.0); // Blue
+              call.set_rgb(0.0, 0.0, 1.0);
             } else if (state == 1) {
-              call.set_rgb(0.0, 1.0, 0.0); // Green
+              call.set_rgb(0.0, 1.0, 0.0);
             } else {
-              call.set_rgb(1.0, 0.0, 0.0); // Red
+              call.set_rgb(1.0, 0.0, 0.0);
             }
             call.set_brightness(0.75);
             call.perform();
-      - lambda:
+      - addressable_lambda:
           name: "Ring Chase"
           update_interval: 100ms
           lambda: |-
             static int position = 0;
-            static float tail_brightness[12] = {0};
-            auto call = id(led_respeaker_onboard).turn_on();
-            for (int i = 0; i < 12; i++) {
+            static float tail_brightness[16] = {0};
+            for (int i = 0; i < it.size(); i++) {
               tail_brightness[i] *= 0.7;
               if (tail_brightness[i] < 0.05) tail_brightness[i] = 0;
+              it[i] = ESPColor(
+                (uint8_t)(id(led_red) * 255.0 * tail_brightness[i]),
+                (uint8_t)(id(led_green) * 255.0 * tail_brightness[i]),
+                (uint8_t)(id(led_blue) * 255.0 * tail_brightness[i])
+              );
             }
             tail_brightness[position] = 1.0;
-            float max_brightness = 0;
-            for (int i = 0; i < 12; i++) {
-              if (tail_brightness[i] > max_brightness) {
-                max_brightness = tail_brightness[i];
+            position = (position + 1) % it.size();
+      - addressable_lambda:
+          name: "Rainbow Cycle"
+          update_interval: 50ms
+          lambda: |-
+            static uint16_t hue = 0;
+            hue = (hue + 1) % 360;
+            for (int i = 0; i < it.size(); i++) {
+              float h = fmod((float)hue + (i * 22.5), 360.0);
+              float s = 1.0;
+              float v = 0.5;
+              float r, g, b;
+              int hi = int(h / 60.0) % 6;
+              float f = h / 60.0 - hi;
+              float p = v * (1 - s);
+              float q = v * (1 - f * s);
+              float t = v * (1 - (1 - f) * s);
+              switch (hi) {
+                case 0: r = v; g = t; b = p; break;
+                case 1: r = q; g = v; b = p; break;
+                case 2: r = p; g = v; b = t; break;
+                case 3: r = p; g = q; b = v; break;
+                case 4: r = t; g = p; b = v; break;
+                case 5: r = v; g = p; b = q; break;
+              }
+              it[i] = ESPColor(r * 255, g * 255, b * 255);
+            }
+      - addressable_lambda:
+          name: "Rotating Colors"
+          update_interval: 100ms
+          lambda: |-
+            static int position = 0;
+            static const uint8_t colors[3][3] = {
+              {255, 0, 0},
+              {0, 255, 0},
+              {0, 0, 255}
+            };
+            position = (position + 1) % it.size();
+            for (int i = 0; i < it.size(); i++) {
+              int color_idx = (i + position) % 3;
+              it[i] = ESPColor(
+                colors[color_idx][0],
+                colors[color_idx][1],
+                colors[color_idx][2]
+              );
+            }
+      - addressable_lambda:
+          name: "Clock Face"
+          update_interval: 1000ms
+          lambda: |-
+            auto time = id(esp32_time).now();
+            int hour = time.hour % 12;
+            int minute = time.minute;
+            int second = time.second;
+            int hour_pos = hour * 16 / 12;
+            int minute_pos = minute * 16 / 60;
+            int second_pos = second * 16 / 60;
+            it.all() = ESPColor(0, 0, 0);
+            it[hour_pos] = ESPColor(255, 0, 0);
+            if (hour_pos == minute_pos) {
+              it[minute_pos] = ESPColor(255, 255, 0);
+            } else {
+              it[minute_pos] = ESPColor(0, 191, 0);
+            }
+            if (second_pos == hour_pos && second_pos == minute_pos) {
+              it[second_pos] = ESPColor(255, 255, 255);
+            } else if (second_pos == hour_pos) {
+              it[second_pos] = ESPColor(255, 0, 255);
+            } else if (second_pos == minute_pos) {
+              it[second_pos] = ESPColor(0, 255, 255);
+            } else {
+              it[second_pos] = ESPColor(0, 0, 191);
+            }
+      - addressable_lambda:
+          name: "Plasma Wave"
+          update_interval: 50ms
+          lambda: |-
+            static float t = 0;
+            t += 0.1;
+            for (int i = 0; i < it.size(); i++) {
+              float wave1 = sin(t + i * 0.5);
+              float wave2 = sin(t * 0.7 + i * 0.3);
+              float wave3 = sin(t * 0.3 + i * 0.8);
+              uint8_t r = (uint8_t)((wave1 + 1) * 127);
+              uint8_t g = (uint8_t)((wave2 + 1) * 127);
+              uint8_t b = (uint8_t)((wave3 + 1) * 127);
+              it[i] = ESPColor(r, g, b);
+            }
+      - addressable_lambda:
+          name: "Fire Simulation"
+          update_interval: 100ms
+          lambda: |-
+            static uint8_t heat[16] = {0};
+            for (int i = 0; i < it.size(); i++) {
+              heat[i] = (heat[i] > 10) ? heat[i] - rand() % 10 : 0;
+            }
+            heat[0] = rand() % 128 + 128;
+            for (int i = it.size() - 1; i > 0; i--) {
+              heat[i] = (heat[i] + heat[i-1]) / 2;
+            }
+            for (int i = 0; i < it.size(); i++) {
+              if (heat[i] < 85) {
+                it[i] = ESPColor(heat[i] * 3, 0, 0);
+              } else if (heat[i] < 170) {
+                it[i] = ESPColor(255, (heat[i] - 85) * 3, 0);
+              } else {
+                it[i] = ESPColor(255, 255, (heat[i] - 170) * 3);
               }
             }
-            if (max_brightness > 0) {
-              call.set_rgb(
-                id(led_red) * max_brightness,
-                id(led_green) * max_brightness,
-                id(led_blue) * max_brightness
-              );
-            } else {
-              call.set_rgb(0, 0, 0);
+      - addressable_lambda:
+          name: "Cosmic Spiral"
+          update_interval: 75ms
+          lambda: |-
+            static float t = 0;
+            t += 0.05;
+            for (int i = 0; i < it.size(); i++) {
+              float angle = (i * 2 * M_PI / it.size()) + t;
+              float r = (sin(angle) + 1) * 127;
+              float g = (sin(angle + 2 * M_PI / 3) + 1) * 127;
+              float b = (sin(angle + 4 * M_PI / 3) + 1) * 127;
+              it[i] = ESPColor(r, g, b);
             }
-            position = (position + 1) % 12;
-            call.perform();
-            
+      - addressable_lambda:
+          name: "Pulse Ripple"
+          update_interval: 80ms
+          lambda: |-
+            static float center = 0;
+            center = (center + 0.2) > it.size() ? 0 : center + 0.2;
+            for (int i = 0; i < it.size(); i++) {
+              float dist = fabs(i - center);
+              float intensity = exp(-dist * 0.5) * 255;
+              it[i] = ESPColor(intensity, intensity / 2, intensity / 4);
+            }
+      - addressable_lambda:
+          name: "Aurora Borealis"
+          update_interval: 120ms
+          lambda: |-
+            static float t = 0;
+            t += 0.03;
+            for (int i = 0; i < it.size(); i++) {
+              float noise = sin(t + i * 0.4) + sin(t * 1.3 + i * 0.7);
+              uint8_t g = (noise + 2) * 63;
+              uint8_t b = (noise + 2) * 31;
+              uint8_t r = noise * 20;
+              it[i] = ESPColor(r, g, b);
+            }
+      - addressable_lambda:
+          name: "Meteor Shower"
+          update_interval: 60ms
+          lambda: |-
+            static int pos = 0;
+            static int length = 3;
+            pos = (pos + 1) % (it.size() + length);
+            it.all() = ESPColor(0, 0, 0);
+            for (int i = pos; i > pos - length && i >= 0; i--) {
+              if (i < it.size()) {
+                float fade = (float)(pos - i) / length;
+                it[i] = ESPColor(255 * fade, 255 * fade, 255);
+              }
+            }
+      - addressable_lambda:
+          name: "Color Vortex"
+          update_interval: 70ms
+          lambda: |-
+            static float t = 0;
+            t += 0.1;
+            for (int i = 0; i < it.size(); i++) {
+              float angle = i * 2 * M_PI / it.size();
+              float r = (sin(t + angle) + 1) * 127;
+              float g = (sin(t + angle + 2) + 1) * 127;
+              float b = (sin(t + angle + 4) + 1) * 127;
+              it[i] = ESPColor(r, g, b);
+            }
+      - addressable_lambda:
+          name: "Kaleidoscope"
+          update_interval: 90ms
+          lambda: |-
+            static float t = 0;
+            t += 0.05;
+            for (int i = 0; i < it.size(); i++) {
+              float symmetry = sin(t + i * M_PI / 8);
+              uint8_t r = (symmetry + 1) * 127;
+              uint8_t g = (sin(t + i * M_PI / 4) + 1) * 127;
+              uint8_t b = (cos(t + i * M_PI / 3) + 1) * 127;
+              it[i] = ESPColor(r, g, b);
+            }
+      - addressable_lambda:
+          name: "Particle Dance"
+          update_interval: 40ms
+          lambda: |-
+            static float particles[3][2] = {{0, 0.1}, {4, -0.15}, {8, 0.2}};
+            it.all() = ESPColor(0, 0, 0);
+            for (int p = 0; p < 3; p++) {
+              particles[p][0] += particles[p][1];
+              if (particles[p][0] >= it.size()) particles[p][0] -= it.size();
+              if (particles[p][0] < 0) particles[p][0] += it.size();
+              int pos = (int)particles[p][0];
+              it[pos] = ESPColor(255 * (p == 0), 255 * (p == 1), 255 * (p == 2));
+            }
+      - addressable_lambda:
+          name: "Wave Interference"
+          update_interval: 60ms
+          lambda: |-
+            static float t = 0;
+            t += 0.08;
+            for (int i = 0; i < it.size(); i++) {
+              float wave1 = sin(t + i * 0.6);
+              float wave2 = sin(t * 1.2 + i * 0.4);
+              float intensity = (wave1 + wave2) * 127 + 127;
+              it[i] = ESPColor(intensity, intensity * 0.7, intensity * 0.3);
+            }
+      - addressable_lambda:
+          name: "Quantum Flux"
+          update_interval: 45ms
+          lambda: |-
+            static float t = 0;
+            t += 0.12;
+            for (int i = 0; i < it.size(); i++) {
+              float flux = sin(t + i * 0.9) * cos(t * 0.5 + i * 0.3);
+              uint8_t r = (flux + 1) * 127;
+              uint8_t g = (sin(t * 1.1 + i) + 1) * 127;
+              uint8_t b = (cos(t * 0.7 + i * 1.2) + 1) * 127;
+              it[i] = ESPColor(r, g, b);
+            }
+      - addressable_lambda:
+          name: "Electric Storm"
+          update_interval: 80ms
+          lambda: |-
+            static int strike = 0;
+            strike = (rand() % 20 == 0) ? rand() % it.size() : strike;
+            it.all() = ESPColor(0, 0, 20);
+            if (rand() % 5 == 0) {
+              it[strike] = ESPColor(255, 255, 255);
+              int adj = (strike + 1) % it.size();
+              it[adj] = ESPColor(200, 200, 255);
+              adj = (strike - 1 + it.size()) % it.size();
+              it[adj] = ESPColor(200, 200, 255);
+            }
+      - addressable_lambda:
+          name: "Lava Flow"
+          update_interval: 100ms
+          lambda: |-
+            static uint8_t heat[16] = {0};
+            for (int i = 0; i < it.size(); i++) {
+              heat[i] = (heat[i] > 5) ? heat[i] - (rand() % 5) : 0;
+            }
+            heat[rand() % it.size()] = 255;
+            for (int i = 0; i < it.size(); i++) {
+              uint8_t r = heat[i];
+              uint8_t g = heat[i] / 2;
+              it[i] = ESPColor(r, g, 0);
+            }
+      - addressable_lambda:
+          name: "Digital Rain"
+          update_interval: 70ms
+          lambda: |-
+            static int drops[3] = {0, 4, 8};
+            it.all() = ESPColor(0, 20, 0);
+            for (int d = 0; d < 3; d++) {
+              drops[d] = (drops[d] + 1) % it.size();
+              it[drops[d]] = ESPColor(0, 255, 0);
+              int tail = (drops[d] - 1 + it.size()) % it.size();
+              it[tail] = ESPColor(0, 127, 0);
+            }
+      - addressable_lambda:
+          name: "Hypnotic Swirl"
+          update_interval: 60ms
+          lambda: |-
+            static float t = 0;
+            t += 0.15;
+            for (int i = 0; i < it.size(); i++) {
+              float swirl = sin(t + i * M_PI / 4) + cos(t * 0.8 + i * M_PI / 5);
+              uint8_t r = (swirl + 2) * 63;
+              uint8_t b = (swirl + 2) * 95;
+              it[i] = ESPColor(r, 0, b);
+            }
+      - addressable_lambda:
+          name: "Strobe Chaos"
+          update_interval: 50ms
+          lambda: |-
+            if (rand() % 3 == 0) {
+              it.all() = ESPColor(rand() % 256, rand() % 256, rand() % 256);
+            } else {
+              it.all() = ESPColor(0, 0, 0);
+            }
+      - addressable_lambda:
+          name: "Heartbeat"
+          update_interval: 40ms
+          lambda: |-
+            static float t = 0;
+            t += 0.2;
+            float pulse = (sin(t) * sin(t * 3)) * 255;
+            if (pulse < 0) pulse = 0;
+            for (int i = 0; i < it.size(); i++) {
+              it[i] = ESPColor(pulse, 0, 0);
+            }
+      - addressable_lambda:
+          name: "Galactic Pulse"
+          update_interval: 90ms
+          lambda: |-
+            static float t = 0;
+            t += 0.07;
+            for (int i = 0; i < it.size(); i++) {
+              float dist = fabs(i - it.size() / 2);
+              float pulse = sin(t + dist * 0.5) * 127 + 127;
+              it[i] = ESPColor(pulse, pulse / 2, pulse);
+            }
+      - addressable_lambda:
+          name: "Neon Chase"
+          update_interval: 85ms
+          lambda: |-
+            static int pos = 0;
+            pos = (pos + 1) % it.size();
+            it.all() = ESPColor(20, 0, 20);
+            it[pos] = ESPColor(255, 0, 255);
+            int tail = (pos - 1 + it.size()) % it.size();
+            it[tail] = ESPColor(127, 0, 127);
+      - addressable_lambda:
+          name: "Ripple Echo"
+          update_interval: 65ms
+          lambda: |-
+            static float centers[2] = {0, 8};
+            it.all() = ESPColor(0, 0, 0);
+            for (int c = 0; c < 2; c++) {
+              centers[c] += 0.3;
+              if (centers[c] > it.size()) centers[c] -= it.size();
+              for (int i = 0; i < it.size(); i++) {
+                float dist = fabs(i - centers[c]);
+                if (dist < 3) {
+                  uint8_t val = (3 - dist) * 85;
+                  uint8_t r = it[i].get_red() + val;
+                  uint8_t g = it[i].get_green();
+                  uint8_t b = it[i].get_blue() + val;
+                  it[i] = ESPColor(r > 255 ? 255 : r, g, b > 255 ? 255 : b);
+                }
+              }
+            }
+      - addressable_lambda:
+          name: "Solar Flare"
+          update_interval: 110ms
+          lambda: |-
+            static float t = 0;
+            t += 0.04;
+            for (int i = 0; i < it.size(); i++) {
+              float flare = sin(t + i * 0.2) + (rand() % 50) / 50.0;
+              uint8_t r = (flare + 1) * 127;
+              uint8_t g = (flare > 0.5) ? (flare - 0.5) * 255 : 0;
+              it[i] = ESPColor(r, g, 0);
+            }
+      - addressable_lambda:
+          name: "Fractal Glow"
+          update_interval: 55ms
+          lambda: |-
+            static float t = 0;
+            t += 0.09;
+            for (int i = 0; i < it.size(); i++) {
+              float fractal = sin(t + i * 0.5) * cos(t * 0.3 + i * 0.7);
+              uint8_t r = (fractal + 1) * 127;
+              uint8_t g = (sin(t * 1.2 + i) + 1) * 127;
+              it[i] = ESPColor(r, g, 0);
+            }
+      - addressable_lambda:
+          name: "Binary Clock"
+          update_interval: 1000ms
+          lambda: |-
+            auto time = id(esp32_time).now();
+            int hour = time.hour % 12;
+            int minute = time.minute / 4;
+            it.all() = ESPColor(0, 0, 0);
+            for (int i = 0; i < 8; i++) {
+              if (hour & (1 << i)) it[i] = ESPColor(255, 0, 0);
+              if (minute & (1 << i)) it[i + 8] = ESPColor(0, 255, 0);
+            }
+      - addressable_lambda:
+          name: "Chasing Waves"
+          update_interval: 75ms
+          lambda: |-
+            static float t = 0;
+            t += 0.1;
+            for (int i = 0; i < it.size(); i++) {
+              float wave = sin(t + i * 0.8) + sin(t * 1.5 - i * 0.6);
+              uint8_t val = (wave + 2) * 63;
+              it[i] = ESPColor(val, val, 255);
+            }
+      - addressable_lambda:
+          name: "Prism Split"
+          update_interval: 60ms
+          lambda: |-
+            static float t = 0;
+            t += 0.13;
+            for (int i = 0; i < it.size(); i++) {
+              float split = sin(t + i * 0.4);
+              if (split > 0.33) {
+                it[i] = ESPColor(255, 0, 0);
+              } else if (split > -0.33) {
+                it[i] = ESPColor(0, 255, 0);
+              } else {
+                it[i] = ESPColor(0, 0, 255);
+              }
+            }
+      - addressable_lambda:
+          name: "Glow Orbit"
+          update_interval: 70ms
+          lambda: |-
+            static float t = 0;
+            t += 0.08;
+            it.all() = ESPColor(0, 0, 0);
+            int pos = (int)(t * it.size()) % it.size();
+            it[pos] = ESPColor(255, 255, 255);
+            int glow = (pos - 1 + it.size()) % it.size();
+            it[glow] = ESPColor(127, 127, 127);
+            glow = (pos + 1) % it.size();
+            it[glow] = ESPColor(127, 127, 127);
+      - addressable_lambda:
+          name: "Color Bloom"
+          update_interval: 95ms
+          lambda: |-
+            static float t = 0;
+            t += 0.06;
+            for (int i = 0; i < it.size(); i++) {
+              float bloom = sin(t + i * 0.5) * cos(t * 0.7);
+              uint8_t r = (bloom + 1) * 127;
+              uint8_t g = (bloom > 0) ? bloom * 255 : 0;
+              uint8_t b = (bloom < 0) ? -bloom * 255 : 0;
+              it[i] = ESPColor(r, g, b);
+            }
+      - addressable_lambda:
+          name: "Sparkle Fade"
+          update_interval: 50ms
+          lambda: |-
+            static uint8_t sparks[16] = {0};
+            if (rand() % 10 == 0) {
+              sparks[rand() % it.size()] = 255;
+            }
+            for (int i = 0; i < it.size(); i++) {
+              sparks[i] = (sparks[i] > 10) ? sparks[i] - 10 : 0;
+              it[i] = ESPColor(sparks[i], sparks[i], sparks[i]);
+            }
+      - addressable_lambda:
+          name: "Twilight Drift"
+          update_interval: 130ms
+          lambda: |-
+            static float t = 0;
+            t += 0.02;
+            for (int i = 0; i < it.size(); i++) {
+              float drift = sin(t + i * 0.3) + cos(t * 0.5 + i * 0.2);
+              uint8_t r = (drift + 2) * 31;
+              uint8_t g = (drift + 2) * 63;
+              uint8_t b = (drift + 2) * 95;
+              it[i] = ESPColor(r, g, b);
+            }
+      - addressable_lambda:
+          name: "Pulse Matrix"
+          update_interval: 85ms
+          lambda: |-
+            static float t = 0;
+            t += 0.1;
+            for (int i = 0; i < it.size(); i++) {
+              float pulse = sin(t + i * M_PI / 8) * sin(t * 0.8 + i * M_PI / 4);
+              uint8_t val = (pulse + 1) * 127;
+              it[i] = ESPColor(val, val / 2, 0);
+            }
 
 sensor:
   - platform: template
@@ -1162,21 +1619,9 @@ respeaker_lite:
 external_components:
   - source:
       type: git
-      url: https://github.com/esphome/home-assistant-voice-pe
-      ref: dev
-    components: [micro_wake_word, microphone, voice_assistant]
-    refresh: 0s
-  - source:
-      type: git
-      url: https://github.com/formatBCE/home-assistant-voice-pe
-      ref: 48kHz_mic_support
-    components: [nabu_microphone]
-    refresh: 0s
-  - source:
-      type: git
-      url: https://github.com/formatBCE/Respeaker-Lite-ESPHome-integration
+      url: https://github.com/ArMaTeC/SmartRespeaker
       ref: main
-    components: [respeaker_lite]
+    components: [micro_wake_word, microphone, voice_assistant, nabu_microphone, respeaker_lite]
     refresh: 0s
 
 audio_dac:
