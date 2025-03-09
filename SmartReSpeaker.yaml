@@ -1561,28 +1561,28 @@ voice_assistant:
         id: media_mixing_input
         decibel_reduction: 20
         duration: 0.0s
-    - lambda: id(device_state) = 2;  # STATE_VA_LISTENING
+    - lambda: id(device_state) = 2;
     - script.execute: control_leds
   on_listening:
     - logger.log: "VA listening"
     - lambda: id(voice_assistant_phase) = ${voice_assist_waiting_for_command_phase_id};
-    - lambda: id(device_state) = 2;  # STATE_VA_LISTENING
+    - lambda: id(device_state) = 2;
     - script.execute: control_leds
     - logger.log: "VA successfully restarted and streaming"
   on_stt_vad_start:
     - logger.log: "VA STT VAD started"
     - lambda: id(voice_assistant_phase) = ${voice_assist_listening_for_command_phase_id};
-    - lambda: id(device_state) = 2;  # STATE_VA_LISTENING
+    - lambda: id(device_state) = 2;
     - script.execute: control_leds
   on_stt_vad_end:
     - logger.log: "VA STT VAD ended"
     - lambda: id(voice_assistant_phase) = ${voice_assist_thinking_phase_id};
-    - lambda: id(device_state) = 3;  # STATE_VA_THINKING
+    - lambda: id(device_state) = 3;
     - script.execute: control_leds
   on_tts_start:
     - logger.log: "VA TTS started"
     - lambda: id(voice_assistant_phase) = ${voice_assist_replying_phase_id};
-    - lambda: id(device_state) = 4;  # STATE_VA_REPLYING
+    - lambda: id(device_state) = 4;
     - script.execute: control_leds
     - script.execute: activate_stop_word_if_tts_step_is_long
     - text_sensor.template.publish:
@@ -1634,7 +1634,7 @@ voice_assistant:
           - delay: 200ms
           - lambda: |-
               id(voice_assistant_phase) = ${voice_assist_waiting_for_command_phase_id};
-              id(device_state) = 2;  # STATE_VA_LISTENING
+              id(device_state) = 2;
               ESP_LOGD("voice_assistant", "Restarting VA with silence detection");
           - voice_assistant.start:
               silence_detection: True
@@ -1662,7 +1662,7 @@ voice_assistant:
                     then:
                       - logger.log: "VA recovery failed, resetting to idle"
                       - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
-                      - lambda: id(device_state) = 1;  # STATE_IDLE
+                      - lambda: id(device_state) = 1;
                       - script.execute: control_leds
         else:
           - logger.log: "Response does not end with '?'. Not restarting"
@@ -1673,7 +1673,7 @@ voice_assistant:
               then:
                 - logger.log: "Resetting to idle after non-question response"
                 - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
-                - lambda: id(device_state) = 1;  # STATE_IDLE
+                - lambda: id(device_state) = 1;
                 - script.execute: control_leds
   on_end:
     - logger.log: "VA ended"
