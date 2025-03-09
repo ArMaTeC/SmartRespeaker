@@ -40,6 +40,8 @@ esphome:
       - logger.log: "Shutting down - Muting speaker"
       - lambda: id(respeaker).mute_speaker();
 
+http_request:
+
 esp32:
   board: esp32-s3-devkitc-1
   variant: esp32s3
@@ -73,7 +75,6 @@ wifi:
   ap:
     ssid: "Respeaker-Satellite"
     password: "lNw0AP2PKQGR"
-    timeout: 30s
 
 logger:
   level: DEBUG  # Reduced overhead
@@ -504,16 +505,6 @@ binary_sensor:
               id: led_respeaker_onboard
               effect: "none"
 
-time:
-  - platform: sntp
-    id: esp32_time
-    servers:
-      - pool.ntp.org
-    timezone: UTC
-    on_time_sync:
-      then:
-        - logger.log: "Time synchronized"
-
 light:
   - platform: esp32_rmt_led_strip
     id: led_respeaker_onboard
@@ -689,38 +680,71 @@ script:
   - id: control_leds
     then:
       - logger.log: "Starting control_leds script execution"
-      - light.turn_on:
-          id: led_respeaker_onboard
-          effect: !lambda |-
-            switch (id(device_state)) {
-              case 0: return "Ring Chase";          // STATE_INITIALIZING
-              case 1: return "none";                // STATE_IDLE
-              case 2: return "Slow Pulse";          // STATE_VA_LISTENING
-              case 3: return "Fast Pulse";          // STATE_VA_THINKING
-              case 4: return "Replying Alternate";  // STATE_VA_REPLYING
-              case 5: return "Error Flash";         // STATE_VA_ERROR
-              case 6: return "Ring Chase";          // STATE_TIMER_RINGING
-              case 7: return "Idle Breathing";      // STATE_MEDIA_PLAYING
-              case 8: return "Error Flash";         // STATE_LOW_BATTERY
-              case 9: return "Fast Pulse";          // STATE_BUTTON_PRESSED
-              case 10: return "Slow Pulse";         // STATE_NOT_READY
-              default: return "none";
-            }
-      - lambda: |-
-          switch (id(device_state)) {
-            case 0: id(led_red) = 0.0; id(led_green) = 0.0; id(led_blue) = 1.0; break;  // Blue for initializing
-            case 1: id(led_red) = 0.0; id(led_green) = 0.0; id(led_blue) = 0.0; break;  // Off for idle
-            case 2: id(led_red) = 0.0; id(led_green) = 1.0; id(led_blue) = 0.0; break;  // Green for listening
-            case 3: id(led_red) = 0.5; id(led_green) = 0.0; id(led_blue) = 0.5; break;  // Purple for thinking
-            case 4: id(led_red) = 0.0; id(led_green) = 1.0; id(led_blue) = 1.0; break;  // Cyan for replying
-            case 5: id(led_red) = 1.0; id(led_green) = 0.0; id(led_blue) = 0.0; break;  // Red for error
-            case 6: id(led_red) = 1.0; id(led_green) = 1.0; id(led_blue) = 0.0; break;  // Yellow for timer ringing
-            case 7: id(led_red) = 0.0; id(led_green) = 1.0; id(led_blue) = 0.0; break;  // Green for media playing
-            case 8: id(led_red) = 1.0; id(led_green) = 0.0; id(led_blue) = 0.0; break;  // Red for low battery
-            case 9: id(led_red) = 0.0; id(led_green) = 1.0; id(led_blue) = 1.0; break;  // Cyan for button pressed
-            case 10: id(led_red) = 1.0; id(led_green) = 0.5; id(led_blue) = 0.0; break; // Orange for not ready
-            default: id(led_red) = 0.0; id(led_green) = 0.0; id(led_blue) = 0.0;
-          }
+      - if:
+          condition:
+            lambda: return id(device_state) == 1;  # STATE_IDLE
+          then:
+            - light.turn_off: led_respeaker_onboard
+          else:
+            - light.turn_on:
+                id: led_respeaker_onboard
+                red: !lambda |-
+                  switch (id(device_state)) {
+                    case 0: return 0.0;  // Blue for initializing
+                    case 2: return 0.0;  // Green for listening
+                    case 3: return 0.5;  // Purple for thinking
+                    case 4: return 0.0;  // Cyan for replying
+                    case 5: return 1.0;  // Red for error
+                    case 6: return 1.0;  // Yellow for timer ringing
+                    case 7: return 0.0;  // Green for media playing
+                    case 8: return 1.0;  // Red for low battery
+                    case 9: return 0.0;  // Cyan for button pressed
+                    case 10: return 1.0; // Orange for not ready
+                    default: return 0.0;
+                  }
+                green: !lambda |-
+                  switch (id(device_state)) {
+                    case 0: return 0.0;
+                    case 2: return 1.0;
+                    case 3: return 0.0;
+                    case 4: return 1.0;
+                    case 5: return 0.0;
+                    case 6: return 1.0;
+                    case 7: return 1.0;
+                    case 8: return 0.0;
+                    case 9: return 1.0;
+                    case 10: return 0.5;
+                    default: return 0.0;
+                  }
+                blue: !lambda |-
+                  switch (id(device_state)) {
+                    case 0: return 1.0;
+                    case 2: return 0.0;
+                    case 3: return 0.5;
+                    case 4: return 1.0;
+                    case 5: return 0.0;
+                    case 6: return 0.0;
+                    case 7: return 0.0;
+                    case 8: return 0.0;
+                    case 9: return 1.0;
+                    case 10: return 0.0;
+                    default: return 0.0;
+                  }
+                brightness: 0.5
+                effect: !lambda |-
+                  switch (id(device_state)) {
+                    case 0: return "Ring Chase";          // STATE_INITIALIZING
+                    case 2: return "Slow Pulse";          // STATE_VA_LISTENING
+                    case 3: return "Fast Pulse";          // STATE_VA_THINKING
+                    case 4: return "Replying Alternate";  // STATE_VA_REPLYING
+                    case 5: return "Error Flash";         // STATE_VA_ERROR
+                    case 6: return "Ring Chase";          // STATE_TIMER_RINGING
+                    case 7: return "Idle Breathing";      // STATE_MEDIA_PLAYING
+                    case 8: return "Error Flash";         // STATE_LOW_BATTERY
+                    case 9: return "Fast Pulse";          // STATE_BUTTON_PRESSED
+                    case 10: return "Slow Pulse";         // STATE_NOT_READY
+                    default: return "none";
+                  }
       - logger.log: "Finished control_leds script execution"
   - id: ring_timer
     then:
@@ -837,7 +861,7 @@ microphone:
       amplify_shift: 0
     channel_1:
       id: nabu_mic_mww
-      amplify_shift: 5  # Improved wake word sensitivity
+      amplify_shift: 3
 
 speaker:
   - platform: i2s_audio
@@ -922,27 +946,27 @@ media_player:
             - script.execute: control_leds
     files:
       - id: center_button_press_sound
-        file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/center_button_press.flac
+        file: https://github.com/ArMaTeC/SmartRespeaker/raw/refs/heads/main/sounds/center_button_press.flac
       - id: center_button_double_press_sound
-        file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/center_button_double_press.flac
+        file: https://github.com/ArMaTeC/SmartRespeaker/raw/refs/heads/main/sounds/center_button_double_press.flac
       - id: center_button_triple_press_sound
-        file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/center_button_triple_press.flac
+        file: https://github.com/ArMaTeC/SmartRespeaker/raw/refs/heads/main/sounds/center_button_triple_press.flac
       - id: center_button_long_press_sound
-        file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/center_button_long_press.flac
+        file: https://github.com/ArMaTeC/SmartRespeaker/raw/refs/heads/main/sounds/center_button_long_press.flac
       - id: factory_reset_initiated_sound
-        file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/factory_reset_initiated.mp3
+        file: https://github.com/ArMaTeC/SmartRespeaker/raw/refs/heads/main/sounds/factory_reset_initiated.mp3
       - id: factory_reset_cancelled_sound
-        file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/factory_reset_cancelled.mp3
+        file: https://github.com/ArMaTeC/SmartRespeaker/raw/refs/heads/main/sounds/factory_reset_cancelled.mp3
       - id: factory_reset_confirmed_sound
-        file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/factory_reset_confirmed.mp3
+        file: https://github.com/ArMaTeC/SmartRespeaker/raw/refs/heads/main/sounds/factory_reset_confirmed.mp3
       - id: mute_switch_on_sound
-        file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/mute_switch_on.flac
+        file: https://github.com/ArMaTeC/SmartRespeaker/raw/refs/heads/main/sounds/mute_switch_on.flac
       - id: mute_switch_off_sound
-        file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/mute_switch_off.flac
+        file: https://github.com/ArMaTeC/SmartRespeaker/raw/refs/heads/main/sounds/mute_switch_off.flac
       - id: timer_finished_sound
-        file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/timer_finished.flac
+        file: https://github.com/ArMaTeC/SmartRespeaker/raw/refs/heads/main/sounds/timer_finished.flac
       - id: wake_word_triggered_sound
-        file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/wake_word_triggered.flac
+        file: https://github.com/ArMaTeC/SmartRespeaker/raw/refs/heads/main/sounds/wake_word_triggered.flac
 
 respeaker_lite:
   id: respeaker
@@ -1009,12 +1033,13 @@ micro_wake_word:
   models:
     - model: https://github.com/kahrendt/microWakeWord/releases/download/okay_nabu_20241226.3/okay_nabu.json
       id: okay_nabu
-      internal: true
-      probability_cutoff: 0.5  # Adjusted for balance
+    - model: hey_jarvis
+      id: hey_jarvis
+    - model: hey_mycroft
+      id: hey_mycroft
     - model: https://github.com/kahrendt/microWakeWord/releases/download/stop/stop.json
       id: stop_model
       internal: true
-      probability_cutoff: 0.75
   microphone: nabu_mic_mww
   on_wake_word_detected:
     - logger.log:
@@ -1062,8 +1087,8 @@ voice_assistant:
   micro_wake_word: mww
   use_wake_word: false
   noise_suppression_level: 0
-  auto_gain: 3 dbfs  # Adjusted for quieter environments
-  volume_multiplier: 2
+  auto_gain: 0 dbfs
+  volume_multiplier: 1
   on_client_connected:
     - logger.log: "VA client connected"
     - if:
@@ -1076,8 +1101,9 @@ voice_assistant:
           - switch.turn_off: mic_mute_switch
     - lambda: id(init_in_progress) = false;
     - micro_wake_word.start:
+    - logger.log: "Micro wake word started"  # Add this line
     - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
-    - lambda: id(device_state) = 1;  # STATE_IDLE
+    - lambda: id(device_state) = 1;
     - script.execute: control_leds
   on_client_disconnected:
     - logger.log: "VA client disconnected"
