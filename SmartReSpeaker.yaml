@@ -23,13 +23,14 @@ esphome:
       - sensor.template.publish:
           id: next_timer
           state: -1
+      - lambda: id(device_state) = 0;  # STATE_INITIALIZING
       - script.execute: control_leds
-      - delay: 10min
+      - delay: 10s
       - if:
           condition:
             lambda: return id(init_in_progress);
           then:
-            - logger.log: "Initialization completed after 10min delay"
+            - logger.log: "Initialization completed after 10s delay"
             - lambda: id(init_in_progress) = false;
             - script.execute: control_leds
   on_shutdown:
@@ -100,18 +101,20 @@ api:
   id: api_id
   actions:
     - action: start_va
-      then: 
+      then:
         - logger.log: "API action: Starting voice assistant"
         - voice_assistant.start:
     - action: stop_va
-      then: 
+      then:
         - logger.log: "API action: Stopping voice assistant"
         - voice_assistant.stop:
   on_client_connected:
     - logger.log: "API client connected"
+    - lambda: id(device_state) = 1;  # STATE_IDLE
     - script.execute: control_leds
   on_client_disconnected:
     - logger.log: "API client disconnected"
+    - lambda: id(device_state) = 10;  # STATE_NOT_READY
     - script.execute: control_leds
 
 ota:
@@ -176,6 +179,9 @@ globals:
     type: float
     restore_value: no
     initial_value: '1.0'
+  - id: device_state
+    type: int
+    initial_value: '0'  # STATE_INITIALIZING
 
 switch:
   - platform: template
@@ -184,10 +190,10 @@ switch:
     icon: mdi:volume-mute
     internal: true
     optimistic: true
-    turn_on_action: 
+    turn_on_action:
       - logger.log: "Muting speaker"
       - lambda: id(respeaker).mute_speaker();
-    turn_off_action: 
+    turn_off_action:
       - logger.log: "Unmuting speaker"
       - lambda: id(respeaker).unmute_speaker();
   - platform: gpio
@@ -250,10 +256,10 @@ switch:
                 priority: false
                 sound_file: !lambda return id(mute_switch_off_sound);
       - script.execute: control_leds
-    turn_on_action: 
+    turn_on_action:
       - logger.log: "Triggering mute toggle ON"
       - switch.turn_on: mute_toggle
-    turn_off_action: 
+    turn_off_action:
       - logger.log: "Triggering mute toggle OFF"
       - switch.turn_on: mute_toggle
   - platform: template
@@ -288,7 +294,7 @@ switch:
       - script.execute: disable_repeat
       - if:
           condition: {media_player.is_announcing:}
-          then: 
+          then:
             - logger.log: "Stopping announcement due to timer off"
             - media_player.stop: {announcement: true}
       - mixer_speaker.apply_ducking:
@@ -304,6 +310,7 @@ switch:
           duration: 0.0s
       - lambda: id(stop_model).enable();
       - script.execute: ring_timer
+      - lambda: id(device_state) = 6;  # STATE_TIMER_RINGING
       - script.execute: control_leds
       - delay: 15min
       - switch.turn_off: timer_ringing
@@ -336,15 +343,17 @@ binary_sensor:
       inverted: true
       mode: INPUT_PULLUP
     name: "User button"
-    on_press: 
+    on_press:
       - logger.log: "User button pressed"
+      - lambda: id(device_state) = 9;  # STATE_BUTTON_PRESSED
       - script.execute: control_leds
     on_release:
       - logger.log: "User button released"
+      - lambda: id(device_state) = 1;  # STATE_IDLE
       - script.execute: control_leds
       - if:
           condition: {lambda: return id(factory_reset_requested);}
-          then: 
+          then:
             - logger.log: "Factory reset requested on button release"
             - button.press: factory_reset_button
     on_multi_click:
@@ -358,25 +367,25 @@ binary_sensor:
               then:
                 - if:
                     condition: {switch.is_on: timer_ringing}
-                    then: 
+                    then:
                       - logger.log: "Stopping timer ringing"
                       - switch.turn_off: timer_ringing
                     else:
                       - if:
                           condition: {media_player.is_announcing:}
-                          then: 
+                          then:
                             - logger.log: "Stopping announcement"
                             - media_player.stop: {announcement: true}
                           else:
                             - if:
                                 condition: {voice_assistant.is_running:}
-                                then: 
+                                then:
                                   - logger.log: "Stopping voice assistant"
                                   - voice_assistant.stop:
                                 else:
                                   - if:
                                       condition: {media_player.is_playing:}
-                                      then: 
+                                      then:
                                         - logger.log: "Pausing media player"
                                         - media_player.pause:
                                       else:
@@ -491,6 +500,7 @@ binary_sensor:
               blue: 0
               id: led_respeaker_onboard
               effect: "none"
+
 time:
   - platform: sntp
     id: esp32_time
@@ -518,7 +528,7 @@ light:
       - pulse:
           name: "Idle Breathing"
           transition_length: 2000ms
-          update_interval: 50ms
+          update_interval: 100ms
           min_brightness: 0%
           max_brightness: 20%
       - pulse:
@@ -588,7 +598,7 @@ light:
             call.perform();
       - addressable_lambda:
           name: "Ring Chase"
-          update_interval: 100ms
+          update_interval: 200ms
           lambda: |-
             static int position = 0;
             static float tail_brightness[16] = {0};
@@ -604,465 +614,414 @@ light:
             tail_brightness[position] = 1.0;
             position = (position + 1) % it.size();
       - addressable_lambda:
-          name: "Rainbow Cycle"
-          update_interval: 50ms
+          name: "Cosmic Spiral"
+          update_interval: 150ms
           lambda: |-
-            static uint16_t hue = 0;
-            hue = (hue + 1) % 360;
+            static float t = 0;
+            t += 0.1;
             for (int i = 0; i < it.size(); i++) {
-              float h = fmod((float)hue + (i * 22.5), 360.0);
-              float s = 1.0;
-              float v = 0.5;
-              float r, g, b;
-              int hi = int(h / 60.0) % 6;
-              float f = h / 60.0 - hi;
-              float p = v * (1 - s);
-              float q = v * (1 - f * s);
-              float t = v * (1 - (1 - f) * s);
-              switch (hi) {
-                case 0: r = v; g = t; b = p; break;
-                case 1: r = q; g = v; b = p; break;
-                case 2: r = p; g = v; b = t; break;
-                case 3: r = p; g = q; b = v; break;
-                case 4: r = t; g = p; b = v; break;
-                case 5: r = v; g = p; b = q; break;
-              }
-              it[i] = ESPColor(r * 255, g * 255, b * 255);
-            }
-      - addressable_lambda:
-          name: "Rotating Colors"
-          update_interval: 100ms
-          lambda: |-
-            static int position = 0;
-            static const uint8_t colors[3][3] = {
-              {255, 0, 0},
-              {0, 255, 0},
-              {0, 0, 255}
-            };
-            position = (position + 1) % it.size();
-            for (int i = 0; i < it.size(); i++) {
-              int color_idx = (i + position) % 3;
+              float angle = (i * 2 * M_PI) / it.size();
+              float spiral = sin(angle + t);
+              float r = (sin(t) + 1) / 2;
+              float g = (sin(t + 2 * M_PI / 3) + 1) / 2;
+              float b = (sin(t + 4 * M_PI / 3) + 1) / 2;
               it[i] = ESPColor(
-                colors[color_idx][0],
-                colors[color_idx][1],
-                colors[color_idx][2]
+                (uint8_t)(r * 255 * spiral),
+                (uint8_t)(g * 255 * spiral),
+                (uint8_t)(b * 255 * spiral)
               );
             }
       - addressable_lambda:
-          name: "Clock Face"
-          update_interval: 1000ms
+          name: "Pulse Ripple"
+          update_interval: 100ms
           lambda: |-
-            auto time = id(esp32_time).now();
-            int hour = time.hour % 12;
-            int minute = time.minute;
-            int second = time.second;
-            int hour_pos = hour * 16 / 12;
-            int minute_pos = minute * 16 / 60;
-            int second_pos = second * 16 / 60;
-            it.all() = ESPColor(0, 0, 0);
-            it[hour_pos] = ESPColor(255, 0, 0);
-            if (hour_pos == minute_pos) {
-              it[minute_pos] = ESPColor(255, 255, 0);
-            } else {
-              it[minute_pos] = ESPColor(0, 191, 0);
-            }
-            if (second_pos == hour_pos && second_pos == minute_pos) {
-              it[second_pos] = ESPColor(255, 255, 255);
-            } else if (second_pos == hour_pos) {
-              it[second_pos] = ESPColor(255, 0, 255);
-            } else if (second_pos == minute_pos) {
-              it[second_pos] = ESPColor(0, 255, 255);
-            } else {
-              it[second_pos] = ESPColor(0, 0, 191);
+            static float t = 0;
+            t += 0.05;
+            for (int i = 0; i < it.size(); i++) {
+              float dist = fabs(i - it.size() / 2.0);
+              float ripple = sin(t - dist * 0.5);
+              it[i] = ESPColor(
+                (uint8_t)(255 * (ripple > 0 ? ripple : 0)),
+                0,
+                (uint8_t)(255 * (ripple < 0 ? -ripple : 0))
+              );
             }
       - addressable_lambda:
-          name: "Plasma Wave"
-          update_interval: 50ms
+          name: "Aurora Borealis"
+          update_interval: 200ms
+          lambda: |-
+            static float t = 0;
+            t += 0.02;
+            for (int i = 0; i < it.size(); i++) {
+              float wave = sin(t + i * 0.3);
+              float r = (wave > 0.5) ? 1.0 : 0.0;
+              float g = (wave > -0.5 && wave < 0.5) ? 1.0 : 0.0;
+              float b = (wave < -0.5) ? 1.0 : 0.0;
+              it[i] = ESPColor(
+                (uint8_t)(r * 255),
+                (uint8_t)(g * 255),
+                (uint8_t)(b * 255)
+              );
+            }
+      - addressable_lambda:
+          name: "Meteor Shower"
+          update_interval: 100ms
+          lambda: |-
+            static int meteor_pos = 0;
+            static int meteor_tail = 5;
+            meteor_pos = (meteor_pos + 1) % it.size();
+            for (int i = 0; i < it.size(); i++) {
+              int dist = (i - meteor_pos + it.size()) % it.size();
+              if (dist < meteor_tail) {
+                float brightness = 1.0 - (float)dist / meteor_tail;
+                it[i] = ESPColor(
+                  (uint8_t)(255 * brightness),
+                  (uint8_t)(255 * brightness * 0.5),
+                  0
+                );
+              } else {
+                it[i] = ESPColor(0, 0, 0);
+              }
+            }
+      - addressable_lambda:
+          name: "Color Vortex"
+          update_interval: 150ms
+          lambda: |-
+            static float t = 0;
+            t += 0.1;
+            for (int i = 0; i < it.size(); i++) {
+              float angle = (i * 2 * M_PI) / it.size();
+              float r = sin(angle + t);
+              float g = sin(angle + t + 2 * M_PI / 3);
+              float b = sin(angle + t + 4 * M_PI / 3);
+              it[i] = ESPColor(
+                (uint8_t)((r + 1) * 127),
+                (uint8_t)((g + 1) * 127),
+                (uint8_t)((b + 1) * 127)
+              );
+            }
+      - addressable_lambda:
+          name: "Kaleidoscope"
+          update_interval: 200ms
+          lambda: |-
+            static float t = 0;
+            t += 0.05;
+            for (int i = 0; i < it.size(); i++) {
+              float angle = (i * 2 * M_PI) / it.size();
+              float r = sin(angle + t);
+              float g = sin(angle * 2 + t);
+              float b = sin(angle * 3 + t);
+              it[i] = ESPColor(
+                (uint8_t)((r + 1) * 127),
+                (uint8_t)((g + 1) * 127),
+                (uint8_t)((b + 1) * 127)
+              );
+            }
+      - addressable_lambda:
+          name: "Particle Dance"
+          update_interval: 150ms
+          lambda: |-
+            static float positions[16] = {0};
+            static float velocities[16] = {0};
+            for (int i = 0; i < it.size(); i++) {
+              velocities[i] += (rand() % 11 - 5) * 0.01;
+              positions[i] += velocities[i];
+              if (positions[i] < 0) positions[i] += 1.0;
+              if (positions[i] > 1) positions[i] -= 1.0;
+              it[i] = ESPColor(
+                (uint8_t)(255 * positions[i]),
+                (uint8_t)(255 * (1 - positions[i])),
+                (uint8_t)(255 * sin(positions[i] * M_PI))
+              );
+            }
+      - addressable_lambda:
+          name: "Wave Interference"
+          update_interval: 100ms
           lambda: |-
             static float t = 0;
             t += 0.1;
             for (int i = 0; i < it.size(); i++) {
               float wave1 = sin(t + i * 0.5);
               float wave2 = sin(t * 0.7 + i * 0.3);
-              float wave3 = sin(t * 0.3 + i * 0.8);
-              uint8_t r = (uint8_t)((wave1 + 1) * 127);
-              uint8_t g = (uint8_t)((wave2 + 1) * 127);
-              uint8_t b = (uint8_t)((wave3 + 1) * 127);
-              it[i] = ESPColor(r, g, b);
+              float intensity = (wave1 + wave2) / 2;
+              it[i] = ESPColor(
+                (uint8_t)(255 * fabs(intensity)),
+                (uint8_t)(127 * (1 + intensity)),
+                (uint8_t)(63 * (1 - intensity))
+              );
             }
       - addressable_lambda:
-          name: "Fire Simulation"
-          update_interval: 100ms
-          lambda: |-
-            static uint8_t heat[16] = {0};
-            for (int i = 0; i < it.size(); i++) {
-              heat[i] = (heat[i] > 10) ? heat[i] - rand() % 10 : 0;
-            }
-            heat[0] = rand() % 128 + 128;
-            for (int i = it.size() - 1; i > 0; i--) {
-              heat[i] = (heat[i] + heat[i-1]) / 2;
-            }
-            for (int i = 0; i < it.size(); i++) {
-              if (heat[i] < 85) {
-                it[i] = ESPColor(heat[i] * 3, 0, 0);
-              } else if (heat[i] < 170) {
-                it[i] = ESPColor(255, (heat[i] - 85) * 3, 0);
-              } else {
-                it[i] = ESPColor(255, 255, (heat[i] - 170) * 3);
-              }
-            }
-      - addressable_lambda:
-          name: "Cosmic Spiral"
-          update_interval: 75ms
+          name: "Quantum Flux"
+          update_interval: 200ms
           lambda: |-
             static float t = 0;
             t += 0.05;
             for (int i = 0; i < it.size(); i++) {
-              float angle = (i * 2 * M_PI / it.size()) + t;
-              float r = (sin(angle) + 1) * 127;
-              float g = (sin(angle + 2 * M_PI / 3) + 1) * 127;
-              float b = (sin(angle + 4 * M_PI / 3) + 1) * 127;
-              it[i] = ESPColor(r, g, b);
+              float flux = sin(t + i * 0.2) * cos(t * 0.3 + i * 0.4);
+              it[i] = ESPColor(
+                (uint8_t)(255 * (flux > 0 ? flux : 0)),
+                (uint8_t)(255 * (flux < 0 ? -flux : 0)),
+                (uint8_t)(127 * (1 - fabs(flux)))
+              );
             }
       - addressable_lambda:
-          name: "Pulse Ripple"
-          update_interval: 80ms
-          lambda: |-
-            static float center = 0;
-            center = (center + 0.2) > it.size() ? 0 : center + 0.2;
-            for (int i = 0; i < it.size(); i++) {
-              float dist = fabs(i - center);
-              float intensity = exp(-dist * 0.5) * 255;
-              it[i] = ESPColor(intensity, intensity / 2, intensity / 4);
-            }
-      - addressable_lambda:
-          name: "Aurora Borealis"
-          update_interval: 120ms
-          lambda: |-
-            static float t = 0;
-            t += 0.03;
-            for (int i = 0; i < it.size(); i++) {
-              float noise = sin(t + i * 0.4) + sin(t * 1.3 + i * 0.7);
-              uint8_t g = (noise + 2) * 63;
-              uint8_t b = (noise + 2) * 31;
-              uint8_t r = noise * 20;
-              it[i] = ESPColor(r, g, b);
-            }
-      - addressable_lambda:
-          name: "Meteor Shower"
-          update_interval: 60ms
-          lambda: |-
-            static int pos = 0;
-            static int length = 3;
-            pos = (pos + 1) % (it.size() + length);
-            it.all() = ESPColor(0, 0, 0);
-            for (int i = pos; i > pos - length && i >= 0; i--) {
-              if (i < it.size()) {
-                float fade = (float)(pos - i) / length;
-                it[i] = ESPColor(255 * fade, 255 * fade, 255);
-              }
-            }
-      - addressable_lambda:
-          name: "Color Vortex"
-          update_interval: 70ms
+          name: "Electric Storm"
+          update_interval: 100ms
           lambda: |-
             static float t = 0;
             t += 0.1;
             for (int i = 0; i < it.size(); i++) {
-              float angle = i * 2 * M_PI / it.size();
-              float r = (sin(t + angle) + 1) * 127;
-              float g = (sin(t + angle + 2) + 1) * 127;
-              float b = (sin(t + angle + 4) + 1) * 127;
-              it[i] = ESPColor(r, g, b);
+              float flash = (rand() % 100 < 10) ? 1.0 : 0.2;
+              it[i] = ESPColor(
+                (uint8_t)(255 * flash),
+                (uint8_t)(255 * flash * 0.8),
+                (uint8_t)(255 * flash)
+              );
             }
       - addressable_lambda:
-          name: "Kaleidoscope"
-          update_interval: 90ms
+          name: "Lava Flow"
+          update_interval: 200ms
+          lambda: |-
+            static float heat[16] = {0};
+            for (int i = 0; i < it.size(); i++) {
+              heat[i] = (heat[i] > 10) ? heat[i] - rand() % 5 : 0;
+              if (i == 0 && rand() % 10 == 0) heat[i] = 255;
+              heat[i] = (heat[i] + heat[(i + 1) % it.size()]) / 2;
+              it[i] = ESPColor(
+                (uint8_t)(heat[i]),
+                (uint8_t)(heat[i] * 0.5),
+                (uint8_t)(heat[i] * 0.2)
+              );
+            }
+      - addressable_lambda:
+          name: "Digital Rain"
+          update_interval: 150ms
+          lambda: |-
+            static int drops[16] = {0};
+            for (int i = 0; i < it.size(); i++) {
+              if (rand() % 50 == 0) drops[i] = 255;
+              drops[i] = drops[i] > 0 ? drops[i] - 20 : 0;
+              it[i] = ESPColor(0, (uint8_t)drops[i], 0);
+            }
+      - addressable_lambda:
+          name: "Hypnotic Swirl"
+          update_interval: 200ms
           lambda: |-
             static float t = 0;
             t += 0.05;
             for (int i = 0; i < it.size(); i++) {
-              float symmetry = sin(t + i * M_PI / 8);
-              uint8_t r = (symmetry + 1) * 127;
-              uint8_t g = (sin(t + i * M_PI / 4) + 1) * 127;
-              uint8_t b = (cos(t + i * M_PI / 3) + 1) * 127;
-              it[i] = ESPColor(r, g, b);
-            }
-      - addressable_lambda:
-          name: "Particle Dance"
-          update_interval: 40ms
-          lambda: |-
-            static float particles[3][2] = {{0, 0.1}, {4, -0.15}, {8, 0.2}};
-            it.all() = ESPColor(0, 0, 0);
-            for (int p = 0; p < 3; p++) {
-              particles[p][0] += particles[p][1];
-              if (particles[p][0] >= it.size()) particles[p][0] -= it.size();
-              if (particles[p][0] < 0) particles[p][0] += it.size();
-              int pos = (int)particles[p][0];
-              it[pos] = ESPColor(255 * (p == 0), 255 * (p == 1), 255 * (p == 2));
-            }
-      - addressable_lambda:
-          name: "Wave Interference"
-          update_interval: 60ms
-          lambda: |-
-            static float t = 0;
-            t += 0.08;
-            for (int i = 0; i < it.size(); i++) {
-              float wave1 = sin(t + i * 0.6);
-              float wave2 = sin(t * 1.2 + i * 0.4);
-              float intensity = (wave1 + wave2) * 127 + 127;
-              it[i] = ESPColor(intensity, intensity * 0.7, intensity * 0.3);
-            }
-      - addressable_lambda:
-          name: "Quantum Flux"
-          update_interval: 45ms
-          lambda: |-
-            static float t = 0;
-            t += 0.12;
-            for (int i = 0; i < it.size(); i++) {
-              float flux = sin(t + i * 0.9) * cos(t * 0.5 + i * 0.3);
-              uint8_t r = (flux + 1) * 127;
-              uint8_t g = (sin(t * 1.1 + i) + 1) * 127;
-              uint8_t b = (cos(t * 0.7 + i * 1.2) + 1) * 127;
-              it[i] = ESPColor(r, g, b);
-            }
-      - addressable_lambda:
-          name: "Electric Storm"
-          update_interval: 80ms
-          lambda: |-
-            static int strike = 0;
-            strike = (rand() % 20 == 0) ? rand() % it.size() : strike;
-            it.all() = ESPColor(0, 0, 20);
-            if (rand() % 5 == 0) {
-              it[strike] = ESPColor(255, 255, 255);
-              int adj = (strike + 1) % it.size();
-              it[adj] = ESPColor(200, 200, 255);
-              adj = (strike - 1 + it.size()) % it.size();
-              it[adj] = ESPColor(200, 200, 255);
-            }
-      - addressable_lambda:
-          name: "Lava Flow"
-          update_interval: 100ms
-          lambda: |-
-            static uint8_t heat[16] = {0};
-            for (int i = 0; i < it.size(); i++) {
-              heat[i] = (heat[i] > 5) ? heat[i] - (rand() % 5) : 0;
-            }
-            heat[rand() % it.size()] = 255;
-            for (int i = 0; i < it.size(); i++) {
-              uint8_t r = heat[i];
-              uint8_t g = heat[i] / 2;
-              it[i] = ESPColor(r, g, 0);
-            }
-      - addressable_lambda:
-          name: "Digital Rain"
-          update_interval: 70ms
-          lambda: |-
-            static int drops[3] = {0, 4, 8};
-            it.all() = ESPColor(0, 20, 0);
-            for (int d = 0; d < 3; d++) {
-              drops[d] = (drops[d] + 1) % it.size();
-              it[drops[d]] = ESPColor(0, 255, 0);
-              int tail = (drops[d] - 1 + it.size()) % it.size();
-              it[tail] = ESPColor(0, 127, 0);
-            }
-      - addressable_lambda:
-          name: "Hypnotic Swirl"
-          update_interval: 60ms
-          lambda: |-
-            static float t = 0;
-            t += 0.15;
-            for (int i = 0; i < it.size(); i++) {
-              float swirl = sin(t + i * M_PI / 4) + cos(t * 0.8 + i * M_PI / 5);
-              uint8_t r = (swirl + 2) * 63;
-              uint8_t b = (swirl + 2) * 95;
-              it[i] = ESPColor(r, 0, b);
+              float angle = (i * 2 * M_PI) / it.size() + t;
+              float r = sin(angle);
+              float g = cos(angle);
+              it[i] = ESPColor(
+                (uint8_t)((r + 1) * 127),
+                (uint8_t)((g + 1) * 127),
+                (uint8_t)(127 * sin(t))
+              );
             }
       - addressable_lambda:
           name: "Strobe Chaos"
-          update_interval: 50ms
+          update_interval: 100ms
           lambda: |-
-            if (rand() % 3 == 0) {
-              it.all() = ESPColor(rand() % 256, rand() % 256, rand() % 256);
-            } else {
-              it.all() = ESPColor(0, 0, 0);
+            for (int i = 0; i < it.size(); i++) {
+              uint8_t r = rand() % 256;
+              uint8_t g = rand() % 256;
+              uint8_t b = rand() % 256;
+              it[i] = ESPColor(r, g, b);
             }
       - addressable_lambda:
           name: "Heartbeat"
-          update_interval: 40ms
+          update_interval: 200ms
           lambda: |-
             static float t = 0;
-            t += 0.2;
-            float pulse = (sin(t) * sin(t * 3)) * 255;
-            if (pulse < 0) pulse = 0;
+            t += 0.1;
+            float pulse = sin(t) * sin(t * 2);
             for (int i = 0; i < it.size(); i++) {
-              it[i] = ESPColor(pulse, 0, 0);
+              it[i] = ESPColor(
+                (uint8_t)(255 * pulse),
+                0,
+                0
+              );
             }
       - addressable_lambda:
           name: "Galactic Pulse"
-          update_interval: 90ms
+          update_interval: 150ms
           lambda: |-
             static float t = 0;
-            t += 0.07;
+            t += 0.05;
             for (int i = 0; i < it.size(); i++) {
-              float dist = fabs(i - it.size() / 2);
-              float pulse = sin(t + dist * 0.5) * 127 + 127;
-              it[i] = ESPColor(pulse, pulse / 2, pulse);
+              float pulse = sin(t + i * 0.2);
+              it[i] = ESPColor(
+                (uint8_t)(255 * pulse * pulse),
+                (uint8_t)(127 * (1 + sin(t))),
+                (uint8_t)(255 * (1 - pulse * pulse))
+              );
             }
       - addressable_lambda:
           name: "Neon Chase"
-          update_interval: 85ms
+          update_interval: 200ms
           lambda: |-
             static int pos = 0;
             pos = (pos + 1) % it.size();
-            it.all() = ESPColor(20, 0, 20);
-            it[pos] = ESPColor(255, 0, 255);
-            int tail = (pos - 1 + it.size()) % it.size();
-            it[tail] = ESPColor(127, 0, 127);
+            for (int i = 0; i < it.size(); i++) {
+              float brightness = (i == pos) ? 1.0 : 0.2;
+              it[i] = ESPColor(
+                (uint8_t)(255 * brightness),
+                (uint8_t)(127 * brightness),
+                (uint8_t)(255 * brightness)
+              );
+            }
       - addressable_lambda:
           name: "Ripple Echo"
-          update_interval: 65ms
+          update_interval: 100ms
           lambda: |-
-            static float centers[2] = {0, 8};
-            it.all() = ESPColor(0, 0, 0);
-            for (int c = 0; c < 2; c++) {
-              centers[c] += 0.3;
-              if (centers[c] > it.size()) centers[c] -= it.size();
-              for (int i = 0; i < it.size(); i++) {
-                float dist = fabs(i - centers[c]);
-                if (dist < 3) {
-                  uint8_t val = (3 - dist) * 85;
-                  uint8_t r = it[i].get_red() + val;
-                  uint8_t g = it[i].get_green();
-                  uint8_t b = it[i].get_blue() + val;
-                  it[i] = ESPColor(r > 255 ? 255 : r, g, b > 255 ? 255 : b);
-                }
-              }
+            static float t = 0;
+            t += 0.05;
+            for (int i = 0; i < it.size(); i++) {
+              float dist = fabs(i - it.size() / 2.0);
+              float ripple = sin(t - dist * 0.3) * exp(-dist * 0.1);
+              it[i] = ESPColor(
+                (uint8_t)(255 * fabs(ripple)),
+                (uint8_t)(127 * fabs(ripple)),
+                0
+              );
             }
       - addressable_lambda:
           name: "Solar Flare"
-          update_interval: 110ms
+          update_interval: 200ms
           lambda: |-
             static float t = 0;
-            t += 0.04;
+            t += 0.1;
             for (int i = 0; i < it.size(); i++) {
-              float flare = sin(t + i * 0.2) + (rand() % 50) / 50.0;
-              uint8_t r = (flare + 1) * 127;
-              uint8_t g = (flare > 0.5) ? (flare - 0.5) * 255 : 0;
-              it[i] = ESPColor(r, g, 0);
+              float flare = sin(t + i * 0.5) + (rand() % 50) / 100.0;
+              it[i] = ESPColor(
+                (uint8_t)(255 * flare),
+                (uint8_t)(127 * flare),
+                0
+              );
             }
       - addressable_lambda:
           name: "Fractal Glow"
-          update_interval: 55ms
+          update_interval: 150ms
           lambda: |-
             static float t = 0;
-            t += 0.09;
+            t += 0.05;
             for (int i = 0; i < it.size(); i++) {
-              float fractal = sin(t + i * 0.5) * cos(t * 0.3 + i * 0.7);
-              uint8_t r = (fractal + 1) * 127;
-              uint8_t g = (sin(t * 1.2 + i) + 1) * 127;
-              it[i] = ESPColor(r, g, 0);
+              float glow = sin(t * 0.3 + i * 0.7) * cos(t * 0.5 + i * 0.2);
+              it[i] = ESPColor(
+                (uint8_t)(255 * fabs(glow)),
+                (uint8_t)(255 * fabs(sin(t + i))),
+                (uint8_t)(255 * fabs(cos(t + i)))
+              );
             }
       - addressable_lambda:
           name: "Binary Clock"
           update_interval: 1000ms
           lambda: |-
             auto time = id(esp32_time).now();
-            int hour = time.hour % 12;
-            int minute = time.minute / 4;
-            it.all() = ESPColor(0, 0, 0);
-            for (int i = 0; i < 8; i++) {
-              if (hour & (1 << i)) it[i] = ESPColor(255, 0, 0);
-              if (minute & (1 << i)) it[i + 8] = ESPColor(0, 255, 0);
+            int bits = (time.hour % 12) * 3600 + time.minute * 60 + time.second;
+            for (int i = 0; i < it.size(); i++) {
+              it[i] = (bits & (1 << i)) ? ESPColor(0, 255, 0) : ESPColor(0, 0, 0);
             }
       - addressable_lambda:
           name: "Chasing Waves"
-          update_interval: 75ms
+          update_interval: 200ms
           lambda: |-
             static float t = 0;
             t += 0.1;
             for (int i = 0; i < it.size(); i++) {
-              float wave = sin(t + i * 0.8) + sin(t * 1.5 - i * 0.6);
-              uint8_t val = (wave + 2) * 63;
-              it[i] = ESPColor(val, val, 255);
+              float wave = sin(t + i * 0.4) + cos(t * 0.5 + i * 0.3);
+              it[i] = ESPColor(
+                (uint8_t)(127 * (1 + wave)),
+                (uint8_t)(127 * (1 + sin(t))),
+                (uint8_t)(127 * (1 + cos(t)))
+              );
             }
       - addressable_lambda:
           name: "Prism Split"
-          update_interval: 60ms
+          update_interval: 150ms
           lambda: |-
             static float t = 0;
-            t += 0.13;
+            t += 0.05;
             for (int i = 0; i < it.size(); i++) {
-              float split = sin(t + i * 0.4);
-              if (split > 0.33) {
-                it[i] = ESPColor(255, 0, 0);
-              } else if (split > -0.33) {
-                it[i] = ESPColor(0, 255, 0);
-              } else {
-                it[i] = ESPColor(0, 0, 255);
-              }
+              float r = sin(t + i * 0.3);
+              float g = sin(t + i * 0.5);
+              float b = sin(t + i * 0.7);
+              it[i] = ESPColor(
+                (uint8_t)((r + 1) * 127),
+                (uint8_t)((g + 1) * 127),
+                (uint8_t)((b + 1) * 127)
+              );
             }
       - addressable_lambda:
           name: "Glow Orbit"
-          update_interval: 70ms
-          lambda: |-
-            static float t = 0;
-            t += 0.08;
-            it.all() = ESPColor(0, 0, 0);
-            int pos = (int)(t * it.size()) % it.size();
-            it[pos] = ESPColor(255, 255, 255);
-            int glow = (pos - 1 + it.size()) % it.size();
-            it[glow] = ESPColor(127, 127, 127);
-            glow = (pos + 1) % it.size();
-            it[glow] = ESPColor(127, 127, 127);
-      - addressable_lambda:
-          name: "Color Bloom"
-          update_interval: 95ms
-          lambda: |-
-            static float t = 0;
-            t += 0.06;
-            for (int i = 0; i < it.size(); i++) {
-              float bloom = sin(t + i * 0.5) * cos(t * 0.7);
-              uint8_t r = (bloom + 1) * 127;
-              uint8_t g = (bloom > 0) ? bloom * 255 : 0;
-              uint8_t b = (bloom < 0) ? -bloom * 255 : 0;
-              it[i] = ESPColor(r, g, b);
-            }
-      - addressable_lambda:
-          name: "Sparkle Fade"
-          update_interval: 50ms
-          lambda: |-
-            static uint8_t sparks[16] = {0};
-            if (rand() % 10 == 0) {
-              sparks[rand() % it.size()] = 255;
-            }
-            for (int i = 0; i < it.size(); i++) {
-              sparks[i] = (sparks[i] > 10) ? sparks[i] - 10 : 0;
-              it[i] = ESPColor(sparks[i], sparks[i], sparks[i]);
-            }
-      - addressable_lambda:
-          name: "Twilight Drift"
-          update_interval: 130ms
-          lambda: |-
-            static float t = 0;
-            t += 0.02;
-            for (int i = 0; i < it.size(); i++) {
-              float drift = sin(t + i * 0.3) + cos(t * 0.5 + i * 0.2);
-              uint8_t r = (drift + 2) * 31;
-              uint8_t g = (drift + 2) * 63;
-              uint8_t b = (drift + 2) * 95;
-              it[i] = ESPColor(r, g, b);
-            }
-      - addressable_lambda:
-          name: "Pulse Matrix"
-          update_interval: 85ms
+          update_interval: 200ms
           lambda: |-
             static float t = 0;
             t += 0.1;
             for (int i = 0; i < it.size(); i++) {
-              float pulse = sin(t + i * M_PI / 8) * sin(t * 0.8 + i * M_PI / 4);
-              uint8_t val = (pulse + 1) * 127;
-              it[i] = ESPColor(val, val / 2, 0);
+              float orbit = sin(t + i * 0.5) * cos(t * 0.2);
+              it[i] = ESPColor(
+                (uint8_t)(255 * (orbit > 0 ? orbit : 0)),
+                (uint8_t)(255 * (orbit < 0 ? -orbit : 0)),
+                (uint8_t)(127 * (1 - fabs(orbit)))
+              );
+            }
+      - addressable_lambda:
+          name: "Color Bloom"
+          update_interval: 150ms
+          lambda: |-
+            static float t = 0;
+            t += 0.05;
+            for (int i = 0; i < it.size(); i++) {
+              float bloom = sin(t + i * 0.2);
+              it[i] = ESPColor(
+                (uint8_t)(255 * (bloom > 0 ? bloom : 0)),
+                (uint8_t)(255 * sin(t + i)),
+                (uint8_t)(255 * cos(t + i))
+              );
+            }
+      - addressable_lambda:
+          name: "Sparkle Fade"
+          update_interval: 100ms
+          lambda: |-
+            static float sparks[16] = {0};
+            for (int i = 0; i < it.size(); i++) {
+              if (rand() % 50 == 0) sparks[i] = 1.0;
+              sparks[i] *= 0.9;
+              it[i] = ESPColor(
+                (uint8_t)(255 * sparks[i]),
+                (uint8_t)(255 * sparks[i]),
+                (uint8_t)(255 * sparks[i])
+              );
+            }
+      - addressable_lambda:
+          name: "Twilight Drift"
+          update_interval: 200ms
+          lambda: |-
+            static float t = 0;
+            t += 0.05;
+            for (int i = 0; i < it.size(); i++) {
+              float drift = sin(t + i * 0.3);
+              it[i] = ESPColor(
+                (uint8_t)(127 * (1 + drift)),
+                (uint8_t)(63 * (1 + drift)),
+                (uint8_t)(191 * (1 + drift))
+              );
+            }
+      - addressable_lambda:
+          name: "Pulse Matrix"
+          update_interval: 150ms
+          lambda: |-
+            static float t = 0;
+            t += 0.1;
+            for (int i = 0; i < it.size(); i++) {
+              float pulse = sin(t + i * 0.5) * cos(t * 0.3 + i);
+              it[i] = ESPColor(
+                (uint8_t)(255 * fabs(pulse)),
+                (uint8_t)(127 * fabs(pulse)),
+                (uint8_t)(63 * fabs(pulse))
+              );
             }
 
 sensor:
@@ -1088,11 +1047,12 @@ sensor:
           format: "Battery voltage: %.2f V"
           args: ["x"]
       - if:
-          condition: 
+          condition:
             lambda: return x < 0.05;
           then:
             - logger.log: "Low battery alert triggered"
             - lambda: id(low_battery_alert) = true;
+            - lambda: id(device_state) = 8;  # STATE_LOW_BATTERY
             - script.execute: control_leds
           else:
             - logger.log: "Battery level normal"
@@ -1142,219 +1102,39 @@ script:
   - id: control_leds
     then:
       - logger.log: "Starting control_leds script execution"
-      - if:
-          condition:
-            lambda: return id(debug_mode);
-          then:
-            - lambda: |-
-                ESP_LOGD("control_leds", "voice_assistant_phase: %d", id(voice_assistant_phase));
-                ESP_LOGD("control_leds", "improv_ble_in_progress: %d", id(improv_ble_in_progress));
-                ESP_LOGD("control_leds", "init_in_progress: %d", id(init_in_progress));
-                ESP_LOGD("control_leds", "wifi_connected: %d", id(wifi_id).is_connected());
-                ESP_LOGD("control_leds", "api_connected: %d", id(api_id).is_connected());
-                ESP_LOGD("control_leds", "user_button_state: %d", id(user_button).state);
-                ESP_LOGD("control_leds", "low_battery_alert: %d", id(low_battery_alert));
-                ESP_LOGD("control_leds", "timer_ringing: %d", id(timer_ringing).state);
-                ESP_LOGD("control_leds", "media_player_state: %d", (int)id(external_media_player).state);
-                ESP_LOGD("control_leds", "is_timer_active: %d", id(is_timer_active));
+      - light.turn_on:
+          id: led_respeaker_onboard
+          effect: !lambda |-
+            switch (id(device_state)) {
+              case 0: return "Ring Chase";          // STATE_INITIALIZING
+              case 1: return "none";                // STATE_IDLE
+              case 2: return "Pulse Ripple";        // STATE_VA_LISTENING
+              case 3: return "Aurora Borealis";     // STATE_VA_THINKING
+              case 4: return "Replying Alternate";  // STATE_VA_REPLYING
+              case 5: return "Error Flash";         // STATE_VA_ERROR
+              case 6: return "Meteor Shower";       // STATE_TIMER_RINGING
+              case 7: return "Color Vortex";        // STATE_MEDIA_PLAYING
+              case 8: return "Lava Flow";           // STATE_LOW_BATTERY
+              case 9: return "Cosmic Spiral";       // STATE_BUTTON_PRESSED
+              case 10: return "Digital Rain";       // STATE_NOT_READY
+              default: return "none";
+            }
       - lambda: |-
-          if (id(improv_ble_in_progress)) {
-            ESP_LOGD("control_leds", "Executing: improv_ble_in_progress (Blue Ring)");
-            id(control_leds_improv_ble_state).execute();
-            id(last_led_trigger).publish_state("Improv BLE");
-          }
-          else if (id(init_in_progress)) {
-            ESP_LOGD("control_leds", "Executing: init_in_progress (Blue Ring)");
-            id(control_leds_init_state).execute();
-            id(last_led_trigger).publish_state("Initializing");
-          }
-          else if (!id(wifi_id).is_connected() || !id(api_id).is_connected()) {
-            ESP_LOGD("control_leds", "Executing: no_ha_connection (Blue Ring)");
-            id(control_leds_no_ha_connection_state).execute();
-            id(last_led_trigger).publish_state("No Connection");
-          }
-          else if (id(user_button).state) {
-            ESP_LOGD("control_leds", "Executing: user_button_pressed (Cyan Ring)");
-            id(control_leds_center_button_touched).execute();
-            id(last_led_trigger).publish_state("Button Pressed");
-          }
-          else if (id(low_battery_alert)) {
-            ESP_LOGD("control_leds", "Executing: low_battery (Red Ring)");
-            id(control_leds_low_battery).execute();
-            id(last_led_trigger).publish_state("Low Battery");
-          }
-          else if (id(timer_ringing).state) {
-            ESP_LOGD("control_leds", "Executing: timer_ringing (Yellow Ring)");
-            id(control_leds_timer_ringing).execute();
-            id(last_led_trigger).publish_state("Timer Ringing");
-          }
-          else if (id(voice_assistant_phase) == 2) {
-            ESP_LOGD("control_leds", "Executing: va_waiting_for_command (Pink Ring)");
-            id(control_leds_voice_assistant_waiting_for_command_phase).execute();
-            id(last_led_trigger).publish_state("Waiting for Command");
-          }
-          else if (id(voice_assistant_phase) == 3) {
-            ESP_LOGD("control_leds", "Executing: va_listening (Green Ring)");
-            id(control_leds_voice_assistant_listening_for_command_phase).execute();
-            id(last_led_trigger).publish_state("Listening");
-          }
-          else if (id(voice_assistant_phase) == 4) {
-            ESP_LOGD("control_leds", "Executing: va_thinking (Purple Ring)");
-            id(control_leds_voice_assistant_thinking_phase).execute();
-            id(last_led_trigger).publish_state("Thinking");
-          }
-          else if (id(voice_assistant_phase) == 5) {
-            ESP_LOGD("control_leds", "Executing: va_replying (Green-Cyan Alternate)");
-            id(control_leds_voice_assistant_replying_phase).execute();
-            id(last_led_trigger).publish_state("Speaking");
-          }
-          else if (id(voice_assistant_phase) == 11) {
-            ESP_LOGD("control_leds", "Executing: va_error (Red Ring)");
-            id(control_leds_voice_assistant_error_phase).execute();
-            id(last_led_trigger).publish_state("Error");
-          }
-          else if (id(voice_assistant_phase) == 10) {
-            ESP_LOGD("control_leds", "Executing: va_not_ready (Orange Ring)");
-            id(control_leds_voice_assistant_not_ready_phase).execute();
-            id(last_led_trigger).publish_state("Not Ready");
-          }
-          else if (id(is_timer_active)) {
-            ESP_LOGD("control_leds", "Executing: timer_ticking (Yellow Ring)");
-            id(control_leds_timer_ticking).execute();
-            id(last_led_trigger).publish_state("Timer Ticking");
-          }
-          else if (id(external_media_player).state == media_player::MediaPlayerState::MEDIA_PLAYER_STATE_PLAYING) {
-            ESP_LOGD("control_leds", "Executing: media_playing (Green Ring)");
-            id(control_leds_media_playing).execute();
-            id(last_led_trigger).publish_state("Media Playing");
-          }
-          else {
-            ESP_LOGD("control_leds", "Executing: idle (LED Off)");
-            id(control_leds_voice_assistant_idle_phase).execute();
-            id(last_led_trigger).publish_state("Idle");
+          switch (id(device_state)) {
+            case 0: id(led_red) = 0.0; id(led_green) = 0.0; id(led_blue) = 1.0; break;  // Blue for initializing
+            case 1: id(led_red) = 0.0; id(led_green) = 0.0; id(led_blue) = 0.0; break;  // Off for idle
+            case 2: id(led_red) = 0.0; id(led_green) = 1.0; id(led_blue) = 0.0; break;  // Green for listening
+            case 3: id(led_red) = 0.5; id(led_green) = 0.0; id(led_blue) = 0.5; break;  // Purple for thinking
+            case 4: id(led_red) = 0.0; id(led_green) = 1.0; id(led_blue) = 1.0; break;  // Cyan for replying
+            case 5: id(led_red) = 1.0; id(led_green) = 0.0; id(led_blue) = 0.0; break;  // Red for error
+            case 6: id(led_red) = 1.0; id(led_green) = 1.0; id(led_blue) = 0.0; break;  // Yellow for timer ringing
+            case 7: id(led_red) = 0.0; id(led_green) = 1.0; id(led_blue) = 0.0; break;  // Green for media playing
+            case 8: id(led_red) = 1.0; id(led_green) = 0.0; id(led_blue) = 0.0; break;  // Red for low battery
+            case 9: id(led_red) = 0.0; id(led_green) = 1.0; id(led_blue) = 1.0; break;  // Cyan for button pressed
+            case 10: id(led_red) = 1.0; id(led_green) = 0.5; id(led_blue) = 0.0; break; // Orange for not ready
+            default: id(led_red) = 0.0; id(led_green) = 0.0; id(led_blue) = 0.0;
           }
       - logger.log: "Finished control_leds script execution"
-  - id: control_leds_improv_ble_state
-    then:
-      - logger.log: "Setting LED: Improv BLE state (Blue Ring)"
-      - lambda: |-
-          id(led_red) = 0.0; id(led_green) = 0.0; id(led_blue) = 1.0;
-      - light.turn_on:
-          id: led_respeaker_onboard
-          effect: "Ring Chase"
-  - id: control_leds_init_state
-    then:
-      - logger.log: "Setting LED: Init state (Blue Ring)"
-      - lambda: |-
-          id(led_red) = 0.0; id(led_green) = 0.0; id(led_blue) = 1.0;
-      - light.turn_on:
-          id: led_respeaker_onboard
-          effect: "Ring Chase"
-  - id: control_leds_no_ha_connection_state
-    then:
-      - logger.log: "Setting LED: No HA connection (Blue Ring)"
-      - lambda: |-
-          id(led_red) = 0.0; id(led_green) = 0.0; id(led_blue) = 1.0;
-      - light.turn_on:
-          id: led_respeaker_onboard
-          effect: "Ring Chase"
-  - id: control_leds_voice_assistant_idle_phase
-    then:
-      - logger.log: "Setting LED: VA idle (Off)"
-      - light.turn_off:
-          id: led_respeaker_onboard
-  - id: control_leds_voice_assistant_waiting_for_command_phase
-    then:
-      - logger.log: "Setting LED: VA waiting (Pink Ring)"
-      - lambda: |-
-          id(led_red) = 1.0; id(led_green) = 0.2; id(led_blue) = 1.0;
-      - light.turn_on:
-          id: led_respeaker_onboard
-          effect: "Ring Chase"
-  - id: control_leds_voice_assistant_listening_for_command_phase
-    then:
-      - logger.log: "Setting LED: VA listening (Green Ring)"
-      - lambda: |-
-          id(led_red) = 0.0; id(led_green) = 1.0; id(led_blue) = 0.0;
-      - light.turn_on:
-          id: led_respeaker_onboard
-          effect: "Ring Chase"
-  - id: control_leds_voice_assistant_thinking_phase
-    then:
-      - logger.log: "Setting LED: VA thinking (Purple Ring)"
-      - lambda: |-
-          id(led_red) = 0.5; id(led_green) = 0.0; id(led_blue) = 0.5;
-      - light.turn_on:
-          id: led_respeaker_onboard
-          effect: "Ring Chase"
-  - id: control_leds_voice_assistant_replying_phase
-    then:
-      - logger.log: "Setting LED: VA replying (Green-Cyan Alternate)"
-      - light.turn_on:
-          id: led_respeaker_onboard
-          effect: "Replying Alternate"
-  - id: control_leds_voice_assistant_error_phase
-    then:
-      - logger.log: "Setting LED: VA error (Red Ring)"
-      - lambda: |-
-          id(led_red) = 1.0; id(led_green) = 0.0; id(led_blue) = 0.0;
-      - light.turn_on:
-          id: led_respeaker_onboard
-          effect: "Ring Chase"
-  - id: control_leds_voice_assistant_not_ready_phase
-    then:
-      - logger.log: "Setting LED: VA not ready (Orange Ring)"
-      - lambda: |-
-          id(led_red) = 1.0; id(led_green) = 0.5; id(led_blue) = 0.0;
-      - light.turn_on:
-          id: led_respeaker_onboard
-          effect: "Ring Chase"
-  - id: control_leds_center_button_touched
-    then:
-      - logger.log: "Setting LED: Button touched (Cyan Ring)"
-      - lambda: |-
-          id(led_red) = 0.0; id(led_green) = 1.0; id(led_blue) = 1.0;
-      - light.turn_on:
-          id: led_respeaker_onboard
-          effect: "Ring Chase"
-  - id: control_leds_timer_ringing
-    then:
-      - logger.log: "Setting LED: Timer ringing (Yellow Ring)"
-      - lambda: |-
-          id(led_red) = 1.0; id(led_green) = 1.0; id(led_blue) = 0.0;
-      - light.turn_on:
-          id: led_respeaker_onboard
-          effect: "Ring Chase"
-  - id: control_leds_timer_ticking
-    then:
-      - logger.log: "Setting LED: Timer ticking (Yellow Ring)"
-      - lambda: |-
-          id(led_red) = 1.0; id(led_green) = 1.0; id(led_blue) = 0.0;
-      - light.turn_on:
-          id: led_respeaker_onboard
-          effect: "Ring Chase"
-  - id: control_leds_media_playing
-    then:
-      - logger.log: "Setting LED: Media playing (Green Ring)"
-      - lambda: |-
-          id(led_red) = 0.0; id(led_green) = 1.0; id(led_blue) = 0.0;
-      - light.turn_on:
-          id: led_respeaker_onboard
-          effect: "Ring Chase"
-  - id: control_leds_low_battery
-    then:
-      - logger.log: "Setting LED: Low battery (Red Ring)"
-      - lambda: |-
-          id(led_red) = 1.0; id(led_green) = 0.0; id(led_blue) = 0.0;
-      - light.turn_on:
-          id: led_respeaker_onboard
-          effect: "Ring Chase"
-  - id: control_leds_question_response_state
-    then:
-      - logger.log: "Setting LED: Question response (RGB Cycle)"
-      - light.turn_on:
-          id: led_respeaker_onboard
-          effect: "Question Response"
   - id: ring_timer
     then:
       - logger.log: "Ringing timer"
@@ -1545,6 +1325,14 @@ media_player:
                 id: media_mixing_input
                 decibel_reduction: 0
                 duration: 1.0s
+      - if:
+          condition:
+            lambda: return id(external_media_player).state == media_player::MediaPlayerState::MEDIA_PLAYER_STATE_PLAYING;
+          then:
+            - lambda: id(device_state) = 7;  # STATE_MEDIA_PLAYING
+            - script.execute: control_leds
+          else:
+            - script.execute: control_leds
     files:
       - id: center_button_press_sound
         file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/center_button_press.flac
@@ -1651,13 +1439,13 @@ micro_wake_word:
         then:
           - if:
               condition: {switch.is_on: timer_ringing}
-              then: 
+              then:
                 - logger.log: "Stopping timer ringing due to wake word"
                 - switch.turn_off: timer_ringing
               else:
                 - if:
                     condition: {media_player.is_announcing:}
-                    then: 
+                    then:
                       - logger.log: "Stopping announcement due to wake word"
                       - media_player.stop: {announcement: true}
                     else:
@@ -1697,17 +1485,19 @@ voice_assistant:
           and:
             - lambda: return id(init_in_progress);
             - switch.is_on: mic_mute_switch
-        then: 
+        then:
           - logger.log: "Unmuting mic on client connect during init"
           - switch.turn_off: mic_mute_switch
     - lambda: id(init_in_progress) = false;
     - micro_wake_word.start:
     - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
+    - lambda: id(device_state) = 1;  # STATE_IDLE
     - script.execute: control_leds
   on_client_disconnected:
     - logger.log: "VA client disconnected"
     - voice_assistant.stop:
     - lambda: id(voice_assistant_phase) = ${voice_assist_not_ready_phase_id};
+    - lambda: id(device_state) = 10;  # STATE_NOT_READY
     - script.execute: control_leds
   on_error:
     - logger.log:
@@ -1730,7 +1520,7 @@ voice_assistant:
                 - micro_wake_word.stop:
                 - delay: 100ms
                 - micro_wake_word.start:
-                - delay: 500ms
+                - delay: 200ms
                 - voice_assistant.start:
                     silence_detection: True
                 - delay: 1s
@@ -1741,16 +1531,18 @@ voice_assistant:
                     then:
                       - logger.log: "Retry failed, resetting to idle"
                       - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
+                      - lambda: id(device_state) = 1;  # STATE_IDLE
                       - script.execute: control_leds
               else:
                 - logger.log: "Unhandled error, resetting to idle"
                 - lambda: id(voice_assistant_phase) = ${voice_assist_error_phase_id};
+                - lambda: id(device_state) = 5;  # STATE_VA_ERROR
                 - script.execute: control_leds
                 - voice_assistant.stop:
                 - micro_wake_word.stop:
                 - delay: 100ms
                 - micro_wake_word.start:
-                - delay: 500ms
+                - delay: 200ms
                 - voice_assistant.start:
                     silence_detection: True
                 - delay: 1s
@@ -1761,6 +1553,7 @@ voice_assistant:
                     then:
                       - logger.log: "VA failed to recover, resetting to idle"
                       - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
+                      - lambda: id(device_state) = 1;  # STATE_IDLE
                       - script.execute: control_leds
   on_start:
     - logger.log: "VA started"
@@ -1768,22 +1561,28 @@ voice_assistant:
         id: media_mixing_input
         decibel_reduction: 20
         duration: 0.0s
+    - lambda: id(device_state) = 2;  # STATE_VA_LISTENING
+    - script.execute: control_leds
   on_listening:
     - logger.log: "VA listening"
     - lambda: id(voice_assistant_phase) = ${voice_assist_waiting_for_command_phase_id};
+    - lambda: id(device_state) = 2;  # STATE_VA_LISTENING
     - script.execute: control_leds
     - logger.log: "VA successfully restarted and streaming"
   on_stt_vad_start:
     - logger.log: "VA STT VAD started"
     - lambda: id(voice_assistant_phase) = ${voice_assist_listening_for_command_phase_id};
+    - lambda: id(device_state) = 2;  # STATE_VA_LISTENING
     - script.execute: control_leds
   on_stt_vad_end:
     - logger.log: "VA STT VAD ended"
     - lambda: id(voice_assistant_phase) = ${voice_assist_thinking_phase_id};
+    - lambda: id(device_state) = 3;  # STATE_VA_THINKING
     - script.execute: control_leds
   on_tts_start:
     - logger.log: "VA TTS started"
     - lambda: id(voice_assistant_phase) = ${voice_assist_replying_phase_id};
+    - lambda: id(device_state) = 4;  # STATE_VA_REPLYING
     - script.execute: control_leds
     - script.execute: activate_stop_word_if_tts_step_is_long
     - text_sensor.template.publish:
@@ -1804,7 +1603,9 @@ voice_assistant:
         then:
           - logger.log: "Response ends with '?'. Waiting for TTS to finish"
           - switch.turn_on: is_question_response_switch
-          - script.execute: control_leds_question_response_state
+          - light.turn_on:
+              id: led_respeaker_onboard
+              effect: "Question Response"
           - delay: 2s
           - wait_until:
               condition:
@@ -1824,15 +1625,16 @@ voice_assistant:
                     id: play_sound
                     priority: true
                     sound_file: !lambda return id(wake_word_triggered_sound);
-                - delay: 500ms
+                - delay: 200ms
           - voice_assistant.stop:
-          - delay: 500ms
+          - delay: 200ms
           - micro_wake_word.stop:
           - delay: 100ms
           - micro_wake_word.start:
-          - delay: 500ms
+          - delay: 200ms
           - lambda: |-
               id(voice_assistant_phase) = ${voice_assist_waiting_for_command_phase_id};
+              id(device_state) = 2;  # STATE_VA_LISTENING
               ESP_LOGD("voice_assistant", "Restarting VA with silence detection");
           - voice_assistant.start:
               silence_detection: True
@@ -1849,7 +1651,7 @@ voice_assistant:
                 - micro_wake_word.stop:
                 - delay: 100ms
                 - micro_wake_word.start:
-                - delay: 500ms
+                - delay: 200ms
                 - voice_assistant.start:
                     silence_detection: True
                 - delay: 1s
@@ -1860,6 +1662,7 @@ voice_assistant:
                     then:
                       - logger.log: "VA recovery failed, resetting to idle"
                       - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
+                      - lambda: id(device_state) = 1;  # STATE_IDLE
                       - script.execute: control_leds
         else:
           - logger.log: "Response does not end with '?'. Not restarting"
@@ -1870,6 +1673,7 @@ voice_assistant:
               then:
                 - logger.log: "Resetting to idle after non-question response"
                 - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
+                - lambda: id(device_state) = 1;  # STATE_IDLE
                 - script.execute: control_leds
   on_end:
     - logger.log: "VA ended"
@@ -1900,6 +1704,7 @@ voice_assistant:
           lambda: 'return id(voice_assistant_phase) != ${voice_assist_waiting_for_command_phase_id} && !id(is_question_response_switch).state;'
         then:
           - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
+          - lambda: id(device_state) = 1;  # STATE_IDLE
           - script.execute: control_leds
   on_timer_finished:
     - logger.log: "Timer finished"
