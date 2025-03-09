@@ -749,7 +749,7 @@ script:
                 effect: !lambda |-
                   switch (id(device_state)) {
                     case ${state_initializing}: return "Ring Chase";
-                    case ${state_va_listening}: return "Ring Chase";  # Changed from "Slow Pulse"
+                    case ${state_va_listening}: return "Ring Chase";
                     case ${state_va_thinking}: return "Fast Pulse";
                     case ${state_va_replying}: return "Replying Alternate";
                     case ${state_va_error}: return "Error Flash";

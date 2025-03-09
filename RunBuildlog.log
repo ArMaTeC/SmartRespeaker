@@ -9079,3 +9079,309 @@ See https://esphome.io/guides/faq.html#why-am-i-getting-a-warning-about-strappin
 INFO Generating C++ source...
 INFO Updating https://github.com/espressif/esp-protocols.git@mdns-v1.5.1
 INFO Updating https://github.com/espressif/esp-tflite-micro@v1.3.1
+INFO Compiling app...
+Processing respeaker-lite-satellite (board: esp32-s3-devkitc-1; framework: espidf; platform: https://github.com/pioarduino/platform-espressif32.git#51.03.07)
+--------------------------------------------------------------------------------
+HARDWARE: ESP32S3 240MHz, 320KB RAM, 8MB Flash
+ - framework-espidf @ 3.50105.0 (5.1.5) 
+ - tool-cmake @ 3.21.3 
+ - tool-esptoolpy @ 4.8.1 
+ - tool-mklittlefs @ 3.2.0 
+ - tool-ninja @ 1.9.0 
+ - tool-riscv32-esp-elf-gdb @ 11.2.0+20220823 
+ - tool-xtensa-esp-elf-gdb @ 11.2.0+20230208 
+ - toolchain-esp32ulp @ 2.35.0-20220830 
+ - toolchain-riscv32-esp @ 12.2.0+20230208 
+ - toolchain-xtensa-esp32s3 @ 12.2.0+20230208
+Reading CMake configuration...
+Dependency Graph
+|-- ArduinoJson @ 6.18.5
+|-- esp-audio-libs @ 1.1.1
+|-- ESPMicroSpeechFeatures @ 1.1.0
+|-- noise-c @ 0.1.6
+Compiling .pioenvs\respeaker-lite-satellite\src\main.cpp.o
+In file included from src/esphome\components\adc\adc_sensor.h:9,
+                 from src/esphome.h:3,
+                 from src/main.cpp:3:
+C:/Users/karll/.platformio/packages/framework-espidf/components/esp_adc/deprecated/include/esp_adc_cal.h:17:2: warning: #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h" [-Wcpp]
+   17 | #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h"
+      |  ^~~~~~~
+In file included from src/esphome\components\adc\adc_sensor.h:10:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/adc.h:19:2: warning: #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively" [-Wcpp]
+   19 | #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively"
+      |  ^~~~~~~
+In file included from src/esphome\components\i2s_audio\i2s_audio.h:5,
+                 from src/esphome.h:48:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/i2s.h:27:2: warning: #warning "This set of I2S APIs has been deprecated, please include 'driver/i2s_std.h', 'driver/i2s_pdm.h' or 'driver/i2s_tdm.h' instead. if you want to keep using the old APIs and ignore this warning, you can enable 'Suppress leagcy driver deprecated warning' option under 'I2S Configuration' menu in Kconfig" [-Wcpp]
+   27 | #warning "This set of I2S APIs has been deprecated, \
+      |  ^~~~~~~
+SmartReSpeaker.yaml:752:39: error: stray '#' in program
+In file included from components/esp-tflite-micro/tensorflow/lite/micro/tflite_bridge/flatbuffer_conversions_bridge.h:19,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_allocator.h:26,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_interpreter.h:26,
+                 from src/esphome\components\micro_wake_word\streaming_model.h:10,
+                 from src/esphome\components\micro_wake_word\micro_wake_word.h:6,
+                 from src/esphome.h:76:
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h: In member function 'T* tflite::BuiltinDataAllocator::AllocatePOD()':
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h:46:24: warning: 'template<class _Tp> struct std::is_pod' is deprecated: use is_standard_layout && is_trivial instead [-Wdeprecated-declarations]
+   46 |     static_assert(std::is_pod<T>::value, "Builtin data structure must be POD.");
+      |                        ^~~~~~
+In file included from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\bits\char_traits.h:42,
+                 from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\string:40,
+                 from src/esphome/core/log.h:7,
+                 from src/esphome/components/sensor/sensor.h:3,
+                 from src/esphome\components\adc\adc_sensor.h:3:
+c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\type_traits:757:5: note: declared here
+  757 |     is_pod
+      |     ^~~~~~
+SmartReSpeaker.yaml: In lambda function:
+SmartReSpeaker.yaml:752:41: error: 'Changed' was not declared in this scope
+*** [.pioenvs\respeaker-lite-satellite\src\main.cpp.o] Error 1
+========================= [FAILED] Took 15.15 seconds =========================
+INFO ESPHome 2025.2.2
+INFO Reading configuration SmartReSpeaker.yaml...
+INFO Updating https://github.com/ArMaTeC/SmartRespeaker@main
+WARNING GPIO3 is a strapping PIN and should only be used for I/O with care.
+Attaching external pullup/down resistors to strapping pins can cause unexpected failures.
+See https://esphome.io/guides/faq.html#why-am-i-getting-a-warning-about-strapping-pins
+INFO Generating C++ source...
+INFO Updating https://github.com/espressif/esp-protocols.git@mdns-v1.5.1
+INFO Updating https://github.com/espressif/esp-tflite-micro@v1.3.1
+INFO Compiling app...
+Processing respeaker-lite-satellite (board: esp32-s3-devkitc-1; framework: espidf; platform: https://github.com/pioarduino/platform-espressif32.git#51.03.07)
+--------------------------------------------------------------------------------
+HARDWARE: ESP32S3 240MHz, 320KB RAM, 8MB Flash
+ - framework-espidf @ 3.50105.0 (5.1.5) 
+ - tool-cmake @ 3.21.3 
+ - tool-esptoolpy @ 4.8.1 
+ - tool-mklittlefs @ 3.2.0 
+ - tool-ninja @ 1.9.0 
+ - tool-riscv32-esp-elf-gdb @ 11.2.0+20220823 
+ - tool-xtensa-esp-elf-gdb @ 11.2.0+20230208 
+ - toolchain-esp32ulp @ 2.35.0-20220830 
+ - toolchain-riscv32-esp @ 12.2.0+20230208 
+ - toolchain-xtensa-esp32s3 @ 12.2.0+20230208
+Reading CMake configuration...
+Dependency Graph
+|-- ArduinoJson @ 6.18.5
+|-- esp-audio-libs @ 1.1.1
+|-- ESPMicroSpeechFeatures @ 1.1.0
+|-- noise-c @ 0.1.6
+Compiling .pioenvs\respeaker-lite-satellite\src\main.cpp.o
+In file included from src/esphome\components\adc\adc_sensor.h:9,
+                 from src/esphome.h:3,
+                 from src/main.cpp:3:
+C:/Users/karll/.platformio/packages/framework-espidf/components/esp_adc/deprecated/include/esp_adc_cal.h:17:2: warning: #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h" [-Wcpp]
+   17 | #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h"
+      |  ^~~~~~~
+In file included from src/esphome\components\adc\adc_sensor.h:10:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/adc.h:19:2: warning: #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively" [-Wcpp]
+   19 | #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively"
+      |  ^~~~~~~
+In file included from src/esphome\components\i2s_audio\i2s_audio.h:5,
+                 from src/esphome.h:48:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/i2s.h:27:2: warning: #warning "This set of I2S APIs has been deprecated, please include 'driver/i2s_std.h', 'driver/i2s_pdm.h' or 'driver/i2s_tdm.h' instead. if you want to keep using the old APIs and ignore this warning, you can enable 'Suppress leagcy driver deprecated warning' option under 'I2S Configuration' menu in Kconfig" [-Wcpp]
+   27 | #warning "This set of I2S APIs has been deprecated, \
+      |  ^~~~~~~
+In file included from components/esp-tflite-micro/tensorflow/lite/micro/tflite_bridge/flatbuffer_conversions_bridge.h:19,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_allocator.h:26,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_interpreter.h:26,
+                 from src/esphome\components\micro_wake_word\streaming_model.h:10,
+                 from src/esphome\components\micro_wake_word\micro_wake_word.h:6,
+                 from src/esphome.h:76:
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h: In member function 'T* tflite::BuiltinDataAllocator::AllocatePOD()':
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h:46:24: warning: 'template<class _Tp> struct std::is_pod' is deprecated: use is_standard_layout && is_trivial instead [-Wdeprecated-declarations]
+   46 |     static_assert(std::is_pod<T>::value, "Builtin data structure must be POD.");
+      |                        ^~~~~~
+In file included from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\bits\char_traits.h:42,
+                 from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\string:40,
+                 from src/esphome/core/log.h:7,
+                 from src/esphome/components/sensor/sensor.h:3,
+                 from src/esphome\components\adc\adc_sensor.h:3:
+c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\type_traits:757:5: note: declared here
+  757 |     is_pod
+      |     ^~~~~~
+Linking .pioenvs\respeaker-lite-satellite\firmware.elf
+RAM:   [=         ]  12.2% (used 39956 bytes from 327680 bytes)
+Flash: [=======   ]  65.2% (used 2565289 bytes from 3932160 bytes)
+Building .pioenvs\respeaker-lite-satellite\firmware.bin
+Creating esp32s3 image...
+Successfully created esp32s3 image.
+esp32_create_combined_bin([".pioenvs\respeaker-lite-satellite\firmware.bin"], [".pioenvs\respeaker-lite-satellite\firmware.elf"])
+Wrote 0x282610 bytes to file H:\source\SmartRespeaker\.esphome\build\respeaker-lite-satellite\.pioenvs\respeaker-lite-satellite/firmware.factory.bin, ready to flash to offset 0x0
+esp32_copy_ota_bin([".pioenvs\respeaker-lite-satellite\firmware.bin"], [".pioenvs\respeaker-lite-satellite\firmware.elf"])
+========================= [SUCCESS] Took 35.17 seconds =========================
+INFO Successfully compiled program.
+INFO Resolving IP address of respeaker-lite-satellite.local in mDNS
+INFO Connecting to 192.168.1.244 port 3232...
+INFO Connected to 192.168.1.244
+INFO Uploading H:\source\SmartRespeaker\.esphome\build\respeaker-lite-satellite\.pioenvs\respeaker-lite-satellite\firmware.bin (2565648 bytes)
+Uploading: [                                                            ] 0% Uploading: [=                                                           ] 1% Uploading: [=                                                           ] 2% Uploading: [==                                                          ] 3% Uploading: [==                                                          ] 4% Uploading: [===                                                         ] 5% Uploading: [====                                                        ] 6% Uploading: [====                                                        ] 7% Uploading: [=====                                                       ] 8% Uploading: [======                                                      ] 9% Uploading: [======                                                      ] 10% Uploading: [=======                                                     ] 11% Uploading: [=======                                                     ] 12% Uploading: [========                                                    ] 13% Uploading: [========                                                    ] 14% Uploading: [=========                                                   ] 15% Uploading: [==========                                                  ] 16% Uploading: [==========                                                  ] 17% Uploading: [===========                                                 ] 18% Uploading: [===========                                                 ] 19% Uploading: [============                                                ] 20% Uploading: [=============                                               ] 21% Uploading: [=============                                               ] 22% Uploading: [==============                                              ] 23% Uploading: [===============                                             ] 24% Uploading: [===============                                             ] 25% Uploading: [================                                            ] 26% Uploading: [================                                            ] 27% Uploading: [=================                                           ] 28% Uploading: [=================                                           ] 29% Uploading: [==================                                          ] 30% Uploading: [===================                                         ] 31% Uploading: [===================                                         ] 32% Uploading: [====================                                        ] 33% Uploading: [====================                                        ] 34% Uploading: [=====================                                       ] 35% Uploading: [======================                                      ] 36% Uploading: [======================                                      ] 37% Uploading: [=======================                                     ] 38% Uploading: [========================                                    ] 39% Uploading: [========================                                    ] 40% Uploading: [=========================                                   ] 41% Uploading: [=========================                                   ] 42% Uploading: [==========================                                  ] 43% Uploading: [==========================                                  ] 44% Uploading: [===========================                                 ] 45% Uploading: [============================                                ] 46% Uploading: [============================                                ] 47% Uploading: [=============================                               ] 48% Uploading: [==============================                              ] 49% Uploading: [==============================                              ] 50% Uploading: [===============================                             ] 51% Uploading: [===============================                             ] 52% Uploading: [================================                            ] 53% Uploading: [=================================                           ] 54% Uploading: [=================================                           ] 55% Uploading: [==================================                          ] 56% Uploading: [==================================                          ] 57% Uploading: [===================================                         ] 58% Uploading: [===================================                         ] 59% Uploading: [====================================                        ] 60% Uploading: [=====================================                       ] 61% Uploading: [=====================================                       ] 62% Uploading: [======================================                      ] 63% Uploading: [=======================================                     ] 64% Uploading: [=======================================                     ] 65% Uploading: [========================================                    ] 66% Uploading: [========================================                    ] 67% Uploading: [=========================================                   ] 68% Uploading: [==========================================                  ] 69% Uploading: [==========================================                  ] 70% Uploading: [===========================================                 ] 71% Uploading: [===========================================                 ] 72% Uploading: [============================================                ] 73% Uploading: [============================================                ] 74% Uploading: [=============================================               ] 75% Uploading: [==============================================              ] 76% Uploading: [==============================================              ] 77% Uploading: [===============================================             ] 78% Uploading: [================================================            ] 79% Uploading: [================================================            ] 80% Uploading: [=================================================           ] 81% Uploading: [=================================================           ] 82% Uploading: [==================================================          ] 83% Uploading: [===================================================         ] 84% Uploading: [===================================================         ] 85% Uploading: [====================================================        ] 86% Uploading: [====================================================        ] 87% Uploading: [=====================================================       ] 88% Uploading: [=====================================================       ] 89% Uploading: [======================================================      ] 90% Uploading: [=======================================================     ] 91% Uploading: [=======================================================     ] 92% Uploading: [========================================================    ] 93% Uploading: [=========================================================   ] 94% Uploading: [=========================================================   ] 95% Uploading: [==========================================================  ] 96% Uploading: [==========================================================  ] 97% Uploading: [=========================================================== ] 98% Uploading: [============================================================] 99% Uploading: [============================================================] 100% Done...
+
+INFO Upload took 22.83 seconds, waiting for result...
+INFO OTA successful
+INFO Successfully uploaded program.
+INFO Starting log output from respeaker-lite-satellite.local using esphome API
+INFO Successfully connected to respeaker-lite-satellite @ 192.168.1.244 in 8.369s
+INFO Successful handshake with respeaker-lite-satellite @ 192.168.1.244 in 0.631s
+[17:43:59][I][app:100]: ESPHome version 2025.2.2 compiled on Mar  9 2025, 17:42:53
+[17:43:59][I][app:102]: Project formatbce.respeaker-lite-satellite version 2025.2.2
+[17:43:59][C][logger:177]: Logger:
+[17:43:59][C][logger:178]:   Max Level: DEBUG
+[17:43:59][C][logger:179]:   Initial Level: DEBUG
+[17:43:59][C][logger:181]:   Log Baud Rate: 115200
+[17:43:59][C][logger:182]:   Hardware UART: USB_SERIAL_JTAG
+[17:43:59][C][logger:186]:   Level for 'api': INFO
+[17:43:59][C][logger:186]:   Level for 'binary_sensor': INFO
+[17:43:59][C][logger:186]:   Level for 'i2s_audio': INFO
+[17:43:59][C][logger:186]:   Level for 'light': INFO
+[17:43:59][C][logger:186]:   Level for 'media_player': INFO
+[17:43:59][C][logger:186]:   Level for 'micro_wake_word': DEBUG
+[17:43:59][C][logger:186]:   Level for 'respeaker_lite': INFO
+[17:43:59][C][logger:186]:   Level for 'script': INFO
+[17:43:59][C][logger:186]:   Level for 'sensor': WARN
+[17:43:59][C][logger:186]:   Level for 'switch': INFO
+[17:43:59][C][logger:186]:   Level for 'voice_assistant': DEBUG
+[17:43:59][C][logger:186]:   Level for 'wifi': INFO
+[17:43:59][C][i2c.idf:079]: I2C Bus:
+[17:43:59][C][i2c.idf:080]:   SDA Pin: GPIO5
+[17:43:59][C][i2c.idf:081]:   SCL Pin: GPIO6
+[17:43:59][C][i2c.idf:082]:   Frequency: 400000 Hz
+[17:43:59][C][i2c.idf:088]:   Recovery: bus successfully recovered
+[17:43:59][I][i2c.idf:098]: Results from i2c bus scan:
+[17:43:59][I][i2c.idf:104]: Found i2c device at address 0x18
+[17:43:59][I][i2c.idf:104]: Found i2c device at address 0x42
+[17:43:59][C][switch.gpio:068]: GPIO Switch 'mute_toggle'
+[17:43:59][C][switch.gpio:090]:   Restore Mode: always OFF
+[17:43:59][C][switch.gpio:031]:   Pin: GPIO4
+[17:43:59][C][template.sensor:022]: Template Sensor 'Next timer'
+[17:43:59][C][template.sensor:022]:   Device Class: 'duration'
+[17:43:59][C][template.sensor:022]:   State Class: ''
+[17:43:59][C][template.sensor:022]:   Unit of Measurement: 's'
+[17:43:59][C][template.sensor:022]:   Accuracy Decimals: 1
+[17:43:59][C][template.sensor:022]:   Icon: 'mdi:timer'
+[17:43:59][C][template.sensor:023]:   Update Interval: never
+[17:43:59][C][template.sensor:022]: Template Sensor 'Voice Assistant Phase'
+[17:43:59][C][template.sensor:022]:   State Class: ''
+[17:43:59][C][template.sensor:022]:   Unit of Measurement: ''
+[17:43:59][C][template.sensor:022]:   Accuracy Decimals: 1
+[17:43:59][C][template.sensor:022]:   Icon: 'mdi:state-machine'
+[17:43:59][C][template.sensor:023]:   Update Interval: 1.0s
+[17:43:59][C][template.text_sensor:020]: Template Sensor 'Next timer name'
+[17:43:59][C][template.text_sensor:020]:   Icon: 'mdi:timer'
+[17:43:59][C][template.text_sensor:020]: Template Sensor 'TTS URI'
+[17:43:59][C][template.text_sensor:020]: Template Sensor 'Last LED Trigger'
+[17:43:59][C][template.text_sensor:020]:   Icon: 'mdi:led-on'
+[17:43:59][C][template.text_sensor:020]: Template Sensor 'Last Response Text'
+[17:44:00][C][esp32_rmt_led_strip:250]: ESP32 RMT LED Strip:
+[17:44:00][C][esp32_rmt_led_strip:251]:   Pin: 1
+[17:44:00][C][esp32_rmt_led_strip:253]:   RMT Symbols: 192
+[17:44:00][C][esp32_rmt_led_strip:281]:   RGB Order: GRB
+[17:44:00][C][esp32_rmt_led_strip:282]:   Max refresh rate: 0
+[17:44:00][C][esp32_rmt_led_strip:283]:   Number of LEDs: 16
+[17:44:00][C][gpio.binary_sensor:015]: GPIO Binary Sensor 'User button'
+[17:44:00][C][gpio.binary_sensor:016]:   Pin: GPIO3
+[17:44:00][C][template.switch:068]: Template Switch 'Speaker mute'
+[17:44:00][C][template.switch:070]:   Icon: 'mdi:volume-mute'
+[17:44:00][C][template.switch:090]:   Restore Mode: always OFF
+[17:44:00][C][template.switch:057]:   Optimistic: YES
+[17:44:00][C][template.switch:068]: Template Switch 'Button click sounds'
+[17:44:00][C][template.switch:070]:   Icon: 'mdi:bullhorn'
+[17:44:00][C][template.switch:090]:   Restore Mode: restore defaults to ON
+[17:44:00][C][template.switch:057]:   Optimistic: YES
+[17:44:00][C][template.switch:068]: Template Switch 'Mute/unmute sound'
+[17:44:00][C][template.switch:070]:   Icon: 'mdi:bullhorn'
+[17:44:00][C][template.switch:090]:   Restore Mode: restore defaults to ON
+[17:44:00][C][template.switch:057]:   Optimistic: YES
+[17:44:00][C][template.switch:068]: Template Switch 'Wake sound'
+[17:44:00][C][template.switch:070]:   Icon: 'mdi:bullhorn'
+[17:44:00][C][template.switch:090]:   Restore Mode: restore defaults to ON
+[17:44:00][C][template.switch:057]:   Optimistic: YES
+[17:44:00][C][template.switch:068]: Template Switch 'Is Question Response'
+[17:44:00][C][template.switch:090]:   Restore Mode: always OFF
+[17:44:00][C][template.switch:057]:   Optimistic: YES
+[17:44:00][C][template.switch:068]: Template Switch 'Debug Mode'
+[17:44:00][C][template.switch:070]:   Icon: 'mdi:bug'
+[17:44:00][C][template.switch:090]:   Restore Mode: restore defaults to OFF
+[17:44:00][C][template.switch:057]:   Optimistic: YES
+[17:44:00][C][template.switch:068]: Template Switch 'Mic mute'
+[17:44:00][C][template.switch:070]:   Icon: 'mdi:microphone-off'
+[17:44:00][C][template.switch:090]:   Restore Mode: always OFF
+[17:44:00][C][template.switch:057]:   Optimistic: NO
+[17:44:00][C][template.switch:068]: Template Switch 'timer_ringing'
+[17:44:00][C][template.switch:090]:   Restore Mode: always OFF
+[17:44:00][C][template.switch:057]:   Optimistic: YES
+[17:44:00][C][psram:020]: PSRAM:
+[17:44:00][C][psram:021]:   Available: YES
+[17:44:00][C][psram:028]:   Size: 8192 KB
+[17:44:00][C][adc.esp32:058]: ADC Sensor 'Battery Voltage'
+[17:44:00][C][adc.esp32:058]:   Device Class: 'voltage'
+[17:44:00][C][adc.esp32:058]:   State Class: 'measurement'
+[17:44:00][C][adc.esp32:058]:   Unit of Measurement: 'V'
+[17:44:00][C][adc.esp32:058]:   Accuracy Decimals: 2
+[17:44:00][C][adc.esp32:059]:   Pin: GPIO10
+[17:44:00][C][adc.esp32:065]:   Attenuation: 0db
+[17:44:00][C][adc.esp32:080]:   Samples: 1
+[17:44:00][C][adc.esp32:081]:   Sampling mode: average
+[17:44:00][C][adc.esp32:082]:   Update Interval: 60.0s
+[17:44:00][C][speaker_mixer:288]: Speaker Mixer:
+[17:44:00][C][speaker_mixer:289]:   Number of output channels: 2
+[17:44:00][C][speaker_mixer:046]: Mixer Source Speaker
+[17:44:00][C][speaker_mixer:047]:   Buffer Duration: 100 ms
+[17:44:00][C][speaker_mixer:051]:   Timeout: never
+[17:44:00][C][speaker_mixer:046]: Mixer Source Speaker
+[17:44:00][C][speaker_mixer:047]:   Buffer Duration: 100 ms
+[17:44:00][C][speaker_mixer:051]:   Timeout: never
+[17:44:00][C][aic3204:112]: AIC3204:
+[17:44:00][C][aic3204:113]:   Address: 0x18
+[17:44:00][C][factory_reset.button:011]: Factory Reset Button 'Factory Reset'
+[17:44:00][C][factory_reset.button:011]:   Icon: 'mdi:restart-alert'
+[17:44:00][C][restart.button:017]: Restart Button 'Restart'
+[17:44:00][C][restart.button:017]:   Icon: 'mdi:restart'
+[17:44:01][C][mdns:116]: mDNS:
+[17:44:01][C][mdns:117]:   Hostname: respeaker-lite-satellite
+[17:44:01][C][esphome.ota:073]: Over-The-Air updates:
+[17:44:01][C][esphome.ota:074]:   Address: respeaker-lite-satellite.local:3232
+[17:44:01][C][esphome.ota:075]:   Version: 2
+[17:44:01][C][esphome.ota:078]:   Password configured
+[17:44:01][C][safe_mode:018]: Safe Mode:
+[17:44:01][C][safe_mode:019]:   Boot considered successful after 60 seconds
+[17:44:01][C][safe_mode:021]:   Invoke after 10 boot attempts
+[17:44:01][C][safe_mode:022]:   Remain in safe mode for 300 seconds
+[17:44:01][C][http_request:013]: HTTP Request:
+[17:44:01][C][http_request:014]:   Timeout: 4500ms
+[17:44:01][C][http_request:015]:   User-Agent: ESPHome/2025.2.2 (https://esphome.io)
+[17:44:01][C][http_request:016]:   Follow redirects: YES
+[17:44:01][C][http_request:017]:   Redirect limit: 3
+[17:44:01][C][http_request.idf:024]:   Buffer Size RX: 512
+[17:44:01][C][http_request.idf:025]:   Buffer Size TX: 512
+[17:44:01][C][micro_wake_word:072]: microWakeWord:
+[17:44:01][C][micro_wake_word:073]:   models:
+[17:44:01][C][micro_wake_word:015]:     - Wake Word: Okay Nabu
+[17:44:01][C][micro_wake_word:016]:       Probability cutoff: 0.85
+[17:44:01][C][micro_wake_word:017]:       Sliding window size: 5
+[17:44:01][C][micro_wake_word:015]:     - Wake Word: Hey Jarvis
+[17:44:01][C][micro_wake_word:016]:       Probability cutoff: 0.97
+[17:44:01][C][micro_wake_word:017]:       Sliding window size: 5
+[17:44:01][C][micro_wake_word:015]:     - Wake Word: Hey Mycroft
+[17:44:01][C][micro_wake_word:016]:       Probability cutoff: 0.95
+[17:44:01][C][micro_wake_word:017]:       Sliding window size: 5
+[17:44:01][C][micro_wake_word:015]:     - Wake Word: Stop
+[17:44:01][C][micro_wake_word:016]:       Probability cutoff: 0.50
+[17:44:01][C][micro_wake_word:017]:       Sliding window size: 5
+[17:44:01][C][debug:021]: Debug component:
+[17:44:01][D][debug:035]: ESPHome version 2025.2.2
+[17:44:01][D][debug:039]: Free Heap Size: 112168 bytes
+[17:44:01][D][debug:284]: Chip: Model=ESP32-S3, Features=WIFI_BGN,BLE, Cores=2, Revision=2
+[17:44:01][D][debug:299]: Framework: ESP-IDF
+[17:44:01][D][debug:306]: ESP-IDF Version: 5.1.5
+[17:44:01][D][debug:311]: EFuse MAC: 98:3D:AE:ED:BC:FC
+[17:44:01][D][debug:204]: Reset Reason: Software reset via esp_restart
+[17:44:01][D][debug:359]: Wakeup Reason: Unknown
+[17:44:01][C][debug:033]: Partition table:
+[17:44:01][C][debug:034]:   Name         Type Subtype  Address    Size      
+[17:44:01][C][debug:038]:   otadata      1    0        0x00009000 0x00002000
+[17:44:01][C][debug:038]:   phy_init     1    1        0x0000B000 0x00001000
+[17:44:01][C][debug:038]:   app0         0    16       0x00010000 0x003C0000
+[17:44:01][C][debug:038]:   app1         0    17       0x003D0000 0x003C0000
+[17:44:01][C][debug:038]:   nvs          1    2        0x00790000 0x0006D000
