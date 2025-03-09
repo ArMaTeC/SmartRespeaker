@@ -8,6 +8,17 @@ substitutions:
   voice_assist_not_ready_phase_id: '10'
   voice_assist_error_phase_id: '11'
   hidden_ssid: "false"
+  state_initializing: '0'
+  state_idle: '1'
+  state_va_listening: '2'
+  state_va_thinking: '3'
+  state_va_replying: '4'
+  state_va_error: '5'
+  state_timer_ringing: '6'
+  state_media_playing: '7'
+  state_low_battery: '8'
+  state_button_pressed: '9'
+  state_not_ready: '10'
 
 esphome:
   name: respeaker-lite-satellite
@@ -19,14 +30,14 @@ esphome:
   on_boot:
     priority: 375
     then:
-      - logger.log: "Booting ReSpeaker Lite Satellite"
+      - logger.log: "Booting device"
+      - lambda: id(mic_unmuted) = false;
       - sensor.template.publish:
           id: next_timer
           state: -1
-      - lambda: id(device_state) = 0;  # STATE_INITIALIZING
+      - lambda: id(device_state) = ${state_initializing};
       - script.execute: control_leds
-      - delay: 0.5s  # Reduced for faster boot
-      - switch.turn_off: mic_mute_switch  # Ensure mic is unmuted
+      - delay: 10min
       - logger.log: "Mic unmuted on boot"
       - if:
           condition:
@@ -114,11 +125,11 @@ api:
         - voice_assistant.stop:
   on_client_connected:
     - logger.log: "API client connected"
-    - lambda: id(device_state) = 1;  # STATE_IDLE
+    - lambda: id(device_state) = ${state_idle};
     - script.execute: control_leds
   on_client_disconnected:
     - logger.log: "API client disconnected"
-    - lambda: id(device_state) = 10;  # STATE_NOT_READY
+    - lambda: id(device_state) = ${state_not_ready};
     - script.execute: control_leds
 
 ota:
@@ -137,6 +148,10 @@ psram:
   speed: 80MHz
 
 globals:
+  - id: mic_unmuted
+    type: bool
+    restore_value: no
+    initial_value: 'false'
   - id: init_in_progress
     type: bool
     restore_value: no
@@ -185,7 +200,7 @@ globals:
     initial_value: '1.0'
   - id: device_state
     type: int
-    initial_value: '0'  # STATE_INITIALIZING
+    initial_value: ${state_initializing}
 
 switch:
   - platform: template
@@ -225,7 +240,7 @@ switch:
           green: 0
           blue: 0
           effect: none
-      - delay: 0.1s  # Further reduced delay
+      - delay: 0.1s
       - if:
           condition:
             and:
@@ -247,7 +262,7 @@ switch:
           green: 1
           blue: 0
           effect: none
-      - delay: 0.1s  # Further reduced delay
+      - delay: 0.1s
       - if:
           condition:
             and:
@@ -314,7 +329,7 @@ switch:
           duration: 0.0s
       - lambda: id(stop_model).enable();
       - script.execute: ring_timer
-      - lambda: id(device_state) = 6;  # STATE_TIMER_RINGING
+      - lambda: id(device_state) = ${state_timer_ringing};
       - script.execute: control_leds
       - delay: 15min
       - switch.turn_off: timer_ringing
@@ -349,11 +364,11 @@ binary_sensor:
     name: "User button"
     on_press:
       - logger.log: "User button pressed"
-      - lambda: id(device_state) = 9;  # STATE_BUTTON_PRESSED
+      - lambda: id(device_state) = ${state_button_pressed};
       - script.execute: control_leds
     on_release:
       - logger.log: "User button released"
-      - lambda: id(device_state) = 1;  # STATE_IDLE
+      - lambda: id(device_state) = ${state_idle};
       - script.execute: control_leds
       - if:
           condition: {lambda: return id(factory_reset_requested);}
@@ -630,7 +645,7 @@ sensor:
           then:
             - logger.log: "Low battery alert triggered"
             - lambda: id(low_battery_alert) = true;
-            - lambda: id(device_state) = 8;  # STATE_LOW_BATTERY
+            - lambda: id(device_state) = ${state_low_battery};
             - script.execute: control_leds
           else:
             - logger.log: "Battery level normal"
@@ -682,7 +697,7 @@ script:
       - logger.log: "Starting control_leds script execution"
       - if:
           condition:
-            lambda: return id(device_state) == 1;  # STATE_IDLE
+            lambda: return id(device_state) == ${state_idle};
           then:
             - light.turn_off: led_respeaker_onboard
           else:
@@ -690,59 +705,59 @@ script:
                 id: led_respeaker_onboard
                 red: !lambda |-
                   switch (id(device_state)) {
-                    case 0: return 0.0;  // Blue for initializing
-                    case 2: return 0.0;  // Green for listening
-                    case 3: return 0.5;  // Purple for thinking
-                    case 4: return 0.0;  // Cyan for replying
-                    case 5: return 1.0;  // Red for error
-                    case 6: return 1.0;  // Yellow for timer ringing
-                    case 7: return 0.0;  // Green for media playing
-                    case 8: return 1.0;  // Red for low battery
-                    case 9: return 0.0;  // Cyan for button pressed
-                    case 10: return 1.0; // Orange for not ready
+                    case ${state_initializing}: return 0.0;
+                    case ${state_va_listening}: return 0.0;
+                    case ${state_va_thinking}: return 0.5;
+                    case ${state_va_replying}: return 0.0;
+                    case ${state_va_error}: return 1.0;
+                    case ${state_timer_ringing}: return 1.0;
+                    case ${state_media_playing}: return 0.0;
+                    case ${state_low_battery}: return 1.0;
+                    case ${state_button_pressed}: return 0.0;
+                    case ${state_not_ready}: return 1.0;
                     default: return 0.0;
                   }
                 green: !lambda |-
                   switch (id(device_state)) {
-                    case 0: return 0.0;
-                    case 2: return 1.0;
-                    case 3: return 0.0;
-                    case 4: return 1.0;
-                    case 5: return 0.0;
-                    case 6: return 1.0;
-                    case 7: return 1.0;
-                    case 8: return 0.0;
-                    case 9: return 1.0;
-                    case 10: return 0.5;
+                    case ${state_initializing}: return 0.0;
+                    case ${state_va_listening}: return 1.0;
+                    case ${state_va_thinking}: return 0.0;
+                    case ${state_va_replying}: return 1.0;
+                    case ${state_va_error}: return 0.0;
+                    case ${state_timer_ringing}: return 1.0;
+                    case ${state_media_playing}: return 1.0;
+                    case ${state_low_battery}: return 0.0;
+                    case ${state_button_pressed}: return 1.0;
+                    case ${state_not_ready}: return 0.5;
                     default: return 0.0;
                   }
                 blue: !lambda |-
                   switch (id(device_state)) {
-                    case 0: return 1.0;
-                    case 2: return 0.0;
-                    case 3: return 0.5;
-                    case 4: return 1.0;
-                    case 5: return 0.0;
-                    case 6: return 0.0;
-                    case 7: return 0.0;
-                    case 8: return 0.0;
-                    case 9: return 1.0;
-                    case 10: return 0.0;
+                    case ${state_initializing}: return 1.0;
+                    case ${state_va_listening}: return 0.0;
+                    case ${state_va_thinking}: return 0.5;
+                    case ${state_va_replying}: return 1.0;
+                    case ${state_va_error}: return 0.0;
+                    case ${state_timer_ringing}: return 0.0;
+                    case ${state_media_playing}: return 0.0;
+                    case ${state_low_battery}: return 0.0;
+                    case ${state_button_pressed}: return 1.0;
+                    case ${state_not_ready}: return 0.0;
                     default: return 0.0;
                   }
                 brightness: 0.5
                 effect: !lambda |-
                   switch (id(device_state)) {
-                    case 0: return "Ring Chase";          // STATE_INITIALIZING
-                    case 2: return "Slow Pulse";          // STATE_VA_LISTENING
-                    case 3: return "Fast Pulse";          // STATE_VA_THINKING
-                    case 4: return "Replying Alternate";  // STATE_VA_REPLYING
-                    case 5: return "Error Flash";         // STATE_VA_ERROR
-                    case 6: return "Ring Chase";          // STATE_TIMER_RINGING
-                    case 7: return "Idle Breathing";      // STATE_MEDIA_PLAYING
-                    case 8: return "Error Flash";         // STATE_LOW_BATTERY
-                    case 9: return "Fast Pulse";          // STATE_BUTTON_PRESSED
-                    case 10: return "Slow Pulse";         // STATE_NOT_READY
+                    case ${state_initializing}: return "Ring Chase";
+                    case ${state_va_listening}: return "Ring Chase";  # Changed from "Slow Pulse"
+                    case ${state_va_thinking}: return "Fast Pulse";
+                    case ${state_va_replying}: return "Replying Alternate";
+                    case ${state_va_error}: return "Error Flash";
+                    case ${state_timer_ringing}: return "Ring Chase";
+                    case ${state_media_playing}: return "Idle Breathing";
+                    case ${state_low_battery}: return "Error Flash";
+                    case ${state_button_pressed}: return "Fast Pulse";
+                    case ${state_not_ready}: return "Slow Pulse";
                     default: return "none";
                   }
       - logger.log: "Finished control_leds script execution"
@@ -940,7 +955,7 @@ media_player:
           condition:
             lambda: return id(external_media_player).state == media_player::MediaPlayerState::MEDIA_PLAYER_STATE_PLAYING;
           then:
-            - lambda: id(device_state) = 7;  # STATE_MEDIA_PLAYING
+            - lambda: id(device_state) = ${state_media_playing};
             - script.execute: control_leds
           else:
             - script.execute: control_leds
@@ -1079,6 +1094,7 @@ micro_wake_word:
                             - voice_assistant.start:
                                 silence_detection: True
                                 wake_word: !lambda return wake_word;
+                            - logger.log: "VA start command issued"
 
 voice_assistant:
   id: va
@@ -1101,15 +1117,15 @@ voice_assistant:
           - switch.turn_off: mic_mute_switch
     - lambda: id(init_in_progress) = false;
     - micro_wake_word.start:
-    - logger.log: "Micro wake word started"  # Add this line
+    - logger.log: "Micro wake word started"
     - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
-    - lambda: id(device_state) = 1;
+    - lambda: id(device_state) = ${state_idle};
     - script.execute: control_leds
   on_client_disconnected:
     - logger.log: "VA client disconnected"
     - voice_assistant.stop:
     - lambda: id(voice_assistant_phase) = ${voice_assist_not_ready_phase_id};
-    - lambda: id(device_state) = 10;  # STATE_NOT_READY
+    - lambda: id(device_state) = ${state_not_ready};
     - script.execute: control_leds
   on_error:
     - logger.log:
@@ -1143,12 +1159,12 @@ voice_assistant:
                     then:
                       - logger.log: "Retry failed, resetting to idle"
                       - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
-                      - lambda: id(device_state) = 1;  # STATE_IDLE
+                      - lambda: id(device_state) = ${state_idle};
                       - script.execute: control_leds
               else:
                 - logger.log: "Unhandled error, resetting to idle"
                 - lambda: id(voice_assistant_phase) = ${voice_assist_error_phase_id};
-                - lambda: id(device_state) = 5;  # STATE_VA_ERROR
+                - lambda: id(device_state) = ${state_va_error};
                 - script.execute: control_leds
                 - voice_assistant.stop:
                 - micro_wake_word.stop:
@@ -1165,7 +1181,7 @@ voice_assistant:
                     then:
                       - logger.log: "VA failed to recover, resetting to idle"
                       - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
-                      - lambda: id(device_state) = 1;  # STATE_IDLE
+                      - lambda: id(device_state) = ${state_idle};
                       - script.execute: control_leds
   on_start:
     - logger.log: "VA started"
@@ -1173,28 +1189,28 @@ voice_assistant:
         id: media_mixing_input
         decibel_reduction: 20
         duration: 0.0s
-    - lambda: id(device_state) = 2;
+    - lambda: id(device_state) = ${state_va_listening};
     - script.execute: control_leds
   on_listening:
     - logger.log: "VA listening"
     - lambda: id(voice_assistant_phase) = ${voice_assist_waiting_for_command_phase_id};
-    - lambda: id(device_state) = 2;
+    - lambda: id(device_state) = ${state_va_listening};
     - script.execute: control_leds
     - logger.log: "VA successfully restarted and streaming"
   on_stt_vad_start:
     - logger.log: "VA STT VAD started"
     - lambda: id(voice_assistant_phase) = ${voice_assist_listening_for_command_phase_id};
-    - lambda: id(device_state) = 2;
+    - lambda: id(device_state) = ${state_va_listening};
     - script.execute: control_leds
   on_stt_vad_end:
     - logger.log: "VA STT VAD ended"
     - lambda: id(voice_assistant_phase) = ${voice_assist_thinking_phase_id};
-    - lambda: id(device_state) = 3;
+    - lambda: id(device_state) = ${state_va_thinking};
     - script.execute: control_leds
   on_tts_start:
     - logger.log: "VA TTS started"
     - lambda: id(voice_assistant_phase) = ${voice_assist_replying_phase_id};
-    - lambda: id(device_state) = 4;
+    - lambda: id(device_state) = ${state_va_replying};
     - script.execute: control_leds
     - script.execute: activate_stop_word_if_tts_step_is_long
     - text_sensor.template.publish:
@@ -1218,12 +1234,12 @@ voice_assistant:
           - light.turn_on:
               id: led_respeaker_onboard
               effect: "Question Response"
-          - delay: 0.5s  # Reduced delay
+          - delay: 0.5s
           - wait_until:
               condition:
                 not:
                   media_player.is_announcing:
-              timeout: 3s  # Reduced timeout
+              timeout: 3s
           - logger.log: "TTS playback finished"
           - if:
               condition: {switch.is_on: mic_mute_switch}
@@ -1246,36 +1262,23 @@ voice_assistant:
           - delay: 200ms
           - lambda: |-
               id(voice_assistant_phase) = ${voice_assist_waiting_for_command_phase_id};
-              id(device_state) = 2;
+              id(device_state) = ${state_va_listening};
               ESP_LOGD("voice_assistant", "Restarting VA with silence detection");
           - voice_assistant.start:
               silence_detection: True
           - logger.log: "VA restarted for question response"
           - script.execute: control_leds
-          - delay: 0.5s  # Reduced delay
+          - delay: 10s
           - if:
               condition:
-                not:
-                  voice_assistant.is_running:
+                voice_assistant.is_running:
               then:
-                - logger.log: "VA restart failed, forcing recovery"
+                - logger.log: "No response detected, timing out to idle"
                 - voice_assistant.stop:
-                - micro_wake_word.stop:
-                - delay: 100ms
-                - micro_wake_word.start:
-                - delay: 200ms
-                - voice_assistant.start:
-                    silence_detection: True
-                - delay: 0.5s  # Reduced delay
-                - if:
-                    condition:
-                      not:
-                        voice_assistant.is_running:
-                    then:
-                      - logger.log: "VA recovery failed, resetting to idle"
-                      - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
-                      - lambda: id(device_state) = 1;
-                      - script.execute: control_leds
+                - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
+                - lambda: id(device_state) = ${state_idle};
+                - switch.turn_off: is_question_response_switch
+                - script.execute: control_leds
         else:
           - logger.log: "Response does not end with '?'. Not restarting"
           - switch.turn_off: is_question_response_switch
@@ -1285,11 +1288,11 @@ voice_assistant:
               then:
                 - logger.log: "Resetting to idle after non-question response"
                 - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
-                - lambda: id(device_state) = 1;
+                - lambda: id(device_state) = ${state_idle};
                 - script.execute: control_leds
   on_end:
     - logger.log: "VA ended"
-    - delay: 0.5s  # Reduced delay
+    - delay: 0.5s
     - wait_until:
         condition:
           not:
@@ -1310,13 +1313,13 @@ voice_assistant:
         condition:
           lambda: 'return id(voice_assistant_phase) == ${voice_assist_error_phase_id};'
         then:
-          - delay: 0.5s  # Reduced delay
+          - delay: 0.5s
     - if:
         condition:
           lambda: 'return id(voice_assistant_phase) != ${voice_assist_waiting_for_command_phase_id} && !id(is_question_response_switch).state;'
         then:
           - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
-          - lambda: id(device_state) = 1;  # STATE_IDLE
+          - lambda: id(device_state) = ${state_idle};
           - script.execute: control_leds
   on_timer_finished:
     - logger.log: "Timer finished"
