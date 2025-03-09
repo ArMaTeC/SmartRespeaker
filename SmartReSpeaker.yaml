@@ -25,12 +25,14 @@ esphome:
           state: -1
       - lambda: id(device_state) = 0;  # STATE_INITIALIZING
       - script.execute: control_leds
-      - delay: 10s
+      - delay: 5s  # Reduced for faster testing
+      - switch.turn_off: mic_mute_switch  # Ensure mic is unmuted
+      - logger.log: "Mic unmuted on boot"
       - if:
           condition:
             lambda: return id(init_in_progress);
           then:
-            - logger.log: "Initialization completed after 10s delay"
+            - logger.log: "Initialization completed after delay"
             - lambda: id(init_in_progress) = false;
             - script.execute: control_leds
   on_shutdown:
@@ -110,6 +112,7 @@ api:
         - voice_assistant.stop:
   on_client_connected:
     - logger.log: "API client connected"
+    - logger.log: "Micro wake word started"  # Log when wake word detection starts
     - lambda: id(device_state) = 1;  # STATE_IDLE
     - script.execute: control_leds
   on_client_disconnected:
@@ -1250,7 +1253,7 @@ microphone:
       amplify_shift: 0
     channel_1:
       id: nabu_mic_mww
-      amplify_shift: 2
+      amplify_shift: 4  # Increased for better wake word detection
 
 speaker:
   - platform: i2s_audio
@@ -1423,12 +1426,11 @@ micro_wake_word:
     - model: https://github.com/kahrendt/microWakeWord/releases/download/okay_nabu_20241226.3/okay_nabu.json
       id: okay_nabu
       internal: true
-      probability_cutoff: 0.75
+      probability_cutoff: 0.5  # Lowered for testing
     - model: https://github.com/kahrendt/microWakeWord/releases/download/stop/stop.json
       id: stop_model
       internal: true
       probability_cutoff: 0.75
-  vad:
   microphone: nabu_mic_mww
   on_wake_word_detected:
     - logger.log:

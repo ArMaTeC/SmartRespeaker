@@ -4402,4 +4402,833 @@ INFO Resolving IP address of respeaker-lite-satellite.local in mDNS
 INFO Connecting to 192.168.1.242 port 3232...
 INFO Connected to 192.168.1.242
 INFO Uploading H:\source\SmartRespeaker\.esphome\build\respeaker-lite-satellite\.pioenvs\respeaker-lite-satellite\firmware.bin (2519744 bytes)
-Uploading: [                                                            ] 0% Uploading: [=                                                           ] 1% Uploading: [=                                                           ] 2% Uploading: [==                                                          ] 3% 
+Uploading: [                                                            ] 0% Uploading: [=                                                           ] 1% Uploading: [=                                                           ] 2% Uploading: [==                                                          ] 3% Uploading: [===                                                         ] 4% Uploading: [===                                                         ] 5% Uploading: [====                                                        ] 6% Uploading: [====                                                        ] 7% Uploading: [=====                                                       ] 8% Uploading: [=====                                                       ] 9% Uploading: [======                                                      ] 10% Uploading: [=======                                                     ] 11% Uploading: [=======                                                     ] 12% Uploading: [========                                                    ] 13% Uploading: [=========                                                   ] 14% Uploading: [=========                                                   ] 15% Uploading: [==========                                                  ] 16% Uploading: [==========                                                  ] 17% Uploading: [===========                                                 ] 18% Uploading: [============                                                ] 19% Uploading: [============                                                ] 20% Uploading: [=============                                               ] 21% Uploading: [=============                                               ] 22% Uploading: [==============                                              ] 23% Uploading: [==============                                              ] 24% Uploading: [===============                                             ] 25% Uploading: [================                                            ] 26% Uploading: [================                                            ] 27% Uploading: [=================                                           ] 28% Uploading: [==================                                          ] 29% Uploading: [==================                                          ] 30% Uploading: [===================                                         ] 31% Uploading: [===================                                         ] 32% Uploading: [====================                                        ] 33% Uploading: [====================                                        ] 34% Uploading: [=====================                                       ] 35% Uploading: [======================                                      ] 36% Uploading: [======================                                      ] 37% Uploading: [=======================                                     ] 38% Uploading: [=======================                                     ] 39% Uploading: [========================                                    ] 40% Uploading: [=========================                                   ] 41% Uploading: [=========================                                   ] 42% Uploading: [==========================                                  ] 43% Uploading: [===========================                                 ] 44% Uploading: [===========================                                 ] 45% Uploading: [============================                                ] 46% Uploading: [============================                                ] 47% Uploading: [=============================                               ] 48% Uploading: [=============================                               ] 49% Uploading: [==============================                              ] 50% Uploading: [===============================                             ] 51% Uploading: [===============================                             ] 52% Uploading: [================================                            ] 53% Uploading: [=================================                           ] 54% Uploading: [=================================                           ] 55% Uploading: [==================================                          ] 56% Uploading: [==================================                          ] 57% Uploading: [===================================                         ] 58% Uploading: [====================================                        ] 59% Uploading: [====================================                        ] 60% Uploading: [=====================================                       ] 61% Uploading: [=====================================                       ] 62% Uploading: [======================================                      ] 63% Uploading: [======================================                      ] 64% Uploading: [=======================================                     ] 65% Uploading: [========================================                    ] 66% Uploading: [========================================                    ] 67% Uploading: [=========================================                   ] 68% Uploading: [==========================================                  ] 69% Uploading: [==========================================                  ] 70% Uploading: [===========================================                 ] 71% Uploading: [===========================================                 ] 72% Uploading: [============================================                ] 73% Uploading: [============================================                ] 74% Uploading: [=============================================               ] 75% Uploading: [==============================================              ] 76% Uploading: [==============================================              ] 77% Uploading: [===============================================             ] 78% Uploading: [===============================================             ] 79% Uploading: [================================================            ] 80% Uploading: [=================================================           ] 81% Uploading: [=================================================           ] 82% Uploading: [==================================================          ] 83% Uploading: [===================================================         ] 84% Uploading: [===================================================         ] 85% Uploading: [====================================================        ] 86% Uploading: [====================================================        ] 87% Uploading: [=====================================================       ] 88% Uploading: [=====================================================       ] 89% Uploading: [======================================================      ] 90% Uploading: [=======================================================     ] 91% Uploading: [=======================================================     ] 92% Uploading: [========================================================    ] 93% Uploading: [=========================================================   ] 94% Uploading: [=========================================================   ] 95% Uploading: [==========================================================  ] 96% Uploading: [==========================================================  ] 97% Uploading: [=========================================================== ] 98% Uploading: [=========================================================== ] 99% Uploading: [============================================================] 100% Done...
+
+INFO Upload took 20.74 seconds, waiting for result...
+INFO OTA successful
+INFO Successfully uploaded program.
+INFO Starting log output from respeaker-lite-satellite.local using esphome API
+INFO Successfully connected to respeaker-lite-satellite @ 192.168.1.242 in 9.086s
+INFO Successful handshake with respeaker-lite-satellite @ 192.168.1.242 in 0.736s
+[09:53:19][I][app:100]: ESPHome version 2025.2.2 compiled on Mar  9 2025, 09:52:13
+[09:53:19][I][app:102]: Project formatbce.respeaker-lite-satellite version 2025.2.2
+[09:53:19][C][wifi:600]: WiFi:
+[09:53:19][C][wifi:428]:   Local MAC: 98:3D:AE:ED:BC:FC
+[09:53:19][C][wifi:433]:   SSID: 'ParkerLife_2G'
+[09:53:19][C][wifi:436]:   IP Address: 192.168.1.242
+[09:53:19][C][wifi:439]:   BSSID: 80:CC:9C:8C:D2:CE
+[09:53:19][C][wifi:441]:   Hostname: 'respeaker-lite-satellite'
+[09:53:19][C][wifi:443]:   Signal strength: -56 dB ERROR Exception in callback _ProactorReadPipeTransport._loop_reading()
+handle: <Handle _ProactorReadPipeTransport._loop_reading()>
+Traceback (most recent call last):
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 325, in _loop_reading
+    self._data_received(data, length)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 274, in _data_received
+    self._protocol.data_received(data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "aioesphomeapi\\_frame_helper\\noise.py", line 197, in aioesphomeapi._frame_helper.noise.APINoiseFrameHelper.data_received
+  File "aioesphomeapi\\_frame_helper\\noise.py", line 367, in aioesphomeapi._frame_helper.noise.APINoiseFrameHelper._handle_frame
+  File "aioesphomeapi\\connection.py", line 939, in aioesphomeapi.connection.APIConnection.process_packet
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\site-packages\esphome\components\api\client.py", line 51, in on_log
+    print(f"[{time_.hour:02}:{time_.minute:02}:{time_.second:02}]{text}")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\site-packages\colorama\ansitowin32.py", line 47, in write
+    self.__convertor.write(text)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\site-packages\colorama\ansitowin32.py", line 177, in write
+    self.write_and_convert(text)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\site-packages\colorama\ansitowin32.py", line 202, in write_and_convert
+    self.write_plain_text(text, cursor, start)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\site-packages\colorama\ansitowin32.py", line 210, in write_plain_text
+    self.wrapped.write(text[start:end])
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 0-2: character maps to <undefined>
+WARNING respeaker-lite-satellite @ 192.168.1.242: Connection error occurred: respeaker-lite-satellite @ 192.168.1.242: Encryption error: received_name=respeaker-lite-satellite
+INFO Processing unexpected disconnect from ESPHome API for respeaker-lite-satellite @ 192.168.1.242
+WARNING Disconnected from API
+INFO Successfully connected to respeaker-lite-satellite @ 192.168.1.242 in 0.498s
+INFO Successful handshake with respeaker-lite-satellite @ 192.168.1.242 in 1.099s
+[09:53:21][C][sntp:042]: SNTP Time:
+[09:53:21][C][sntp:045]:   Server 0: 'pool.ntp.org'
+[09:53:21][C][mdns:116]: mDNS:
+[09:53:21][C][mdns:117]:   Hostname: respeaker-lite-satellite
+[09:53:21][C][esphome.ota:073]: Over-The-Air updates:
+[09:53:21][C][esphome.ota:074]:   Address: respeaker-lite-satellite.local:3232
+[09:53:21][C][esphome.ota:075]:   Version: 2
+[09:53:21][C][esphome.ota:078]:   Password configured
+[09:53:21][C][safe_mode:018]: Safe Mode:
+[09:53:21][C][safe_mode:019]:   Boot considered successful after 60 seconds
+[09:53:21][C][safe_mode:021]:   Invoke after 10 boot attempts
+[09:53:21][C][safe_mode:022]:   Remain in safe mode for 300 seconds
+[09:53:21][C][api:140]: API Server:
+[09:53:21][C][api:141]:   Address: respeaker-lite-satellite.local:6053
+[09:53:21][C][api:143]:   Using noise encryption: YES
+[09:53:21][C][micro_wake_word:072]: microWakeWord:
+[09:53:21][C][micro_wake_word:073]:   models:
+[09:53:21][C][micro_wake_word:015]:     - Wake Word: Okay Nabu
+[09:53:21][C][micro_wake_word:016]:       Probability cutoff: 0.75
+[09:53:21][C][micro_wake_word:017]:       Sliding window size: 5
+[09:53:21][C][micro_wake_word:015]:     - Wake Word: Stop
+[09:53:21][C][micro_wake_word:016]:       Probability cutoff: 0.75
+[09:53:21][C][micro_wake_word:017]:       Sliding window size: 5
+[09:53:21][C][micro_wake_word:021]:     - VAD Model
+[09:53:21][C][micro_wake_word:022]:       Probability cutoff: 0.50
+[09:53:21][C][micro_wake_word:023]:       Sliding window size: 5
+[09:53:21][C][debug:021]: Debug component:
+[09:53:21][D][debug:035]: ESPHome version 2025.2.2
+[09:53:21][D][debug:039]: Free Heap Size: 114632 bytes
+[09:53:21][D][debug:284]: Chip: Model=ESP32-S3, Features=WIFI_BGN,BLE, Cores=2, Revision=2
+[09:53:21][D][debug:299]: Framework: ESP-IDF
+[09:53:21][D][debug:306]: ESP-IDF Version: 5.1.5
+[09:53:21][D][debug:311]: EFuse MAC: 98:3D:AE:ED:BC:FC
+[09:53:21][D][debug:204]: Reset Reason: Software reset via esp_restart
+[09:53:21][D][debug:359]: Wakeup Reason: Unknown
+[09:53:21][C][debug:033]: Partition table:
+[09:53:21][C][debug:034]:   Name         Type Subtype  Address    Size      
+[09:53:21][C][debug:038]:   otadata      1    0        0x00009000 0x00002000
+[09:53:21][C][debug:038]:   phy_init     1    1        0x0000B000 0x00001000
+[09:53:21][C][debug:038]:   app0         0    16       0x00010000 0x003C0000
+[09:53:21][C][debug:038]:   app1         0    17       0x003D0000 0x003C0000
+[09:53:21][C][debug:038]:   nvs          1    2        0x00790000 0x0006D000
+[09:53:36][W][respeaker_lite:347]: Read mic mute state failed
+[09:53:59][D][esp-idf:000][wifi]: I (50775) wifi:
+[09:53:59][D][esp-idf:000][wifi]: <ba-add>idx:1 (ifx:0, 80:cc:9c:8c:d2:ce), tid:6, ssn:0, winSize:64
+[09:53:59][D][esp-idf:000][wifi]: 
+
+[09:54:02][D][main:720]: Battery voltage: 0.40 V
+[09:54:02][D][main:1061]: Battery level normal
+[09:54:02][D][main:1388]: Starting control_leds script execution
+[09:54:02][D][light:036]: 'LED Respeaker onboard' Setting:
+[09:54:02][D][main:1139]: Finished control_leds script execution
+[09:54:06][D][esp32.preferences:114]: Saving 6 preferences to flash...
+[09:54:06][D][esp32.preferences:142]: Saving 6 preferences to flash: 4 cached, 2 written, 0 failed
+[09:54:06][W][respeaker_lite:341]: Request mic mute state failed
+[09:54:06][W][respeaker_lite:341]: Request mic mute state failed
+[09:54:06][W][respeaker_lite:341]: Request mic mute state failed
+[09:54:06][W][respeaker_lite:341]: Request mic mute state failed
+[09:54:06][W][respeaker_lite:341]: Request mic mute state failed
+[09:54:06][W][respeaker_lite:341]: Request mic mute state failed
+[09:54:06][W][respeaker_lite:341]: Request mic mute state failed
+[09:54:10][I][safe_mode:041]: Boot seems successful; resetting boot loop counter
+[09:54:10][D][esp32.preferences:114]: Saving 1 preferences to flash...
+[09:54:10][D][esp32.preferences:142]: Saving 1 preferences to flash: 0 cached, 1 written, 0 failed
+[09:54:10][I][respeaker_lite:354]: Mic mute state: 1
+[09:54:10][D][binary_sensor:036]: 'mute_state': Sending state ON
+[09:54:10][D][switch:055]: 'Mic mute': Sending state ON
+[09:54:10][D][main:1299]: Mic mute ON
+[09:54:10][D][light:036]: 'LED Respeaker onboard' Setting:
+[09:54:10][D][light:051]:   Brightness: 50%
+[09:54:10][D][light:058]:   Red: 100%, Green: 0%, Blue: 0%
+[09:54:10][D][main:234]: Playing mute ON sound
+[09:54:10][D][main:1170]: Playing sound: priority=0
+[09:54:10][D][main:1388]: Starting control_leds script execution
+[09:54:10][D][light:036]: 'LED Respeaker onboard' Setting:
+[09:54:10][D][main:1139]: Finished control_leds script execution
+[09:54:10][D][main:1733]: Media player state changed: 4
+[09:54:10][D][main:1388]: Starting control_leds script execution
+[09:54:10][D][light:036]: 'LED Respeaker onboard' Setting:
+[09:54:10][D][main:1139]: Finished control_leds script execution
+[09:54:10][D][main:1344]: Media player announcement started
+[09:54:10][D][speaker_media_player:420]: State changed to ANNOUNCING
+[09:54:10][W][component:237]: Component speaker.media_player took a long time for an operation (82 ms).
+[09:54:10][W][component:238]: Components should block for at most 30 ms.
+[09:54:10][D][speaker_media_player.pipeline:114]: Reading FLAC file type
+[09:54:10][D][speaker_media_player.pipeline:124]: Decoded audio has 1 channels, 48000 Hz sample rate, and 16 bits per sample
+[09:54:11][D][ring_buffer:034]: Created ring buffer with size 9600
+[09:54:11][D][ring_buffer:034][speaker_task]: Created ring buffer with size 19200
+[09:54:11][D][i2s_audio.speaker:111]: Starting Speaker
+[09:54:11][D][i2s_audio.speaker:116]: Started Speaker
+[09:54:11][D][speaker_mixer:306]: Starting speaker mixer
+[09:54:11][D][speaker_mixer:314]: Started speaker mixer
+[09:54:11][D][main:1733]: Media player state changed: 1
+[09:54:11][D][main:226]: Removing ducking from media player
+[09:54:11][D][main:1388]: Starting control_leds script execution
+[09:54:11][D][light:036]: 'LED Respeaker onboard' Setting:
+[09:54:11][D][main:1139]: Finished control_leds script execution
+[09:54:11][D][speaker_media_player:420]: State changed to IDLE
+[09:54:11][W][component:237]: Component speaker.media_player took a long time for an operation (56 ms).
+[09:54:11][W][component:238]: Components should block for at most 30 ms.
+[09:54:11][D][speaker_mixer:319]: Stopping speaker mixer
+[09:54:14][I][respeaker_lite:354]: Mic mute state: 0
+[09:54:14][D][binary_sensor:036]: 'mute_state': Sending state OFF
+[09:54:14][D][switch:055]: 'Mic mute': Sending state OFF
+[09:54:14][D][main:244]: Mic mute OFF
+[09:54:14][D][light:036]: 'LED Respeaker onboard' Setting:
+[09:54:14][D][light:051]:   Brightness: 50%
+[09:54:14][D][light:058]:   Red: 0%, Green: 100%, Blue: 0%
+[09:54:14][D][main:256]: Playing mute OFF sound
+[09:54:14][D][main:1170]: Playing sound: priority=0
+[09:54:14][D][main:1388]: Starting control_leds script execution
+[09:54:14][D][light:036]: 'LED Respeaker onboard' Setting:
+[09:54:14][D][main:1139]: Finished control_leds script execution
+[09:54:14][D][main:1733]: Media player state changed: 4
+[09:54:14][D][main:1388]: Starting control_leds script execution
+[09:54:14][D][light:036]: 'LED Respeaker onboard' Setting:
+[09:54:14][D][main:1139]: Finished control_leds script execution
+[09:54:14][D][main:1344]: Media player announcement started
+[09:54:14][D][speaker_media_player:420]: State changed to ANNOUNCING
+[09:54:14][W][component:237]: Component speaker.media_player took a long time for an operation (121 ms).
+[09:54:14][W][component:238]: Components should block for at most 30 ms.
+[09:54:14][D][speaker_media_player.pipeline:114]: Reading FLAC file type
+[09:54:14][D][speaker_media_player.pipeline:124]: Decoded audio has 1 channels, 48000 Hz sample rate, and 16 bits per sample
+[09:54:14][D][ring_buffer:034]: Created ring buffer with size 9600
+[09:54:14][D][speaker_mixer:306]: Starting speaker mixer
+[09:54:14][D][speaker_mixer:314]: Started speaker mixer
+[09:54:16][D][main:1733]: Media player state changed: 1
+[09:54:16][D][main:226]: Removing ducking from media player
+[09:54:16][D][main:1388]: Starting control_leds script execution
+[09:54:16][D][light:036]: 'LED Respeaker onboard' Setting:
+[09:54:16][D][main:1139]: Finished control_leds script execution
+[09:54:16][D][speaker_media_player:420]: State changed to IDLE
+[09:54:16][W][component:237]: Component speaker.media_player took a long time for an operation (108 ms).
+[09:54:16][W][component:238]: Components should block for at most 30 ms.
+[09:54:16][D][speaker_mixer:319]: Stopping speaker mixer
+[09:54:25][W][respeaker_lite:341]: Request mic mute state failed
+[09:54:26][W][respeaker_lite:341]: Request mic mute state failed
+[09:54:29][D][switch:012]: 'Debug Mode' Turning ON.
+[09:54:29][D][main:341]: Debug mode enabled
+[09:54:29][D][switch:055]: 'Debug Mode': Sending state ON
+[09:54:35][D][switch:016]: 'Mute/unmute sound' Turning OFF.
+[09:54:35][D][switch:055]: 'Mute/unmute sound': Sending state OFF
+[09:54:37][D][switch:012]: 'Mute/unmute sound' Turning ON.
+[09:54:37][D][switch:055]: 'Mute/unmute sound': Sending state ON
+[09:54:39][D][switch:016]: 'Wake sound' Turning OFF.
+[09:54:39][D][switch:055]: 'Wake sound': Sending state OFF
+[09:54:40][D][switch:012]: 'Wake sound' Turning ON.
+[09:54:40][D][switch:055]: 'Wake sound': Sending state ON
+[09:54:50][D][light:036]: 'LED Respeaker onboard' Setting:
+[09:54:50][D][light:109]:   Effect: 'Pulse Matrix'
+[09:54:54][D][light:036]: 'LED Respeaker onboard' Setting:
+[09:54:54][D][light:109]:   Effect: 'Binary Clock'
+[09:54:59][W][respeaker_lite:341]: Request mic mute state failed
+[09:54:59][W][respeaker_lite:341]: Request mic mute state failed
+[09:54:59][W][respeaker_lite:341]: Request mic mute state failed
+[09:54:59][W][respeaker_lite:341]: Request mic mute state failed
+[09:54:59][W][respeaker_lite:341]: Request mic mute state failed
+[09:54:59][W][respeaker_lite:341]: Request mic mute state failed
+[09:54:59][W][respeaker_lite:341]: Request mic mute state failed
+[09:54:59][W][respeaker_lite:341]: Request mic mute state failed
+[09:55:01][W][respeaker_lite:341]: Request mic mute state failed
+[09:55:01][W][respeaker_lite:341]: Request mic mute state failed
+[09:55:01][W][respeaker_lite:341]: Request mic mute state failed
+[09:55:01][W][respeaker_lite:341]: Request mic mute state failed
+[09:55:01][W][respeaker_lite:341]: Request mic mute state failed
+[09:55:01][W][respeaker_lite:341]: Request mic mute state failed
+[09:55:01][W][respeaker_lite:341]: Request mic mute state failed
+[09:55:02][D][main:720]: Battery voltage: 0.14 V
+[09:55:02][D][main:1061]: Battery level normal
+[09:55:02][D][main:1388]: Starting control_leds script execution
+[09:55:02][D][light:036]: 'LED Respeaker onboard' Setting:
+[09:55:02][D][light:109]:   Effect: 'None'
+[09:55:02][D][main:1139]: Finished control_leds script execution
+[09:55:06][D][esp32.preferences:114]: Saving 3 preferences to flash...
+[09:55:06][D][esp32.preferences:142]: Saving 3 preferences to flash: 2 cached, 1 written, 0 failed
+[09:55:21][D][light:036]: 'LED Respeaker onboard' Setting:
+[09:55:21][D][light:109]:   Effect: 'Binary Clock'
+[09:55:26][D][light:036]: 'LED Respeaker onboard' Setting:
+[09:55:26][D][light:109]:   Effect: 'Solar Flare'
+[09:55:26][W][respeaker_lite:341]: Request mic mute state failed
+[09:55:31][D][light:036]: 'LED Respeaker onboard' Setting:
+[09:55:31][D][light:109]:   Effect: 'Cosmic Spiral'
+[09:55:34][W][respeaker_lite:347]: Read mic mute state failed
+INFO ESPHome 2025.2.2
+INFO Reading configuration SmartReSpeaker.yaml...
+INFO Updating https://github.com/ArMaTeC/SmartRespeaker@main
+WARNING GPIO3 is a strapping PIN and should only be used for I/O with care.
+Attaching external pullup/down resistors to strapping pins can cause unexpected failures.
+See https://esphome.io/guides/faq.html#why-am-i-getting-a-warning-about-strapping-pins
+INFO Generating C++ source...
+INFO Updating https://github.com/espressif/esp-protocols.git@mdns-v1.5.1
+INFO Updating https://github.com/espressif/esp-tflite-micro@v1.3.1
+INFO Compiling app...
+Processing respeaker-lite-satellite (board: esp32-s3-devkitc-1; framework: espidf; platform: https://github.com/pioarduino/platform-espressif32.git#51.03.07)
+--------------------------------------------------------------------------------
+HARDWARE: ESP32S3 240MHz, 320KB RAM, 8MB Flash
+ - framework-espidf @ 3.50105.0 (5.1.5) 
+ - tool-cmake @ 3.21.3 
+ - tool-esptoolpy @ 4.8.1 
+ - tool-mklittlefs @ 3.2.0 
+ - tool-ninja @ 1.9.0 
+ - tool-riscv32-esp-elf-gdb @ 11.2.0+20220823 
+ - tool-xtensa-esp-elf-gdb @ 11.2.0+20230208 
+ - toolchain-esp32ulp @ 2.35.0-20220830 
+ - toolchain-riscv32-esp @ 12.2.0+20230208 
+ - toolchain-xtensa-esp32s3 @ 12.2.0+20230208
+Reading CMake configuration...
+Dependency Graph
+|-- esp-audio-libs @ 1.1.1
+|-- ESPMicroSpeechFeatures @ 1.1.0
+|-- noise-c @ 0.1.6
+Compiling .pioenvs\respeaker-lite-satellite\src\main.cpp.o
+In file included from src/esphome\components\adc\adc_sensor.h:9,
+                 from src/esphome.h:3,
+                 from src/main.cpp:3:
+C:/Users/karll/.platformio/packages/framework-espidf/components/esp_adc/deprecated/include/esp_adc_cal.h:17:2: warning: #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h" [-Wcpp]
+   17 | #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h"
+      |  ^~~~~~~
+In file included from src/esphome\components\adc\adc_sensor.h:10:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/adc.h:19:2: warning: #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively" [-Wcpp]
+   19 | #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively"
+      |  ^~~~~~~
+In file included from src/esphome\components\i2s_audio\i2s_audio.h:5,
+                 from src/esphome.h:45:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/i2s.h:27:2: warning: #warning "This set of I2S APIs has been deprecated, please include 'driver/i2s_std.h', 'driver/i2s_pdm.h' or 'driver/i2s_tdm.h' instead. if you want to keep using the old APIs and ignore this warning, you can enable 'Suppress leagcy driver deprecated warning' option under 'I2S Configuration' menu in Kconfig" [-Wcpp]
+   27 | #warning "This set of I2S APIs has been deprecated, \
+      |  ^~~~~~~
+In file included from components/esp-tflite-micro/tensorflow/lite/micro/tflite_bridge/flatbuffer_conversions_bridge.h:19,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_allocator.h:26,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_interpreter.h:26,
+                 from src/esphome\components\micro_wake_word\streaming_model.h:10,
+                 from src/esphome\components\micro_wake_word\micro_wake_word.h:6,
+                 from src/esphome.h:72:
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h: In member function 'T* tflite::BuiltinDataAllocator::AllocatePOD()':
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h:46:24: warning: 'template<class _Tp> struct std::is_pod' is deprecated: use is_standard_layout && is_trivial instead [-Wdeprecated-declarations]
+   46 |     static_assert(std::is_pod<T>::value, "Builtin data structure must be POD.");
+      |                        ^~~~~~
+In file included from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\bits\char_traits.h:42,
+                 from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\string:40,
+                 from src/esphome/core/log.h:7,
+                 from src/esphome/components/sensor/sensor.h:3,
+                 from src/esphome\components\adc\adc_sensor.h:3:
+c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\type_traits:757:5: note: declared here
+  757 |     is_pod
+      |     ^~~~~~
+Linking .pioenvs\respeaker-lite-satellite\firmware.elf
+RAM:   [=         ]  12.4% (used 40660 bytes from 327680 bytes)
+Flash: [======    ]  64.1% (used 2519585 bytes from 3932160 bytes)
+Building .pioenvs\respeaker-lite-satellite\firmware.bin
+Creating esp32s3 image...
+Successfully created esp32s3 image.
+esp32_create_combined_bin([".pioenvs\respeaker-lite-satellite\firmware.bin"], [".pioenvs\respeaker-lite-satellite\firmware.elf"])
+Wrote 0x277390 bytes to file H:\source\SmartRespeaker\.esphome\build\respeaker-lite-satellite\.pioenvs\respeaker-lite-satellite/firmware.factory.bin, ready to flash to offset 0x0
+esp32_copy_ota_bin([".pioenvs\respeaker-lite-satellite\firmware.bin"], [".pioenvs\respeaker-lite-satellite\firmware.elf"])
+========================= [SUCCESS] Took 49.06 seconds =========================
+INFO Successfully compiled program.
+INFO Resolving IP address of respeaker-lite-satellite.local in mDNS
+INFO Connecting to 192.168.1.244 port 3232...
+INFO Connected to 192.168.1.244
+INFO Uploading H:\source\SmartRespeaker\.esphome\build\respeaker-lite-satellite\.pioenvs\respeaker-lite-satellite\firmware.bin (2519952 bytes)
+Uploading: [                                                            ] 0% Uploading: [=                                                           ] 1% Uploading: [=                                                           ] 2% Uploading: [==                                                          ] 3% Uploading: [===                                                         ] 4% Uploading: [===                                                         ] 5% Uploading: [====                                                        ] 6% Uploading: [====                                                        ] 7% Uploading: [=====                                                       ] 8% Uploading: [=====                                                       ] 9% Uploading: [======                                                      ] 10% Uploading: [=======                                                     ] 11% Uploading: [=======                                                     ] 12% Uploading: [========                                                    ] 13% Uploading: [=========                                                   ] 14% Uploading: [=========                                                   ] 15% Uploading: [==========                                                  ] 16% Uploading: [==========                                                  ] 17% Uploading: [===========                                                 ] 18% Uploading: [============                                                ] 19% Uploading: [============                                                ] 20% Uploading: [=============                                               ] 21% Uploading: [=============                                               ] 22% Uploading: [==============                                              ] 23% Uploading: [==============                                              ] 24% Uploading: [===============                                             ] 25% Uploading: [================                                            ] 26% Uploading: [================                                            ] 27% Uploading: [=================                                           ] 28% Uploading: [==================                                          ] 29% Uploading: [==================                                          ] 30% Uploading: [===================                                         ] 31% Uploading: [===================                                         ] 32% Uploading: [====================                                        ] 33% Uploading: [====================                                        ] 34% Uploading: [=====================                                       ] 35% Uploading: [======================                                      ] 36% Uploading: [======================                                      ] 37% Uploading: [=======================                                     ] 38% Uploading: [=======================                                     ] 39% Uploading: [========================                                    ] 40% Uploading: [=========================                                   ] 41% Uploading: [=========================                                   ] 42% Uploading: [==========================                                  ] 43% Uploading: [===========================                                 ] 44% Uploading: [===========================                                 ] 45% Uploading: [============================                                ] 46% Uploading: [============================                                ] 47% Uploading: [=============================                               ] 48% Uploading: [=============================                               ] 49% Uploading: [==============================                              ] 50% Uploading: [===============================                             ] 51% Uploading: [===============================                             ] 52% Uploading: [================================                            ] 53% Uploading: [=================================                           ] 54% Uploading: [=================================                           ] 55% Uploading: [==================================                          ] 56% Uploading: [==================================                          ] 57% Uploading: [===================================                         ] 58% Uploading: [===================================                         ] 59% Uploading: [====================================                        ] 60% Uploading: [=====================================                       ] 61% Uploading: [=====================================                       ] 62% Uploading: [======================================                      ] 63% Uploading: [======================================                      ] 64% Uploading: [=======================================                     ] 65% Uploading: [========================================                    ] 66% Uploading: [========================================                    ] 67% Uploading: [=========================================                   ] 68% Uploading: [==========================================                  ] 69% Uploading: [==========================================                  ] 70% Uploading: [===========================================                 ] 71% Uploading: [===========================================                 ] 72% Uploading: [============================================                ] 73% Uploading: [============================================                ] 74% Uploading: [=============================================               ] 75% Uploading: [==============================================              ] 76% Uploading: [==============================================              ] 77% Uploading: [===============================================             ] 78% Uploading: [================================================            ] 79% Uploading: [================================================            ] 80% Uploading: [=================================================           ] 81% Uploading: [=================================================           ] 82% Uploading: [==================================================          ] 83% Uploading: [===================================================         ] 84% Uploading: [===================================================         ] 85% Uploading: [====================================================        ] 86% Uploading: [====================================================        ] 87% Uploading: [=====================================================       ] 88% Uploading: [=====================================================       ] 89% Uploading: [======================================================      ] 90% Uploading: [=======================================================     ] 91% Uploading: [=======================================================     ] 92% Uploading: [========================================================    ] 93% Uploading: [=========================================================   ] 94% Uploading: [=========================================================   ] 95% Uploading: [==========================================================  ] 96% Uploading: [==========================================================  ] 97% Uploading: [=========================================================== ] 98% Uploading: [=========================================================== ] 99% Uploading: [============================================================] 100% Done...
+
+INFO Upload took 38.74 seconds, waiting for result...
+INFO OTA successful
+INFO Successfully uploaded program.
+INFO Starting log output from respeaker-lite-satellite.local using esphome API
+INFO Successfully connected to respeaker-lite-satellite @ 192.168.1.244 in 8.755s
+INFO Successful handshake with respeaker-lite-satellite @ 192.168.1.244 in 0.743s
+[14:39:19][I][app:100]: ESPHome version 2025.2.2 compiled on Mar  9 2025, 14:37:54
+[14:39:19][I][app:102]: Project formatbce.respeaker-lite-satellite version 2025.2.2
+[14:39:19][C][wifi:600]: WiFi:
+[14:39:19][C][wifi:428]:   Local MAC: 98:3D:AE:ED:BC:FC
+[14:39:19][C][wifi:433]:   SSID: 'ParkerLife_2G'
+[14:39:19][C][wifi:436]:   IP Address: 192.168.1.244
+[14:39:19][C][wifi:439]:   BSSID: 92:A7:B9:16:32:68
+[14:39:19][C][wifi:441]:   Hostname: 'respeaker-lite-satellite'
+[14:39:19][C][wifi:443]:   Signal strength: -48 dB ERROR Exception in callback _ProactorReadPipeTransport._loop_reading()
+handle: <Handle _ProactorReadPipeTransport._loop_reading()>
+Traceback (most recent call last):
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 325, in _loop_reading
+    self._data_received(data, length)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 274, in _data_received
+    self._protocol.data_received(data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "aioesphomeapi\\_frame_helper\\noise.py", line 197, in aioesphomeapi._frame_helper.noise.APINoiseFrameHelper.data_received
+  File "aioesphomeapi\\_frame_helper\\noise.py", line 367, in aioesphomeapi._frame_helper.noise.APINoiseFrameHelper._handle_frame
+  File "aioesphomeapi\\connection.py", line 939, in aioesphomeapi.connection.APIConnection.process_packet
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\site-packages\esphome\components\api\client.py", line 51, in on_log
+    print(f"[{time_.hour:02}:{time_.minute:02}:{time_.second:02}]{text}")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\site-packages\colorama\ansitowin32.py", line 47, in write
+    self.__convertor.write(text)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\site-packages\colorama\ansitowin32.py", line 177, in write
+    self.write_and_convert(text)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\site-packages\colorama\ansitowin32.py", line 202, in write_and_convert
+    self.write_plain_text(text, cursor, start)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\site-packages\colorama\ansitowin32.py", line 210, in write_plain_text
+    self.wrapped.write(text[start:end])
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 0-3: character maps to <undefined>
+WARNING respeaker-lite-satellite @ 192.168.1.244: Connection error occurred: respeaker-lite-satellite @ 192.168.1.244: Encryption error: received_name=respeaker-lite-satellite
+INFO Processing unexpected disconnect from ESPHome API for respeaker-lite-satellite @ 192.168.1.244
+WARNING Disconnected from API
+INFO Successfully connected to respeaker-lite-satellite @ 192.168.1.244 in 0.263s
+INFO Successful handshake with respeaker-lite-satellite @ 192.168.1.244 in 0.979s
+[14:39:46][D][esp32.preferences:114]: Saving 6 preferences to flash...
+[14:39:46][D][esp32.preferences:142]: Saving 6 preferences to flash: 5 cached, 1 written, 0 failed
+[14:39:52][D][main:722]: Battery voltage: 0.17 V
+[14:39:52][D][main:1063]: Battery level normal
+[14:39:52][D][main:1390]: Starting control_leds script execution
+[14:39:52][D][light:036]: 'LED Respeaker onboard' Setting:
+[14:39:52][D][main:1141]: Finished control_leds script execution
+[14:39:59][I][respeaker_lite:354]: Mic mute state: 1
+[14:39:59][D][binary_sensor:036]: 'mute_state': Sending state ON
+[14:39:59][D][switch:055]: 'Mic mute': Sending state ON
+[14:39:59][D][main:1310]: Mic mute ON
+[14:39:59][D][light:036]: 'LED Respeaker onboard' Setting:
+[14:39:59][D][light:051]:   Brightness: 50%
+[14:39:59][D][light:058]:   Red: 100%, Green: 0%, Blue: 0%
+[14:40:00][D][main:236]: Playing mute ON sound
+[14:40:00][D][main:1172]: Playing sound: priority=0
+[14:40:00][D][main:1390]: Starting control_leds script execution
+[14:40:00][D][light:036]: 'LED Respeaker onboard' Setting:
+[14:40:00][D][main:1141]: Finished control_leds script execution
+[14:40:00][D][main:1735]: Media player state changed: 4
+[14:40:00][D][main:1390]: Starting control_leds script execution
+[14:40:00][D][light:036]: 'LED Respeaker onboard' Setting:
+[14:40:00][D][main:1141]: Finished control_leds script execution
+[14:40:00][D][main:1346]: Media player announcement started
+[14:40:00][D][speaker_media_player:420]: State changed to ANNOUNCING
+[14:40:00][W][component:237]: Component speaker.media_player took a long time for an operation (54 ms).
+[14:40:00][W][component:238]: Components should block for at most 30 ms.
+[14:40:00][D][speaker_media_player.pipeline:114]: Reading FLAC file type
+[14:40:00][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[14:40:00][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[14:40:00][D][speaker_media_player.pipeline:124]: Decoded audio has 1 channels, 48000 Hz sample rate, and 16 bits per sample
+[14:40:00][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[14:40:00][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[14:40:00][W][micro_wake_word:328]: Spectrogram features queue is full. Wake word detection accuracy will decrease temporarily.
+[14:40:00][D][ring_buffer:034]: Created ring buffer with size 9600
+[14:40:00][D][speaker_mixer:306]: Starting speaker mixer
+[14:40:00][D][speaker_mixer:314]: Started speaker mixer
+[14:40:00][D][i2s_audio.speaker:111]: Starting Speaker
+[14:40:00][D][i2s_audio.speaker:116]: Started Speaker
+[14:40:00][D][main:1735]: Media player state changed: 1
+[14:40:00][D][main:228]: Removing ducking from media player
+[14:40:00][D][main:1390]: Starting control_leds script execution
+[14:40:00][D][light:036]: 'LED Respeaker onboard' Setting:
+[14:40:00][D][main:1141]: Finished control_leds script execution
+[14:40:00][D][speaker_media_player:420]: State changed to IDLE
+[14:40:00][W][component:237]: Component speaker.media_player took a long time for an operation (53 ms).
+[14:40:00][W][component:238]: Components should block for at most 30 ms.
+[14:40:00][D][speaker_mixer:319]: Stopping speaker mixer
+[14:40:02][I][respeaker_lite:354]: Mic mute state: 0
+[14:40:02][D][binary_sensor:036]: 'mute_state': Sending state OFF
+[14:40:02][D][switch:055]: 'Mic mute': Sending state OFF
+[14:40:02][D][main:246]: Mic mute OFF
+[14:40:02][D][light:036]: 'LED Respeaker onboard' Setting:
+[14:40:02][D][light:051]:   Brightness: 50%
+[14:40:02][D][light:058]:   Red: 0%, Green: 100%, Blue: 0%
+[14:40:03][D][main:258]: Playing mute OFF sound
+[14:40:03][D][main:1172]: Playing sound: priority=0
+[14:40:03][D][main:1390]: Starting control_leds script execution
+[14:40:03][D][light:036]: 'LED Respeaker onboard' Setting:
+[14:40:03][D][main:1141]: Finished control_leds script execution
+[14:40:03][D][main:1735]: Media player state changed: 4
+[14:40:03][D][main:1390]: Starting control_leds script execution
+[14:40:03][D][light:036]: 'LED Respeaker onboard' Setting:
+[14:40:03][D][main:1141]: Finished control_leds script execution
+[14:40:03][D][main:1346]: Media player announcement started
+[14:40:03][D][speaker_media_player:420]: State changed to ANNOUNCING
+[14:40:03][W][component:237]: Component speaker.media_player took a long time for an operation (51 ms).
+[14:40:03][W][component:238]: Components should block for at most 30 ms.
+[14:40:03][D][speaker_media_player.pipeline:114]: Reading FLAC file type
+[14:40:03][D][speaker_media_player.pipeline:124]: Decoded audio has 1 channels, 48000 Hz sample rate, and 16 bits per sample
+[14:40:03][D][ring_buffer:034]: Created ring buffer with size 9600
+[14:40:03][D][speaker_mixer:306]: Starting speaker mixer
+[14:40:03][D][speaker_mixer:314]: Started speaker mixer
+[14:40:05][D][main:1735]: Media player state changed: 1
+[14:40:05][D][main:228]: Removing ducking from media player
+[14:40:05][D][main:1390]: Starting control_leds script execution
+[14:40:05][D][light:036]: 'LED Respeaker onboard' Setting:
+[14:40:05][D][main:1141]: Finished control_leds script execution
+[14:40:05][D][speaker_media_player:420]: State changed to IDLE
+[14:40:05][D][speaker_mixer:319]: Stopping speaker mixer
+[14:40:10][I][safe_mode:041]: Boot seems successful; resetting boot loop counter
+[14:40:10][D][esp32.preferences:114]: Saving 1 preferences to flash...
+[14:40:10][D][esp32.preferences:142]: Saving 1 preferences to flash: 0 cached, 1 written, 0 failed
+[14:40:52][D][main:722]: Battery voltage: 0.13 V
+[14:40:52][D][main:1063]: Battery level normal
+[14:40:52][D][main:1390]: Starting control_leds script execution
+[14:40:52][D][light:036]: 'LED Respeaker onboard' Setting:
+[14:40:52][D][main:1141]: Finished control_leds script execution
+[14:41:10][D][light:036]: 'LED Respeaker onboard' Setting:
+[14:41:10][D][light:109]:   Effect: 'Pulse Ripple'
+[14:41:15][D][light:036]: 'LED Respeaker onboard' Setting:
+[14:41:15][D][light:109]:   Effect: 'Twilight Drift'
+[14:41:26][D][switch:016]: 'Wake sound' Turning OFF.
+[14:41:26][D][switch:055]: 'Wake sound': Sending state OFF
+[14:41:27][D][switch:012]: 'Wake sound' Turning ON.
+[14:41:27][D][switch:055]: 'Wake sound': Sending state ON
+[14:41:41][D][switch:016]: 'Button click sounds' Turning OFF.
+[14:41:41][D][switch:055]: 'Button click sounds': Sending state OFF
+[14:41:42][D][switch:012]: 'Button click sounds' Turning ON.
+[14:41:42][D][switch:055]: 'Button click sounds': Sending state ON
+[14:41:46][D][esp32.preferences:114]: Saving 2 preferences to flash...
+[14:41:46][D][esp32.preferences:142]: Saving 2 preferences to flash: 2 cached, 0 written, 0 failed
+[14:41:52][D][main:722]: Battery voltage: 0.19 V
+[14:41:52][D][main:1063]: Battery level normal
+[14:41:52][D][main:1390]: Starting control_leds script execution
+[14:41:52][D][light:036]: 'LED Respeaker onboard' Setting:
+[14:41:52][D][light:109]:   Effect: 'None'
+[14:41:52][D][main:1141]: Finished control_leds script execution
+[14:42:52][D][main:722]: Battery voltage: 0.39 V
+[14:42:52][D][main:1063]: Battery level normal
+[14:42:52][D][main:1390]: Starting control_leds script execution
+[14:42:52][D][light:036]: 'LED Respeaker onboard' Setting:
+[14:42:52][D][main:1141]: Finished control_leds script execution
+[14:43:52][D][main:722]: Battery voltage: 0.33 V
+[14:43:52][D][main:1063]: Battery level normal
+[14:43:52][D][main:1390]: Starting control_leds script execution
+[14:43:52][D][light:036]: 'LED Respeaker onboard' Setting:
+[14:43:52][D][main:1141]: Finished control_leds script execution
+INFO ESPHome 2025.2.2
+INFO Reading configuration SmartReSpeaker.yaml...
+ERROR Error while reading config: Invalid YAML syntax:
+
+while scanning a simple key
+  in "SmartReSpeaker.yaml", line 518, column 1
+could not find expected ':'
+  in "SmartReSpeaker.yaml", line 520, column 1
+INFO ESPHome 2025.2.2
+INFO Reading configuration SmartReSpeaker.yaml...
+ERROR Error while reading config: Invalid YAML syntax:
+
+while scanning a simple key
+  in "SmartReSpeaker.yaml", line 518, column 1
+could not find expected ':'
+  in "SmartReSpeaker.yaml", line 520, column 1
+INFO ESPHome 2025.2.2
+INFO Reading configuration SmartReSpeaker.yaml...
+ERROR Error while reading config: Invalid YAML syntax:
+
+while parsing a block collection
+  in "SmartReSpeaker/lights.yaml", line 1, column 1
+expected <block end>, but found '?'
+  in "SmartReSpeaker/lights.yaml", line 2, column 1
+INFO ESPHome 2025.2.2
+INFO Reading configuration SmartReSpeaker.yaml...
+ERROR Error while reading config: Invalid YAML syntax:
+
+while parsing a block collection
+  in "SmartReSpeaker/lights.yaml", line 1, column 5
+expected <block end>, but found '?'
+  in "SmartReSpeaker/lights.yaml", line 2, column 5
+INFO ESPHome 2025.2.2
+INFO Reading configuration SmartReSpeaker.yaml...
+ERROR Error while reading config: Invalid YAML syntax:
+
+while scanning a simple key
+  in "SmartReSpeaker/lights.yaml", line 42, column 13
+could not find expected ':'
+  in "SmartReSpeaker/lights.yaml", line 43, column 13
+INFO ESPHome 2025.2.2
+INFO Reading configuration SmartReSpeaker.yaml...
+ERROR Error while reading config: Invalid YAML syntax:
+
+mapping values are not allowed here
+  in "SmartReSpeaker/lights.yaml", line 2, column 7
+INFO ESPHome 2025.2.2
+INFO Reading configuration SmartReSpeaker.yaml...
+ERROR Error while reading config: Invalid YAML syntax:
+
+while scanning a simple key
+  in "SmartReSpeaker.yaml", line 517, column 1
+could not find expected ':'
+  in "SmartReSpeaker.yaml", line 519, column 1
+INFO ESPHome 2025.2.2
+INFO Reading configuration SmartReSpeaker.yaml...
+INFO Updating https://github.com/ArMaTeC/SmartRespeaker@main
+WARNING GPIO3 is a strapping PIN and should only be used for I/O with care.
+Attaching external pullup/down resistors to strapping pins can cause unexpected failures.
+See https://esphome.io/guides/faq.html#why-am-i-getting-a-warning-about-strapping-pins
+INFO Generating C++ source...
+INFO Updating https://github.com/espressif/esp-protocols.git@mdns-v1.5.1
+INFO Updating https://github.com/espressif/esp-tflite-micro@v1.3.1
+INFO Compiling app...
+Processing respeaker-lite-satellite (board: esp32-s3-devkitc-1; framework: espidf; platform: https://github.com/pioarduino/platform-espressif32.git#51.03.07)
+--------------------------------------------------------------------------------
+HARDWARE: ESP32S3 240MHz, 320KB RAM, 8MB Flash
+ - framework-espidf @ 3.50105.0 (5.1.5) 
+ - tool-cmake @ 3.21.3 
+ - tool-esptoolpy @ 4.8.1 
+ - tool-mklittlefs @ 3.2.0 
+ - tool-ninja @ 1.9.0 
+ - tool-riscv32-esp-elf-gdb @ 11.2.0+20220823 
+ - tool-xtensa-esp-elf-gdb @ 11.2.0+20230208 
+ - toolchain-esp32ulp @ 2.35.0-20220830 
+ - toolchain-riscv32-esp @ 12.2.0+20230208 
+ - toolchain-xtensa-esp32s3 @ 12.2.0+20230208
+Reading CMake configuration...
+Dependency Graph
+|-- esp-audio-libs @ 1.1.1
+|-- ESPMicroSpeechFeatures @ 1.1.0
+|-- noise-c @ 0.1.6
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\adc\adc_sensor_common.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\adc\adc_sensor_esp32.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\adc\adc_sensor_esp8266.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\adc\adc_sensor_libretiny.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\adc\adc_sensor_rp2040.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\aic3204\aic3204.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\api\api_connection.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\api\api_frame_helper.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\api\api_pb2.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\api\api_pb2_service.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\api\api_server.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\api\list_entities.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\api\proto.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\api\subscribe_state.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\api\user_services.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\audio\audio.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\audio\audio_decoder.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\audio\audio_reader.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\audio\audio_resampler.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\audio\audio_transfer_buffer.cpp.o
+In file included from src/esphome/components/adc/adc_sensor.h:9,
+                 from src/esphome/components/adc/adc_sensor_common.cpp:1:
+C:/Users/karll/.platformio/packages/framework-espidf/components/esp_adc/deprecated/include/esp_adc_cal.h:17:2: warning: #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h" [-Wcpp]
+   17 | #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h"
+      |  ^~~~~~~
+In file included from src/esphome/components/adc/adc_sensor.h:10:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/adc.h:19:2: warning: #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively" [-Wcpp]
+   19 | #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively"
+      |  ^~~~~~~
+In file included from src/esphome/components/adc/adc_sensor.h:9,
+                 from src/esphome/components/adc/adc_sensor_esp32.cpp:3:
+C:/Users/karll/.platformio/packages/framework-espidf/components/esp_adc/deprecated/include/esp_adc_cal.h:17:2: warning: #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h" [-Wcpp]
+   17 | #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h"
+      |  ^~~~~~~
+In file included from src/esphome/components/adc/adc_sensor.h:10:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/adc.h:19:2: warning: #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively" [-Wcpp]
+   19 | #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively"
+      |  ^~~~~~~
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\binary_sensor\automation.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\binary_sensor\binary_sensor.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\binary_sensor\filter.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\button\button.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\debug\debug_component.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\debug\debug_esp32.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\debug\debug_esp8266.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\debug\debug_host.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\debug\debug_libretiny.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\debug\debug_rp2040.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\esp32\gpio.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\esp32\preferences.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\esp32_rmt_led_strip\led_strip.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\esphome\ota\ota_esphome.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\event\event.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\factory_reset\button\factory_reset_button.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\gpio\binary_sensor\gpio_binary_sensor.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\gpio\switch\gpio_switch.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\i2c\i2c.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\i2c\i2c_bus_arduino.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\i2c\i2c_bus_esp_idf.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\i2s_audio\i2s_audio.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\i2s_audio\speaker\i2s_audio_speaker.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\light\addressable_light.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\light\automation.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\light\esp_color_correction.cpp.o
+In file included from src/esphome/components/i2s_audio/i2s_audio.h:5,
+                 from src/esphome/components/i2s_audio/i2s_audio.cpp:1:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/i2s.h:27:2: warning: #warning "This set of I2S APIs has been deprecated, please include 'driver/i2s_std.h', 'driver/i2s_pdm.h' or 'driver/i2s_tdm.h' instead. if you want to keep using the old APIs and ignore this warning, you can enable 'Suppress leagcy driver deprecated warning' option under 'I2S Configuration' menu in Kconfig" [-Wcpp]
+   27 | #warning "This set of I2S APIs has been deprecated, \
+      |  ^~~~~~~
+In file included from src/esphome/components/i2s_audio/speaker/../i2s_audio.h:5,
+                 from src/esphome/components/i2s_audio/speaker/i2s_audio_speaker.h:5,
+                 from src/esphome/components/i2s_audio/speaker/i2s_audio_speaker.cpp:1:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/i2s.h:27:2: warning: #warning "This set of I2S APIs has been deprecated, please include 'driver/i2s_std.h', 'driver/i2s_pdm.h' or 'driver/i2s_tdm.h' instead. if you want to keep using the old APIs and ignore this warning, you can enable 'Suppress leagcy driver deprecated warning' option under 'I2S Configuration' menu in Kconfig" [-Wcpp]
+   27 | #warning "This set of I2S APIs has been deprecated, \
+      |  ^~~~~~~
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\light\esp_range_view.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\light\light_call.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\light\light_json_schema.cpp.o
+In file included from components/esp-tflite-micro/tensorflow/lite/micro/tflite_bridge/flatbuffer_conversions_bridge.h:19,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_allocator.h:26,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_interpreter.h:26,
+                 from src/esphome/components/micro_wake_word/streaming_model.h:10,
+                 from src/esphome/components/micro_wake_word/micro_wake_word.h:6,
+                 from src/esphome/components/voice_assistant/voice_assistant.h:16,
+                 from src/esphome/components/api/api_connection.cpp:22:
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h: In member function 'T* tflite::BuiltinDataAllocator::AllocatePOD()':
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h:46:24: warning: 'template<class _Tp> struct std::is_pod' is deprecated: use is_standard_layout && is_trivial instead [-Wdeprecated-declarations]
+   46 |     static_assert(std::is_pod<T>::value, "Builtin data structure must be POD.");
+      |                        ^~~~~~
+In file included from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\bits\stl_pair.h:60,
+                 from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\bits\stl_algobase.h:64,
+                 from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\deque:60,
+                 from src/esphome/components/api/api_frame_helper.h:3,
+                 from src/esphome/components/api/api_connection.h:5,
+                 from src/esphome/components/api/api_connection.cpp:1:
+c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\type_traits:757:5: note: declared here
+  757 |     is_pod
+      |     ^~~~~~
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\light\light_output.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\light\light_state.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\logger\logger.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\logger\logger_esp32.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\logger\logger_esp8266.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\logger\logger_host.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\logger\logger_libretiny.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\logger\logger_rp2040.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\logger\select\logger_level_select.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\md5\md5.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\mdns\mdns_component.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\mdns\mdns_esp32.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\mdns\mdns_esp8266.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\mdns\mdns_host.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\mdns\mdns_libretiny.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\mdns\mdns_rp2040.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\media_player\media_player.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\micro_wake_word\micro_wake_word.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\micro_wake_word\streaming_model.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\mixer\speaker\mixer_speaker.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\nabu_microphone\nabu_microphone.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\network\util.cpp.o
+In file included from src/esphome/components/i2s_audio/i2s_audio.h:5,
+                 from src/esphome/components/nabu_microphone/nabu_microphone.h:8,
+                 from src/esphome/components/nabu_microphone/nabu_microphone.cpp:1:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/i2s.h:27:2: warning: #warning "This set of I2S APIs has been deprecated, please include 'driver/i2s_std.h', 'driver/i2s_pdm.h' or 'driver/i2s_tdm.h' instead. if you want to keep using the old APIs and ignore this warning, you can enable 'Suppress leagcy driver deprecated warning' option under 'I2S Configuration' menu in Kconfig" [-Wcpp]
+   27 | #warning "This set of I2S APIs has been deprecated, \
+      |  ^~~~~~~
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\ota\ota_backend.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\ota\ota_backend_arduino_esp32.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\ota\ota_backend_arduino_esp8266.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\ota\ota_backend_arduino_libretiny.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\ota\ota_backend_arduino_rp2040.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\ota\ota_backend_esp_idf.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\psram\psram.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\resampler\speaker\resampler_speaker.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\respeaker_lite\respeaker_lite.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\restart\button\restart_button.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\safe_mode\safe_mode.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\script\script.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\select\select.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\select\select_call.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\sensor\automation.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\sensor\filter.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\sensor\sensor.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\sntp\sntp_component.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\socket\bsd_sockets_impl.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\socket\lwip_raw_tcp_impl.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\socket\lwip_sockets_impl.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\socket\socket.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\speaker\media_player\audio_pipeline.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\speaker\media_player\speaker_media_player.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\switch\automation.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\switch\switch.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\template\sensor\template_sensor.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\template\switch\template_switch.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\template\text_sensor\template_text_sensor.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\text_sensor\filter.cpp.o
+INFO ESPHome 2025.2.2
+INFO Reading configuration SmartReSpeaker.yaml...
+INFO Updating https://github.com/ArMaTeC/SmartRespeaker@main
+WARNING GPIO3 is a strapping PIN and should only be used for I/O with care.
+Attaching external pullup/down resistors to strapping pins can cause unexpected failures.
+See https://esphome.io/guides/faq.html#why-am-i-getting-a-warning-about-strapping-pins
+INFO Generating C++ source...
+INFO Updating https://github.com/espressif/esp-protocols.git@mdns-v1.5.1
+INFO Updating https://github.com/espressif/esp-tflite-micro@v1.3.1
+INFO Compiling app...
+Processing respeaker-lite-satellite (board: esp32-s3-devkitc-1; framework: espidf; platform: https://github.com/pioarduino/platform-espressif32.git#51.03.07)
+--------------------------------------------------------------------------------
+HARDWARE: ESP32S3 240MHz, 320KB RAM, 8MB Flash
+ - framework-espidf @ 3.50105.0 (5.1.5) 
+ - tool-cmake @ 3.21.3 
+ - tool-esptoolpy @ 4.8.1 
+ - tool-mklittlefs @ 3.2.0 
+ - tool-ninja @ 1.9.0 
+ - tool-riscv32-esp-elf-gdb @ 11.2.0+20220823 
+ - tool-xtensa-esp-elf-gdb @ 11.2.0+20230208 
+ - toolchain-esp32ulp @ 2.35.0-20220830 
+ - toolchain-riscv32-esp @ 12.2.0+20230208 
+ - toolchain-xtensa-esp32s3 @ 12.2.0+20230208
+Reading CMake configuration...
+Dependency Graph
+|-- esp-audio-libs @ 1.1.1
+|-- ESPMicroSpeechFeatures @ 1.1.0
+|-- noise-c @ 0.1.6
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\adc\adc_sensor_common.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\adc\adc_sensor_esp32.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\adc\adc_sensor_esp8266.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\adc\adc_sensor_libretiny.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\adc\adc_sensor_rp2040.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\aic3204\aic3204.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\api\api_connection.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\api\api_frame_helper.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\api\api_pb2.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\api\api_pb2_service.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\api\api_server.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\api\list_entities.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\api\proto.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\api\subscribe_state.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\api\user_services.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\audio\audio.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\audio\audio_decoder.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\audio\audio_reader.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\audio\audio_resampler.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\audio\audio_transfer_buffer.cpp.o
+In file included from src/esphome/components/adc/adc_sensor.h:9,
+                 from src/esphome/components/adc/adc_sensor_common.cpp:1:
+C:/Users/karll/.platformio/packages/framework-espidf/components/esp_adc/deprecated/include/esp_adc_cal.h:17:2: warning: #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h" [-Wcpp]
+   17 | #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h"
+      |  ^~~~~~~
+In file included from src/esphome/components/adc/adc_sensor.h:10:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/adc.h:19:2: warning: #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively" [-Wcpp]
+   19 | #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively"
+      |  ^~~~~~~
+In file included from src/esphome/components/adc/adc_sensor.h:9,
+                 from src/esphome/components/adc/adc_sensor_esp32.cpp:3:
+C:/Users/karll/.platformio/packages/framework-espidf/components/esp_adc/deprecated/include/esp_adc_cal.h:17:2: warning: #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h" [-Wcpp]
+   17 | #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h"
+      |  ^~~~~~~
+In file included from src/esphome/components/adc/adc_sensor.h:10:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/adc.h:19:2: warning: #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively" [-Wcpp]
+   19 | #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively"
+      |  ^~~~~~~
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\binary_sensor\automation.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\binary_sensor\binary_sensor.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\binary_sensor\filter.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\button\button.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\debug\debug_component.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\debug\debug_esp32.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\debug\debug_esp8266.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\debug\debug_host.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\debug\debug_libretiny.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\debug\debug_rp2040.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\esp32\gpio.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\esp32\preferences.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\esp32_rmt_led_strip\led_strip.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\esphome\ota\ota_esphome.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\event\event.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\factory_reset\button\factory_reset_button.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\gpio\binary_sensor\gpio_binary_sensor.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\gpio\switch\gpio_switch.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\i2c\i2c.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\i2c\i2c_bus_arduino.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\i2c\i2c_bus_esp_idf.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\i2s_audio\i2s_audio.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\i2s_audio\speaker\i2s_audio_speaker.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\light\addressable_light.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\light\automation.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\light\esp_color_correction.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\light\esp_range_view.cpp.o
+In file included from src/esphome/components/i2s_audio/i2s_audio.h:5,
+                 from src/esphome/components/i2s_audio/i2s_audio.cpp:1:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/i2s.h:27:2: warning: #warning "This set of I2S APIs has been deprecated, please include 'driver/i2s_std.h', 'driver/i2s_pdm.h' or 'driver/i2s_tdm.h' instead. if you want to keep using the old APIs and ignore this warning, you can enable 'Suppress leagcy driver deprecated warning' option under 'I2S Configuration' menu in Kconfig" [-Wcpp]
+   27 | #warning "This set of I2S APIs has been deprecated, \
+      |  ^~~~~~~
+In file included from src/esphome/components/i2s_audio/speaker/../i2s_audio.h:5,
+                 from src/esphome/components/i2s_audio/speaker/i2s_audio_speaker.h:5,
+                 from src/esphome/components/i2s_audio/speaker/i2s_audio_speaker.cpp:1:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/i2s.h:27:2: warning: #warning "This set of I2S APIs has been deprecated, please include 'driver/i2s_std.h', 'driver/i2s_pdm.h' or 'driver/i2s_tdm.h' instead. if you want to keep using the old APIs and ignore this warning, you can enable 'Suppress leagcy driver deprecated warning' option under 'I2S Configuration' menu in Kconfig" [-Wcpp]
+   27 | #warning "This set of I2S APIs has been deprecated, \
+      |  ^~~~~~~
