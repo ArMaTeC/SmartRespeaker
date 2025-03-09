@@ -5232,3 +5232,682 @@ In file included from src/esphome/components/i2s_audio/speaker/../i2s_audio.h:5,
 C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/i2s.h:27:2: warning: #warning "This set of I2S APIs has been deprecated, please include 'driver/i2s_std.h', 'driver/i2s_pdm.h' or 'driver/i2s_tdm.h' instead. if you want to keep using the old APIs and ignore this warning, you can enable 'Suppress leagcy driver deprecated warning' option under 'I2S Configuration' menu in Kconfig" [-Wcpp]
    27 | #warning "This set of I2S APIs has been deprecated, \
       |  ^~~~~~~
+In file included from components/esp-tflite-micro/tensorflow/lite/micro/tflite_bridge/flatbuffer_conversions_bridge.h:19,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_allocator.h:26,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_interpreter.h:26,
+                 from src/esphome/components/micro_wake_word/streaming_model.h:10,
+                 from src/esphome/components/micro_wake_word/micro_wake_word.h:6,
+                 from src/esphome/components/voice_assistant/voice_assistant.h:16,
+                 from src/esphome/components/api/api_connection.cpp:22:
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h: In member function 'T* tflite::BuiltinDataAllocator::AllocatePOD()':
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h:46:24: warning: 'template<class _Tp> struct std::is_pod' is deprecated: use is_standard_layout && is_trivial instead [-Wdeprecated-declarations]
+   46 |     static_assert(std::is_pod<T>::value, "Builtin data structure must be POD.");
+      |                        ^~~~~~
+In file included from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\bits\stl_pair.h:60,
+                 from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\bits\stl_algobase.h:64,
+                 from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\deque:60,
+                 from src/esphome/components/api/api_frame_helper.h:3,
+                 from src/esphome/components/api/api_connection.h:5,
+                 from src/esphome/components/api/api_connection.cpp:1:
+c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\type_traits:757:5: note: declared here
+  757 |     is_pod
+      |     ^~~~~~
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\light\light_call.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\light\light_json_schema.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\light\light_output.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\light\light_state.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\logger\logger.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\logger\logger_esp32.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\logger\logger_esp8266.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\logger\logger_host.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\logger\logger_libretiny.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\logger\logger_rp2040.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\logger\select\logger_level_select.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\md5\md5.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\mdns\mdns_component.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\mdns\mdns_esp32.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\mdns\mdns_esp8266.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\mdns\mdns_host.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\mdns\mdns_libretiny.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\mdns\mdns_rp2040.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\media_player\media_player.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\micro_wake_word\micro_wake_word.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\micro_wake_word\streaming_model.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\mixer\speaker\mixer_speaker.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\nabu_microphone\nabu_microphone.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\network\util.cpp.o
+In file included from src/esphome/components/i2s_audio/i2s_audio.h:5,
+                 from src/esphome/components/nabu_microphone/nabu_microphone.h:8,
+                 from src/esphome/components/nabu_microphone/nabu_microphone.cpp:1:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/i2s.h:27:2: warning: #warning "This set of I2S APIs has been deprecated, please include 'driver/i2s_std.h', 'driver/i2s_pdm.h' or 'driver/i2s_tdm.h' instead. if you want to keep using the old APIs and ignore this warning, you can enable 'Suppress leagcy driver deprecated warning' option under 'I2S Configuration' menu in Kconfig" [-Wcpp]
+   27 | #warning "This set of I2S APIs has been deprecated, \
+      |  ^~~~~~~
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\ota\ota_backend.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\ota\ota_backend_arduino_esp32.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\ota\ota_backend_arduino_esp8266.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\ota\ota_backend_arduino_libretiny.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\ota\ota_backend_arduino_rp2040.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\ota\ota_backend_esp_idf.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\psram\psram.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\resampler\speaker\resampler_speaker.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\respeaker_lite\respeaker_lite.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\restart\button\restart_button.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\safe_mode\safe_mode.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\script\script.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\select\select.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\select\select_call.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\sensor\automation.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\sensor\filter.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\sensor\sensor.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\sntp\sntp_component.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\socket\bsd_sockets_impl.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\socket\lwip_raw_tcp_impl.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\socket\lwip_sockets_impl.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\socket\socket.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\speaker\media_player\audio_pipeline.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\speaker\media_player\speaker_media_player.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\switch\automation.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\switch\switch.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\template\sensor\template_sensor.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\template\switch\template_switch.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\template\text_sensor\template_text_sensor.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\text_sensor\filter.cpp.o
+In file included from components/esp-tflite-micro/tensorflow/lite/micro/tflite_bridge/flatbuffer_conversions_bridge.h:19,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_allocator.h:26,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_interpreter.h:26,
+                 from src/esphome/components/micro_wake_word/streaming_model.h:10,
+                 from src/esphome/components/micro_wake_word/streaming_model.cpp:3:
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h: In member function 'T* tflite::BuiltinDataAllocator::AllocatePOD()':
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h:46:24: warning: 'template<class _Tp> struct std::is_pod' is deprecated: use is_standard_layout && is_trivial instead [-Wdeprecated-declarations]
+   46 |     static_assert(std::is_pod<T>::value, "Builtin data structure must be POD.");
+      |                        ^~~~~~
+In file included from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\bits\stl_pair.h:60,
+                 from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\bits\stl_algobase.h:64,
+                 from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\bits\specfun.h:45,
+                 from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\cmath:1935,
+                 from src/esphome/core/helpers.h:3,
+                 from src/esphome/core/preferences.h:6,
+                 from src/esphome/components/micro_wake_word/streaming_model.h:7:
+c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\type_traits:757:5: note: declared here
+  757 |     is_pod
+      |     ^~~~~~
+In file included from components/esp-tflite-micro/tensorflow/lite/micro/tflite_bridge/flatbuffer_conversions_bridge.h:19,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_allocator.h:26,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_interpreter.h:26,
+                 from src/esphome/components/micro_wake_word/streaming_model.h:10,
+                 from src/esphome/components/micro_wake_word/micro_wake_word.h:6,
+                 from src/esphome/components/micro_wake_word/micro_wake_word.cpp:1:
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h: In member function 'T* tflite::BuiltinDataAllocator::AllocatePOD()':
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h:46:24: warning: 'template<class _Tp> struct std::is_pod' is deprecated: use is_standard_layout && is_trivial instead [-Wdeprecated-declarations]
+   46 |     static_assert(std::is_pod<T>::value, "Builtin data structure must be POD.");
+      |                        ^~~~~~
+In file included from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\bits\stl_pair.h:60,
+                 from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\bits\stl_algobase.h:64,
+                 from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\bits\specfun.h:45,
+                 from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\cmath:1935,
+                 from src/esphome/core/helpers.h:3,
+                 from src/esphome/core/preferences.h:6,
+                 from src/esphome/components/micro_wake_word/streaming_model.h:7:
+c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\type_traits:757:5: note: declared here
+  757 |     is_pod
+      |     ^~~~~~
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\text_sensor\text_sensor.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\time\automation.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\time\real_time_clock.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\voice_assistant\voice_assistant.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\wifi\wifi_component.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\wifi\wifi_component_esp32_arduino.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\wifi\wifi_component_esp8266.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\wifi\wifi_component_esp_idf.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\wifi\wifi_component_libretiny.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\components\wifi\wifi_component_pico_w.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\core\application.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\core\component.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\core\component_iterator.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\core\controller.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\core\entity_base.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\core\helpers.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\core\log.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\core\ring_buffer.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\core\scheduler.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\core\string_ref.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\esphome\core\util.cpp.o
+Compiling .pioenvs\respeaker-lite-satellite\src\main.cpp.o
+In file included from src/esphome\components\adc\adc_sensor.h:9,
+                 from src/esphome.h:3,
+                 from src/main.cpp:3:
+C:/Users/karll/.platformio/packages/framework-espidf/components/esp_adc/deprecated/include/esp_adc_cal.h:17:2: warning: #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h" [-Wcpp]
+   17 | #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h"
+      |  ^~~~~~~
+In file included from src/esphome\components\adc\adc_sensor.h:10:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/adc.h:19:2: warning: #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively" [-Wcpp]
+   19 | #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively"
+      |  ^~~~~~~
+In file included from src/esphome\components\i2s_audio\i2s_audio.h:5,
+                 from src/esphome.h:45:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/i2s.h:27:2: warning: #warning "This set of I2S APIs has been deprecated, please include 'driver/i2s_std.h', 'driver/i2s_pdm.h' or 'driver/i2s_tdm.h' instead. if you want to keep using the old APIs and ignore this warning, you can enable 'Suppress leagcy driver deprecated warning' option under 'I2S Configuration' menu in Kconfig" [-Wcpp]
+   27 | #warning "This set of I2S APIs has been deprecated, \
+      |  ^~~~~~~
+In file included from components/esp-tflite-micro/tensorflow/lite/micro/tflite_bridge/flatbuffer_conversions_bridge.h:19,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_allocator.h:26,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_interpreter.h:26,
+                 from src/esphome/components/micro_wake_word/streaming_model.h:10,
+                 from src/esphome/components/micro_wake_word/micro_wake_word.h:6,
+                 from src/esphome/components/voice_assistant/voice_assistant.h:16,
+                 from src/esphome/components/voice_assistant/voice_assistant.cpp:1:
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h: In member function 'T* tflite::BuiltinDataAllocator::AllocatePOD()':
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h:46:24: warning: 'template<class _Tp> struct std::is_pod' is deprecated: use is_standard_layout && is_trivial instead [-Wdeprecated-declarations]
+   46 |     static_assert(std::is_pod<T>::value, "Builtin data structure must be POD.");
+      |                        ^~~~~~
+In file included from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\bits\stl_pair.h:60,
+                 from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\bits\stl_algobase.h:64,
+                 from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\vector:60,
+                 from src/esphome/core/automation.h:3,
+                 from src/esphome/components/voice_assistant/voice_assistant.h:7:
+c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\type_traits:757:5: note: declared here
+  757 |     is_pod
+      |     ^~~~~~
+In file included from components/esp-tflite-micro/tensorflow/lite/micro/tflite_bridge/flatbuffer_conversions_bridge.h:19,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_allocator.h:26,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_interpreter.h:26,
+                 from src/esphome\components\micro_wake_word\streaming_model.h:10,
+                 from src/esphome\components\micro_wake_word\micro_wake_word.h:6,
+                 from src/esphome.h:72:
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h: In member function 'T* tflite::BuiltinDataAllocator::AllocatePOD()':
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h:46:24: warning: 'template<class _Tp> struct std::is_pod' is deprecated: use is_standard_layout && is_trivial instead [-Wdeprecated-declarations]
+   46 |     static_assert(std::is_pod<T>::value, "Builtin data structure must be POD.");
+      |                        ^~~~~~
+In file included from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\bits\char_traits.h:42,
+                 from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\string:40,
+                 from src/esphome/core/log.h:7,
+                 from src/esphome/components/sensor/sensor.h:3,
+                 from src/esphome\components\adc\adc_sensor.h:3:
+c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\type_traits:757:5: note: declared here
+  757 |     is_pod
+      |     ^~~~~~
+Linking .pioenvs\respeaker-lite-satellite\firmware.elf
+RAM:   [=         ]  12.4% (used 40668 bytes from 327680 bytes)
+Flash: [======    ]  63.2% (used 2484897 bytes from 3932160 bytes)
+Building .pioenvs\respeaker-lite-satellite\firmware.bin
+Creating esp32s3 image...
+Successfully created esp32s3 image.
+esp32_create_combined_bin([".pioenvs\respeaker-lite-satellite\firmware.bin"], [".pioenvs\respeaker-lite-satellite\firmware.elf"])
+Wrote 0x26ec10 bytes to file H:\source\SmartRespeaker\.esphome\build\respeaker-lite-satellite\.pioenvs\respeaker-lite-satellite/firmware.factory.bin, ready to flash to offset 0x0
+esp32_copy_ota_bin([".pioenvs\respeaker-lite-satellite\firmware.bin"], [".pioenvs\respeaker-lite-satellite\firmware.elf"])
+========================= [SUCCESS] Took 66.88 seconds =========================
+INFO Successfully compiled program.
+INFO Resolving IP address of respeaker-lite-satellite.local in mDNS
+INFO Connecting to 192.168.1.244 port 3232...
+INFO Connected to 192.168.1.244
+INFO Uploading H:\source\SmartRespeaker\.esphome\build\respeaker-lite-satellite\.pioenvs\respeaker-lite-satellite\firmware.bin (2485264 bytes)
+Uploading: [                                                            ] 0% Uploading: [=                                                           ] 1% Uploading: [=                                                           ] 2% Uploading: [==                                                          ] 3% Uploading: [===                                                         ] 4% Uploading: [===                                                         ] 5% Uploading: [====                                                        ] 6% Uploading: [====                                                        ] 7% Uploading: [=====                                                       ] 8% Uploading: [======                                                      ] 9% Uploading: [======                                                      ] 10% Uploading: [=======                                                     ] 11% Uploading: [=======                                                     ] 12% Uploading: [========                                                    ] 13% Uploading: [=========                                                   ] 14% Uploading: [=========                                                   ] 15% Uploading: [==========                                                  ] 16% Uploading: [==========                                                  ] 17% Uploading: [===========                                                 ] 18% Uploading: [===========                                                 ] 19% Uploading: [============                                                ] 20% Uploading: [=============                                               ] 21% Uploading: [=============                                               ] 22% Uploading: [==============                                              ] 23% Uploading: [==============                                              ] 24% Uploading: [===============                                             ] 25% Uploading: [================                                            ] 26% Uploading: [================                                            ] 27% Uploading: [=================                                           ] 28% Uploading: [=================                                           ] 29% Uploading: [==================                                          ] 30% Uploading: [===================                                         ] 31% Uploading: [===================                                         ] 32% Uploading: [====================                                        ] 33% Uploading: [=====================                                       ] 34% Uploading: [=====================                                       ] 35% Uploading: [======================                                      ] 36% Uploading: [======================                                      ] 37% Uploading: [=======================                                     ] 38% Uploading: [========================                                    ] 39% Uploading: [========================                                    ] 40% Uploading: [=========================                                   ] 41% Uploading: [=========================                                   ] 42% Uploading: [==========================                                  ] 43% Uploading: [===========================                                 ] 44% Uploading: [===========================                                 ] 45% Uploading: [============================                                ] 46% Uploading: [============================                                ] 47% Uploading: [=============================                               ] 48% Uploading: [=============================                               ] 49% Uploading: [==============================                              ] 50% Uploading: [===============================                             ] 51% Uploading: [===============================                             ] 52% Uploading: [================================                            ] 53% Uploading: [================================                            ] 54% Uploading: [=================================                           ] 55% Uploading: [==================================                          ] 56% Uploading: [==================================                          ] 57% Uploading: [===================================                         ] 58% Uploading: [===================================                         ] 59% Uploading: [====================================                        ] 60% Uploading: [=====================================                       ] 61% Uploading: [=====================================                       ] 62% Uploading: [======================================                      ] 63% Uploading: [=======================================                     ] 64% Uploading: [=======================================                     ] 65% Uploading: [========================================                    ] 66% Uploading: [========================================                    ] 67% Uploading: [=========================================                   ] 68% Uploading: [==========================================                  ] 69% Uploading: [==========================================                  ] 70% Uploading: [===========================================                 ] 71% Uploading: [===========================================                 ] 72% Uploading: [============================================                ] 73% Uploading: [============================================                ] 74% Uploading: [=============================================               ] 75% Uploading: [==============================================              ] 76% Uploading: [==============================================              ] 77% Uploading: [===============================================             ] 78% Uploading: [===============================================             ] 79% Uploading: [================================================            ] 80% Uploading: [=================================================           ] 81% Uploading: [=================================================           ] 82% Uploading: [==================================================          ] 83% Uploading: [==================================================          ] 84% Uploading: [===================================================         ] 85% Uploading: [====================================================        ] 86% Uploading: [====================================================        ] 87% Uploading: [=====================================================       ] 88% Uploading: [======================================================      ] 89% Uploading: [======================================================      ] 90% Uploading: [=======================================================     ] 91% Uploading: [=======================================================     ] 92% Uploading: [========================================================    ] 93% Uploading: [=========================================================   ] 94% Uploading: [=========================================================   ] 95% Uploading: [==========================================================  ] 96% Uploading: [==========================================================  ] 97% Uploading: [=========================================================== ] 98% Uploading: [============================================================] 99% Uploading: [============================================================] 100% Done...
+
+INFO Upload took 11.96 seconds, waiting for result...
+INFO OTA successful
+INFO Successfully uploaded program.
+INFO Starting log output from respeaker-lite-satellite.local using esphome API
+INFO Successfully connected to respeaker-lite-satellite @ 192.168.1.244 in 9.224s
+INFO Successful handshake with respeaker-lite-satellite @ 192.168.1.244 in 0.817s
+[15:20:27][I][app:100]: ESPHome version 2025.2.2 compiled on Mar  9 2025, 15:19:31
+[15:20:27][I][app:102]: Project formatbce.respeaker-lite-satellite version 2025.2.2
+[15:20:27][C][wifi:600]: WiFi:
+[15:20:28][C][wifi:428]:   Local MAC: 98:3D:AE:ED:BC:FC
+[15:20:28][C][wifi:433]:   SSID: 'ParkerLife_2G'
+[15:20:28][C][wifi:436]:   IP Address: 192.168.1.244
+[15:20:28][C][wifi:439]:   BSSID: 92:A7:B9:16:32:68
+[15:20:28][C][wifi:441]:   Hostname: 'respeaker-lite-satellite'
+[15:20:28][C][wifi:443]:   Signal strength: -45 dB ERROR Exception in callback _ProactorReadPipeTransport._loop_reading()
+handle: <Handle _ProactorReadPipeTransport._loop_reading()>
+Traceback (most recent call last):
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 325, in _loop_reading
+    self._data_received(data, length)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 274, in _data_received
+    self._protocol.data_received(data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "aioesphomeapi\\_frame_helper\\noise.py", line 197, in aioesphomeapi._frame_helper.noise.APINoiseFrameHelper.data_received
+  File "aioesphomeapi\\_frame_helper\\noise.py", line 367, in aioesphomeapi._frame_helper.noise.APINoiseFrameHelper._handle_frame
+  File "aioesphomeapi\\connection.py", line 939, in aioesphomeapi.connection.APIConnection.process_packet
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\site-packages\esphome\components\api\client.py", line 51, in on_log
+    print(f"[{time_.hour:02}:{time_.minute:02}:{time_.second:02}]{text}")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\site-packages\colorama\ansitowin32.py", line 47, in write
+    self.__convertor.write(text)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\site-packages\colorama\ansitowin32.py", line 177, in write
+    self.write_and_convert(text)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\site-packages\colorama\ansitowin32.py", line 202, in write_and_convert
+    self.write_plain_text(text, cursor, start)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\site-packages\colorama\ansitowin32.py", line 210, in write_plain_text
+    self.wrapped.write(text[start:end])
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\karll\AppData\Local\Programs\Python\Python313\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 0-3: character maps to <undefined>
+WARNING respeaker-lite-satellite @ 192.168.1.244: Connection error occurred: respeaker-lite-satellite @ 192.168.1.244: Encryption error: received_name=respeaker-lite-satellite
+INFO Processing unexpected disconnect from ESPHome API for respeaker-lite-satellite @ 192.168.1.244
+WARNING Disconnected from API
+INFO Successfully connected to respeaker-lite-satellite @ 192.168.1.244 in 0.105s
+INFO Successful handshake with respeaker-lite-satellite @ 192.168.1.244 in 0.743s
+[15:20:29][C][sntp:042]: SNTP Time:
+[15:20:29][C][sntp:045]:   Server 0: 'pool.ntp.org'
+[15:20:29][C][mdns:116]: mDNS:
+[15:20:29][C][mdns:117]:   Hostname: respeaker-lite-satellite
+[15:20:29][C][esphome.ota:073]: Over-The-Air updates:
+[15:20:29][C][esphome.ota:074]:   Address: respeaker-lite-satellite.local:3232
+[15:20:30][C][esphome.ota:075]:   Version: 2
+[15:20:30][C][esphome.ota:078]:   Password configured
+[15:20:30][C][safe_mode:018]: Safe Mode:
+[15:20:30][C][safe_mode:019]:   Boot considered successful after 60 seconds
+[15:20:30][C][safe_mode:021]:   Invoke after 10 boot attempts
+[15:20:30][C][safe_mode:022]:   Remain in safe mode for 300 seconds
+[15:20:30][C][api:140]: API Server:
+[15:20:30][C][api:141]:   Address: respeaker-lite-satellite.local:6053
+[15:20:30][C][api:143]:   Using noise encryption: YES
+[15:20:30][C][micro_wake_word:072]: microWakeWord:
+[15:20:30][C][micro_wake_word:073]:   models:
+[15:20:30][C][micro_wake_word:015]:     - Wake Word: Okay Nabu
+[15:20:30][C][micro_wake_word:016]:       Probability cutoff: 0.50
+[15:20:30][C][micro_wake_word:017]:       Sliding window size: 5
+[15:20:30][C][micro_wake_word:015]:     - Wake Word: Stop
+[15:20:30][C][micro_wake_word:016]:       Probability cutoff: 0.75
+[15:20:30][C][micro_wake_word:017]:       Sliding window size: 5
+[15:20:30][C][debug:021]: Debug component:
+[15:20:30][D][debug:035]: ESPHome version 2025.2.2
+[15:20:30][D][debug:039]: Free Heap Size: 115112 bytes
+[15:20:30][D][debug:284]: Chip: Model=ESP32-S3, Features=WIFI_BGN,BLE, Cores=2, Revision=2
+[15:20:30][D][debug:299]: Framework: ESP-IDF
+[15:20:30][D][debug:306]: ESP-IDF Version: 5.1.5
+[15:20:30][D][debug:311]: EFuse MAC: 98:3D:AE:ED:BC:FC
+[15:20:30][D][debug:204]: Reset Reason: Software reset via esp_restart
+[15:20:30][D][debug:359]: Wakeup Reason: Unknown
+[15:20:30][C][debug:033]: Partition table:
+[15:20:30][C][debug:034]:   Name         Type Subtype  Address    Size      
+[15:20:30][C][debug:038]:   otadata      1    0        0x00009000 0x00002000
+[15:20:30][C][debug:038]:   phy_init     1    1        0x0000B000 0x00001000
+[15:20:30][C][debug:038]:   app0         0    16       0x00010000 0x003C0000
+[15:20:30][C][debug:038]:   app1         0    17       0x003D0000 0x003C0000
+[15:20:30][C][debug:038]:   nvs          1    2        0x00790000 0x0006D000
+[15:20:52][D][main:723]: Battery voltage: 0.45 V
+[15:20:52][D][main:1064]: Battery level normal
+[15:20:52][D][main:1391]: Starting control_leds script execution
+[15:20:52][D][light:036]: 'LED Respeaker onboard' Setting:
+[15:20:52][D][main:1142]: Finished control_leds script execution
+[15:21:09][D][esp32.preferences:114]: Saving 6 preferences to flash...
+[15:21:09][D][esp32.preferences:142]: Saving 6 preferences to flash: 5 cached, 1 written, 0 failed
+[15:21:18][I][safe_mode:041]: Boot seems successful; resetting boot loop counter
+[15:21:18][D][esp32.preferences:114]: Saving 1 preferences to flash...
+[15:21:18][D][esp32.preferences:142]: Saving 1 preferences to flash: 0 cached, 1 written, 0 failed
+[15:21:52][D][main:723]: Battery voltage: 0.43 V
+[15:21:52][D][main:1064]: Battery level normal
+[15:21:52][D][main:1391]: Starting control_leds script execution
+[15:21:52][D][light:036]: 'LED Respeaker onboard' Setting:
+[15:21:52][D][main:1142]: Finished control_leds script execution
+[15:22:52][D][main:723]: Battery voltage: 0.11 V
+[15:22:52][D][main:1064]: Battery level normal
+[15:22:52][D][main:1391]: Starting control_leds script execution
+[15:22:52][D][light:036]: 'LED Respeaker onboard' Setting:
+[15:22:52][D][main:1142]: Finished control_leds script execution
+[15:23:39][D][light:036]: 'LED Respeaker onboard' Setting:
+[15:23:39][D][light:109]:   Effect: 'Color Bloom'
+[15:23:52][D][main:723]: Battery voltage: 0.46 V
+[15:23:52][D][main:1064]: Battery level normal
+[15:23:52][D][main:1391]: Starting control_leds script execution
+[15:23:52][D][light:036]: 'LED Respeaker onboard' Setting:
+[15:23:52][D][light:109]:   Effect: 'None'
+[15:23:52][D][main:1142]: Finished control_leds script execution
+INFO ESPHome 2025.2.2
+INFO Reading configuration SmartReSpeaker.yaml...
+INFO Updating https://github.com/ArMaTeC/SmartRespeaker@main
+Failed config
+
+wifi: [source SmartReSpeaker.yaml:61]
+  networks: 
+    - ssid: !secret wifi_ssid
+      password: !secret wifi_password
+  id: wifi_id
+  fast_connect: True
+  
+  [ap_timeout] is an invalid option for [wifi]. Did you mean [reboot_timeout]?
+  ap_timeout: 30s
+  on_connect: 
+    - logger.log: Wi-Fi connected
+    - lambda: id(improv_ble_in_progress) = false;
+    - script.execute: control_leds
+  on_disconnect: 
+    - logger.log: Wi-Fi disconnected
+INFO ESPHome 2025.2.2
+INFO Reading configuration SmartReSpeaker.yaml...
+INFO Updating https://github.com/ArMaTeC/SmartRespeaker@main
+Failed config
+
+logger: [source SmartReSpeaker.yaml:78]
+  
+  The configured log level for micro_wake_word (DEBUG) must be no more severe than the global log level INFO.
+  level: INFO
+  initial_level: DEBUG
+  logs: 
+    sensor: WARN
+    micro_wake_word: DEBUG
+    voice_assistant: DEBUG
+    binary_sensor: DEBUG
+    script: DEBUG
+    light: DEBUG
+    media_player: DEBUG
+    switch: DEBUG
+    respeaker_lite: DEBUG
+INFO ESPHome 2025.2.2
+INFO Reading configuration SmartReSpeaker.yaml...
+INFO Updating https://github.com/ArMaTeC/SmartRespeaker@main
+WARNING GPIO3 is a strapping PIN and should only be used for I/O with care.
+Attaching external pullup/down resistors to strapping pins can cause unexpected failures.
+See https://esphome.io/guides/faq.html#why-am-i-getting-a-warning-about-strapping-pins
+INFO Generating C++ source...
+INFO Updating https://github.com/espressif/esp-protocols.git@mdns-v1.5.1
+INFO Updating https://github.com/espressif/esp-tflite-micro@v1.3.1
+INFO Compiling app...
+Processing respeaker-lite-satellite (board: esp32-s3-devkitc-1; framework: espidf; platform: https://github.com/pioarduino/platform-espressif32.git#51.03.07)
+--------------------------------------------------------------------------------
+HARDWARE: ESP32S3 240MHz, 320KB RAM, 8MB Flash
+ - framework-espidf @ 3.50105.0 (5.1.5) 
+ - tool-cmake @ 3.21.3 
+ - tool-esptoolpy @ 4.8.1 
+ - tool-mklittlefs @ 3.2.0 
+ - tool-ninja @ 1.9.0 
+ - tool-riscv32-esp-elf-gdb @ 11.2.0+20220823 
+ - tool-xtensa-esp-elf-gdb @ 11.2.0+20230208 
+ - toolchain-esp32ulp @ 2.35.0-20220830 
+ - toolchain-riscv32-esp @ 12.2.0+20230208 
+ - toolchain-xtensa-esp32s3 @ 12.2.0+20230208
+Reading CMake configuration...
+Dependency Graph
+|-- esp-audio-libs @ 1.1.1
+|-- ESPMicroSpeechFeatures @ 1.1.0
+|-- noise-c @ 0.1.6
+Compiling .pioenvs\respeaker-lite-satellite\src\main.cpp.o
+In file included from src/esphome\components\adc\adc_sensor.h:9,
+                 from src/esphome.h:3,
+                 from src/main.cpp:3:
+C:/Users/karll/.platformio/packages/framework-espidf/components/esp_adc/deprecated/include/esp_adc_cal.h:17:2: warning: #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h" [-Wcpp]
+   17 | #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h"
+      |  ^~~~~~~
+In file included from src/esphome\components\adc\adc_sensor.h:10:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/adc.h:19:2: warning: #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively" [-Wcpp]
+   19 | #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively"
+      |  ^~~~~~~
+In file included from src/esphome\components\i2s_audio\i2s_audio.h:5,
+                 from src/esphome.h:45:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/i2s.h:27:2: warning: #warning "This set of I2S APIs has been deprecated, please include 'driver/i2s_std.h', 'driver/i2s_pdm.h' or 'driver/i2s_tdm.h' instead. if you want to keep using the old APIs and ignore this warning, you can enable 'Suppress leagcy driver deprecated warning' option under 'I2S Configuration' menu in Kconfig" [-Wcpp]
+   27 | #warning "This set of I2S APIs has been deprecated, \
+      |  ^~~~~~~
+In file included from components/esp-tflite-micro/tensorflow/lite/micro/tflite_bridge/flatbuffer_conversions_bridge.h:19,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_allocator.h:26,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_interpreter.h:26,
+                 from src/esphome\components\micro_wake_word\streaming_model.h:10,
+                 from src/esphome\components\micro_wake_word\micro_wake_word.h:6,
+                 from src/esphome.h:72:
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h: In member function 'T* tflite::BuiltinDataAllocator::AllocatePOD()':
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h:46:24: warning: 'template<class _Tp> struct std::is_pod' is deprecated: use is_standard_layout && is_trivial instead [-Wdeprecated-declarations]
+   46 |     static_assert(std::is_pod<T>::value, "Builtin data structure must be POD.");
+      |                        ^~~~~~
+In file included from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\bits\char_traits.h:42,
+                 from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\string:40,
+                 from src/esphome/core/log.h:7,
+                 from src/esphome/components/sensor/sensor.h:3,
+                 from src/esphome\components\adc\adc_sensor.h:3:
+c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\type_traits:757:5: note: declared here
+  757 |     is_pod
+      |     ^~~~~~
+SmartReSpeaker.yaml: In lambda function:
+SmartReSpeaker.yaml:1754:92: error: 'probability' was not declared in this scope
+src/esphome/core/log.h:97:100: note: in definition of macro 'esph_log_d'
+   97 |   ::esphome::esp_log_printf_(ESPHOME_LOG_LEVEL_DEBUG, tag, __LINE__, ESPHOME_LOG_FORMAT(format), ##__VA_ARGS__)
+      |                                                                                                    ^~~~~~~~~~~
+SmartReSpeaker.yaml:1754:7: note: in expansion of macro 'ESP_LOGD'
+*** [.pioenvs\respeaker-lite-satellite\src\main.cpp.o] Error 1
+========================= [FAILED] Took 14.44 seconds =========================
+INFO ESPHome 2025.2.2
+INFO Reading configuration SmartReSpeaker.yaml...
+INFO Updating https://github.com/ArMaTeC/SmartRespeaker@main
+WARNING GPIO3 is a strapping PIN and should only be used for I/O with care.
+Attaching external pullup/down resistors to strapping pins can cause unexpected failures.
+See https://esphome.io/guides/faq.html#why-am-i-getting-a-warning-about-strapping-pins
+INFO Generating C++ source...
+INFO Updating https://github.com/espressif/esp-protocols.git@mdns-v1.5.1
+INFO Updating https://github.com/espressif/esp-tflite-micro@v1.3.1
+INFO Compiling app...
+Processing respeaker-lite-satellite (board: esp32-s3-devkitc-1; framework: espidf; platform: https://github.com/pioarduino/platform-espressif32.git#51.03.07)
+--------------------------------------------------------------------------------
+HARDWARE: ESP32S3 240MHz, 320KB RAM, 8MB Flash
+ - framework-espidf @ 3.50105.0 (5.1.5) 
+ - tool-cmake @ 3.21.3 
+ - tool-esptoolpy @ 4.8.1 
+ - tool-mklittlefs @ 3.2.0 
+ - tool-ninja @ 1.9.0 
+ - tool-riscv32-esp-elf-gdb @ 11.2.0+20220823 
+ - tool-xtensa-esp-elf-gdb @ 11.2.0+20230208 
+ - toolchain-esp32ulp @ 2.35.0-20220830 
+ - toolchain-riscv32-esp @ 12.2.0+20230208 
+ - toolchain-xtensa-esp32s3 @ 12.2.0+20230208
+Reading CMake configuration...
+Dependency Graph
+|-- esp-audio-libs @ 1.1.1
+|-- ESPMicroSpeechFeatures @ 1.1.0
+|-- noise-c @ 0.1.6
+Compiling .pioenvs\respeaker-lite-satellite\src\main.cpp.o
+In file included from src/esphome\components\adc\adc_sensor.h:9,
+                 from src/esphome.h:3,
+                 from src/main.cpp:3:
+C:/Users/karll/.platformio/packages/framework-espidf/components/esp_adc/deprecated/include/esp_adc_cal.h:17:2: warning: #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h" [-Wcpp]
+   17 | #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h"
+      |  ^~~~~~~
+In file included from src/esphome\components\adc\adc_sensor.h:10:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/adc.h:19:2: warning: #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively" [-Wcpp]
+   19 | #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively"
+      |  ^~~~~~~
+In file included from src/esphome\components\i2s_audio\i2s_audio.h:5,
+                 from src/esphome.h:45:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/i2s.h:27:2: warning: #warning "This set of I2S APIs has been deprecated, please include 'driver/i2s_std.h', 'driver/i2s_pdm.h' or 'driver/i2s_tdm.h' instead. if you want to keep using the old APIs and ignore this warning, you can enable 'Suppress leagcy driver deprecated warning' option under 'I2S Configuration' menu in Kconfig" [-Wcpp]
+   27 | #warning "This set of I2S APIs has been deprecated, \
+      |  ^~~~~~~
+In file included from components/esp-tflite-micro/tensorflow/lite/micro/tflite_bridge/flatbuffer_conversions_bridge.h:19,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_allocator.h:26,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_interpreter.h:26,
+                 from src/esphome\components\micro_wake_word\streaming_model.h:10,
+                 from src/esphome\components\micro_wake_word\micro_wake_word.h:6,
+                 from src/esphome.h:72:
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h: In member function 'T* tflite::BuiltinDataAllocator::AllocatePOD()':
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h:46:24: warning: 'template<class _Tp> struct std::is_pod' is deprecated: use is_standard_layout && is_trivial instead [-Wdeprecated-declarations]
+   46 |     static_assert(std::is_pod<T>::value, "Builtin data structure must be POD.");
+      |                        ^~~~~~
+In file included from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\bits\char_traits.h:42,
+                 from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\string:40,
+                 from src/esphome/core/log.h:7,
+                 from src/esphome/components/sensor/sensor.h:3,
+                 from src/esphome\components\adc\adc_sensor.h:3:
+c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\type_traits:757:5: note: declared here
+  757 |     is_pod
+      |     ^~~~~~
+SmartReSpeaker.yaml: In lambda function:
+SmartReSpeaker.yaml:1754:92: error: 'probability' was not declared in this scope
+src/esphome/core/log.h:97:100: note: in definition of macro 'esph_log_d'
+   97 |   ::esphome::esp_log_printf_(ESPHOME_LOG_LEVEL_DEBUG, tag, __LINE__, ESPHOME_LOG_FORMAT(format), ##__VA_ARGS__)
+      |                                                                                                    ^~~~~~~~~~~
+SmartReSpeaker.yaml:1754:7: note: in expansion of macro 'ESP_LOGD'
+*** [.pioenvs\respeaker-lite-satellite\src\main.cpp.o] Error 1
+========================= [FAILED] Took 16.13 seconds =========================
+INFO ESPHome 2025.2.2
+INFO Reading configuration SmartReSpeaker.yaml...
+INFO Updating https://github.com/ArMaTeC/SmartRespeaker@main
+Failed config
+
+wifi: [source SmartReSpeaker.yaml:61]
+  networks: 
+    - ssid: !secret wifi_ssid
+      password: !secret wifi_password
+  id: wifi_id
+  fast_connect: True
+  
+  [ap_timeout] is an invalid option for [wifi]. Did you mean [reboot_timeout]?
+  ap_timeout: 30s
+  on_connect: 
+    - logger.log: Wi-Fi connected
+    - lambda: id(improv_ble_in_progress) = false;
+    - script.execute: control_leds
+  on_disconnect: 
+    - logger.log: Wi-Fi disconnected
+INFO ESPHome 2025.2.2
+INFO Reading configuration SmartReSpeaker.yaml...
+INFO Updating https://github.com/ArMaTeC/SmartRespeaker@main
+WARNING GPIO3 is a strapping PIN and should only be used for I/O with care.
+Attaching external pullup/down resistors to strapping pins can cause unexpected failures.
+See https://esphome.io/guides/faq.html#why-am-i-getting-a-warning-about-strapping-pins
+INFO Generating C++ source...
+INFO Updating https://github.com/espressif/esp-protocols.git@mdns-v1.5.1
+INFO Updating https://github.com/espressif/esp-tflite-micro@v1.3.1
+INFO Compiling app...
+Processing respeaker-lite-satellite (board: esp32-s3-devkitc-1; framework: espidf; platform: https://github.com/pioarduino/platform-espressif32.git#51.03.07)
+--------------------------------------------------------------------------------
+HARDWARE: ESP32S3 240MHz, 320KB RAM, 8MB Flash
+ - framework-espidf @ 3.50105.0 (5.1.5) 
+ - tool-cmake @ 3.21.3 
+ - tool-esptoolpy @ 4.8.1 
+ - tool-mklittlefs @ 3.2.0 
+ - tool-ninja @ 1.9.0 
+ - tool-riscv32-esp-elf-gdb @ 11.2.0+20220823 
+ - tool-xtensa-esp-elf-gdb @ 11.2.0+20230208 
+ - toolchain-esp32ulp @ 2.35.0-20220830 
+ - toolchain-riscv32-esp @ 12.2.0+20230208 
+ - toolchain-xtensa-esp32s3 @ 12.2.0+20230208
+Reading CMake configuration...
+Dependency Graph
+|-- esp-audio-libs @ 1.1.1
+|-- ESPMicroSpeechFeatures @ 1.1.0
+|-- noise-c @ 0.1.6
+Compiling .pioenvs\respeaker-lite-satellite\src\main.cpp.o
+In file included from src/esphome\components\adc\adc_sensor.h:9,
+                 from src/esphome.h:3,
+                 from src/main.cpp:3:
+C:/Users/karll/.platformio/packages/framework-espidf/components/esp_adc/deprecated/include/esp_adc_cal.h:17:2: warning: #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h" [-Wcpp]
+   17 | #warning "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h"
+      |  ^~~~~~~
+In file included from src/esphome\components\adc\adc_sensor.h:10:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/adc.h:19:2: warning: #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively" [-Wcpp]
+   19 | #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively"
+      |  ^~~~~~~
+In file included from src/esphome\components\i2s_audio\i2s_audio.h:5,
+                 from src/esphome.h:45:
+C:/Users/karll/.platformio/packages/framework-espidf/components/driver/deprecated/driver/i2s.h:27:2: warning: #warning "This set of I2S APIs has been deprecated, please include 'driver/i2s_std.h', 'driver/i2s_pdm.h' or 'driver/i2s_tdm.h' instead. if you want to keep using the old APIs and ignore this warning, you can enable 'Suppress leagcy driver deprecated warning' option under 'I2S Configuration' menu in Kconfig" [-Wcpp]
+   27 | #warning "This set of I2S APIs has been deprecated, \
+      |  ^~~~~~~
+In file included from components/esp-tflite-micro/tensorflow/lite/micro/tflite_bridge/flatbuffer_conversions_bridge.h:19,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_allocator.h:26,
+                 from components/esp-tflite-micro/tensorflow/lite/micro/micro_interpreter.h:26,
+                 from src/esphome\components\micro_wake_word\streaming_model.h:10,
+                 from src/esphome\components\micro_wake_word\micro_wake_word.h:6,
+                 from src/esphome.h:72:
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h: In member function 'T* tflite::BuiltinDataAllocator::AllocatePOD()':
+components/esp-tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.h:46:24: warning: 'template<class _Tp> struct std::is_pod' is deprecated: use is_standard_layout && is_trivial instead [-Wdeprecated-declarations]
+   46 |     static_assert(std::is_pod<T>::value, "Builtin data structure must be POD.");
+      |                        ^~~~~~
+In file included from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\bits\char_traits.h:42,
+                 from c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\string:40,
+                 from src/esphome/core/log.h:7,
+                 from src/esphome/components/sensor/sensor.h:3,
+                 from src/esphome\components\adc\adc_sensor.h:3:
+c:\users\karll\.platformio\packages\toolchain-xtensa-esp32s3\xtensa-esp32s3-elf\include\c++\12.2.0\type_traits:757:5: note: declared here
+  757 |     is_pod
+      |     ^~~~~~
+SmartReSpeaker.yaml: In lambda function:
+SmartReSpeaker.yaml:1651:92: error: 'probability' was not declared in this scope
+src/esphome/core/log.h:97:100: note: in definition of macro 'esph_log_d'
+   97 |   ::esphome::esp_log_printf_(ESPHOME_LOG_LEVEL_DEBUG, tag, __LINE__, ESPHOME_LOG_FORMAT(format), ##__VA_ARGS__)
+      |                                                                                                    ^~~~~~~~~~~
+SmartReSpeaker.yaml:1651:7: note: in expansion of macro 'ESP_LOGD'
+*** [.pioenvs\respeaker-lite-satellite\src\main.cpp.o] Error 1
+========================= [FAILED] Took 14.09 seconds =========================
+INFO ESPHome 2025.2.2
+INFO Reading configuration SmartReSpeaker.yaml...
+INFO Updating https://github.com/ArMaTeC/SmartRespeaker@main
+WARNING GPIO3 is a strapping PIN and should only be used for I/O with care.
+Attaching external pullup/down resistors to strapping pins can cause unexpected failures.
+See https://esphome.io/guides/faq.html#why-am-i-getting-a-warning-about-strapping-pins
+Failed config
+
+media_player.speaker: [source SmartReSpeaker.yaml:875]
+  platform: speaker
+  id: external_media_player
+  name: Media Player
+  internal: False
+  volume_increment: 0.05
+  volume_min: 0.4
+  volume_max: 0.85
+  announcement_pipeline: 
+    speaker: announcement_resampling_speaker
+    format: FLAC
+    num_channels: 1
+    sample_rate: 48000
+  media_pipeline: 
+    speaker: media_resampling_speaker
+    format: FLAC
+    num_channels: 2
+    sample_rate: 48000
+  on_announcement: 
+    - logger.log: Media player announcement started
+    - mixer_speaker.apply_ducking: 
+        id: media_mixing_input
+        decibel_reduction: 20
+        duration: 0.0s
+  on_state: 
+    - logger.log: 
+        format: Media player state changed: %d
+        args: 
+          - (int)id(external_media_player).state
+    - if: 
+        condition: 
+          and: 
+            - switch.is_off: timer_ringing
+            - not: 
+                voice_assistant.is_running: {}
+            - not: 
+                media_player.is_announcing: {}
+        then: 
+          - logger.log: Removing ducking from media player
+          - mixer_speaker.apply_ducking: 
+              id: media_mixing_input
+              decibel_reduction: 0
+              duration: 1.0s
+    - if: 
+        condition: 
+          lambda: |-
+            return id(external_media_player).state == media_player::MediaPlayerState::MEDIA_PLAYER_STATE_PLAYING;
+        then: 
+          - lambda: id(device_state) = 7;
+          - script.execute: control_leds
+        else: 
+          - script.execute: control_leds
+  files: 
+    - id: center_button_press_sound
+      file: |-
+        https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/center_button_press.flac
+    - id: center_button_double_press_sound
+      file: |-
+        https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/center_button_double_press.flac
+    - id: center_button_triple_press_sound
+      file: |-
+        https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/center_button_triple_press.flac
+    - id: center_button_long_press_sound
+      file: |-
+        https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/center_button_long_press.flac
+    - id: factory_reset_initiated_sound
+      
+      Could not download from https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/factory_reset_initiated.mp3: HTTPSConnectionPool(host='github.com', port=443): Read timed out. (read timeout=30).
+      file: |-
+        https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/factory_reset_initiated.mp3
+    - id: factory_reset_cancelled_sound
