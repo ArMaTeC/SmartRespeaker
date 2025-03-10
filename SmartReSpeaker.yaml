@@ -16,7 +16,6 @@ substitutions:
   state_va_error: '5'
   state_timer_ringing: '6'
   state_media_playing: '7'
-  state_low_battery: '8'
   state_button_pressed: '9'
   state_not_ready: '10'
 
@@ -171,10 +170,6 @@ globals:
     type: bool
     restore_value: false
   - id: factory_reset_requested
-    type: bool
-    restore_value: no
-    initial_value: 'false'
-  - id: low_battery_alert
     type: bool
     restore_value: no
     initial_value: 'false'
@@ -355,170 +350,6 @@ switch:
       - lambda: id(debug_mode) = false;
 
 binary_sensor:
-  - platform: gpio
-    id: user_button
-    pin:
-      number: GPIO3
-      inverted: true
-      mode: INPUT_PULLUP
-    name: "User button"
-    on_press:
-      - logger.log: "User button pressed"
-      - lambda: id(device_state) = ${state_button_pressed};
-      - script.execute: control_leds
-    on_release:
-      - logger.log: "User button released"
-      - lambda: id(device_state) = ${state_idle};
-      - script.execute: control_leds
-      - if:
-          condition: {lambda: return id(factory_reset_requested);}
-          then:
-            - logger.log: "Factory reset requested on button release"
-            - button.press: factory_reset_button
-    on_multi_click:
-      - timing:
-          - ON for at most 1s
-          - OFF for at least 0.25s
-        then:
-          - logger.log: "Single click detected"
-          - if:
-              condition: {lambda: return !id(init_in_progress);}
-              then:
-                - if:
-                    condition: {switch.is_on: timer_ringing}
-                    then:
-                      - logger.log: "Stopping timer ringing"
-                      - switch.turn_off: timer_ringing
-                    else:
-                      - if:
-                          condition: {media_player.is_announcing:}
-                          then:
-                            - logger.log: "Stopping announcement"
-                            - media_player.stop: {announcement: true}
-                          else:
-                            - if:
-                                condition: {voice_assistant.is_running:}
-                                then:
-                                  - logger.log: "Stopping voice assistant"
-                                  - voice_assistant.stop:
-                                else:
-                                  - if:
-                                      condition: {media_player.is_playing:}
-                                      then:
-                                        - logger.log: "Pausing media player"
-                                        - media_player.pause:
-                                      else:
-                                        - if:
-                                            condition:
-                                              and:
-                                                - switch.is_off: mic_mute_switch
-                                                - not: {voice_assistant.is_running}
-                                            then:
-                                              - logger.log: "Starting voice assistant from button"
-                                              - if:
-                                                  condition: {switch.is_on: button_sound}
-                                                  then:
-                                                    - script.execute:
-                                                        id: play_sound
-                                                        priority: true
-                                                        sound_file: !lambda return id(center_button_press_sound);
-                                                    - delay: 300ms
-                                              - voice_assistant.start:
-                                                  silence_detection: True
-      - timing:
-          - ON for at most 1s
-          - OFF for at most 0.25s
-          - ON for at most 1s
-          - OFF for at least 0.25s
-        then:
-          - logger.log: "Double click detected"
-          - if:
-              condition: {lambda: return !id(init_in_progress);}
-              then:
-                - if:
-                    condition: {switch.is_on: button_sound}
-                    then:
-                      - logger.log: "Playing double press sound"
-                      - script.execute:
-                          id: play_sound
-                          priority: false
-                          sound_file: !lambda return id(center_button_double_press_sound);
-                - logger.log: "Increasing media player volume"
-                - media_player.volume_up:
-                    id: external_media_player
-      - timing:
-          - ON for at most 1s
-          - OFF for at most 0.25s
-          - ON for at most 1s
-          - OFF for at most 0.25s
-          - ON for at most 1s
-          - OFF for at least 0.25s
-        then:
-          - logger.log: "Triple click detected"
-          - if:
-              condition: {lambda: return !id(init_in_progress);}
-              then:
-                - if:
-                    condition: {switch.is_on: button_sound}
-                    then:
-                      - logger.log: "Playing triple press sound"
-                      - script.execute:
-                          id: play_sound
-                          priority: false
-                          sound_file: !lambda return id(center_button_triple_press_sound);
-                - logger.log: "Decreasing media player volume"
-                - media_player.volume_down:
-                    id: external_media_player
-      - timing: [ON for at least 1s]
-        then:
-          - logger.log: "Long press (1s) detected"
-          - if:
-              condition: {lambda: return !id(init_in_progress);}
-              then:
-                - if:
-                    condition: {switch.is_on: button_sound}
-                    then:
-                      - logger.log: "Playing long press sound"
-                      - script.execute:
-                          id: play_sound
-                          priority: false
-                          sound_file: !lambda return id(center_button_long_press_sound);
-                - light.turn_off: led_respeaker_onboard
-      - timing: [ON for at least 10s]
-        then:
-          - logger.log: "Long press (10s) detected - Factory reset warning"
-          - light.turn_on:
-              brightness: 100%
-              id: led_respeaker_onboard
-              effect: "Factory Reset Coming Up"
-          - script.execute:
-              id: play_sound
-              priority: true
-              sound_file: !lambda return id(factory_reset_initiated_sound);
-          - wait_until: {binary_sensor.is_off: user_button}
-          - if:
-              condition: {lambda: return !id(factory_reset_requested);}
-              then:
-                - logger.log: "Factory reset cancelled"
-                - light.turn_off: led_respeaker_onboard
-                - script.execute:
-                    id: play_sound
-                    priority: true
-                    sound_file: !lambda return id(factory_reset_cancelled_sound);
-      - timing: [ON for at least 22s]
-        then:
-          - logger.log: "Long press (22s) detected - Factory reset confirmed"
-          - script.execute:
-              id: play_sound
-              priority: true
-              sound_file: !lambda return id(factory_reset_confirmed_sound);
-          - light.turn_on:
-              brightness: 100%
-              red: 1
-              green: 0
-              blue: 0
-              id: led_respeaker_onboard
-              effect: "none"
 
 light:
   - platform: esp32_rmt_led_strip
@@ -626,31 +457,6 @@ sensor:
     device_class: duration
     unit_of_measurement: s
     icon: "mdi:timer"
-  - platform: adc
-    id: battery_voltage
-    pin: GPIO10
-    name: "Battery Voltage"
-    unit_of_measurement: "V"
-    update_interval: 60s
-    accuracy_decimals: 2
-    filters:
-      - multiply: 2
-    on_value:
-      - logger.log:
-          format: "Battery voltage: %.2f V"
-          args: ["x"]
-      - if:
-          condition:
-            lambda: return x < 0.05;
-          then:
-            - logger.log: "Low battery alert triggered"
-            - lambda: id(low_battery_alert) = true;
-            - lambda: id(device_state) = ${state_low_battery};
-            - script.execute: control_leds
-          else:
-            - logger.log: "Battery level normal"
-            - lambda: id(low_battery_alert) = false;
-            - script.execute: control_leds
   - platform: template
     id: voice_assistant_phase_sensor
     name: "Voice Assistant Phase"
@@ -712,7 +518,6 @@ script:
                     case ${state_va_error}: return 1.0;
                     case ${state_timer_ringing}: return 1.0;
                     case ${state_media_playing}: return 0.0;
-                    case ${state_low_battery}: return 1.0;
                     case ${state_button_pressed}: return 0.0;
                     case ${state_not_ready}: return 1.0;
                     default: return 0.0;
@@ -726,7 +531,6 @@ script:
                     case ${state_va_error}: return 0.0;
                     case ${state_timer_ringing}: return 1.0;
                     case ${state_media_playing}: return 1.0;
-                    case ${state_low_battery}: return 0.0;
                     case ${state_button_pressed}: return 1.0;
                     case ${state_not_ready}: return 0.5;
                     default: return 0.0;
@@ -740,7 +544,6 @@ script:
                     case ${state_va_error}: return 0.0;
                     case ${state_timer_ringing}: return 0.0;
                     case ${state_media_playing}: return 0.0;
-                    case ${state_low_battery}: return 0.0;
                     case ${state_button_pressed}: return 1.0;
                     case ${state_not_ready}: return 0.0;
                     default: return 0.0;
@@ -755,7 +558,6 @@ script:
                     case ${state_va_error}: return "Error Flash";
                     case ${state_timer_ringing}: return "Ring Chase";
                     case ${state_media_playing}: return "Idle Breathing";
-                    case ${state_low_battery}: return "Error Flash";
                     case ${state_button_pressed}: return "Fast Pulse";
                     case ${state_not_ready}: return "Slow Pulse";
                     default: return "none";
