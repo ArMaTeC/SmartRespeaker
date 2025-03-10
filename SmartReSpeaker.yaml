@@ -36,15 +36,9 @@ esphome:
           state: -1
       - lambda: id(device_state) = ${state_initializing};
       - script.execute: control_leds
-      - delay: 10min
-      - logger.log: "Mic unmuted on boot"
-      - if:
-          condition:
-            lambda: return id(init_in_progress);
-          then:
-            - logger.log: "Initialization completed after delay"
-            - lambda: id(init_in_progress) = false;
-            - script.execute: control_leds
+      - delay: 5s
+      - switch.turn_off: mic_mute_switch
+      - lambda: id(init_in_progress) = false;
   on_shutdown:
     then:
       - logger.log: "Shutting down - Muting speaker"
@@ -87,8 +81,8 @@ wifi:
     password: "lNw0AP2PKQGR"
 
 logger:
-  level: DEBUG  # Reduced overhead
-  initial_level: DEBUG  # Detailed logs during boot
+  level: DEBUG
+  initial_level: DEBUG
   logs:
     sensor: WARN
     micro_wake_word: DEBUG
@@ -106,7 +100,7 @@ logger:
 select:
   - platform: logger
     id: logger_select
-    name: Logger Level
+    name: "Logger Level"
     disabled_by_default: true
 
 api:
@@ -176,7 +170,7 @@ globals:
   - id: debug_mode
     type: bool
     restore_value: no
-    initial_value: 'true'
+    initial_value: 'false'
   - id: awaiting_question_response
     type: bool
     restore_value: no
@@ -371,16 +365,26 @@ light:
           update_interval: 100ms
           min_brightness: 0%
           max_brightness: 20%
+      - addressable_lambda:
+          name: "Init Chase"
+          update_interval: 50ms
+          lambda: |-
+            static int pos = 0;
+            it.all() = Color::BLACK;
+            it[pos] = Color(0, 0, 255);
+            pos = (pos + 1) % it.size();
+      - addressable_lambda:
+          name: "Listening Chase"
+          update_interval: 50ms
+          lambda: |-
+            static int pos = 0;
+            it.all() = Color::BLACK;
+            it[pos] = Color(0, 255, 0);
+            pos = (pos + 1) % it.size();
       - pulse:
-          name: "Slow Pulse"
+          name: "Thinking Pulse"
           transition_length: 500ms
           update_interval: 500ms
-          min_brightness: 50%
-          max_brightness: 100%
-      - pulse:
-          name: "Fast Pulse"
-          transition_length: 100ms
-          update_interval: 100ms
           min_brightness: 50%
           max_brightness: 100%
       - lambda:
@@ -408,12 +412,38 @@ light:
             } else {
               id(led_respeaker_onboard).turn_off().perform();
             }
+      - addressable_lambda:
+          name: "Timer Chase"
+          update_interval: 100ms
+          lambda: |-
+            static int pos = 0;
+            it.all() = Color::BLACK;
+            it[pos] = Color(255, 255, 0);
+            pos = (pos + 1) % it.size();
       - pulse:
-          name: "Factory Reset Coming Up"
-          transition_length: 250ms
-          update_interval: 250ms
+          name: "Media Pulse"
+          transition_length: 1000ms
+          update_interval: 1000ms
+          min_brightness: 20%
+          max_brightness: 50%
+      - lambda:
+          name: "Button Flash"
+          update_interval: 100ms
+          lambda: |-
+            static int count = 0;
+            if (count < 3) {
+              id(led_respeaker_onboard).turn_on().set_rgb(1.0, 1.0, 1.0).set_brightness(1.0).perform();
+              count++;
+            } else {
+              id(led_respeaker_onboard).turn_off().perform();
+              count = 0;
+            }
+      - pulse:
+          name: "Not Ready Pulse"
+          transition_length: 1500ms
+          update_interval: 1500ms
           min_brightness: 0%
-          max_brightness: 100%
+          max_brightness: 30%
       - lambda:
           name: "Question Response"
           update_interval: 750ms
@@ -430,23 +460,6 @@ light:
             }
             call.set_brightness(0.75);
             call.perform();
-      - addressable_lambda:
-          name: "Ring Chase"
-          update_interval: 200ms
-          lambda: |-
-            static int position = 0;
-            static float tail_brightness[16] = {0};
-            for (int i = 0; i < it.size(); i++) {
-              tail_brightness[i] *= 0.7;
-              if (tail_brightness[i] < 0.05) tail_brightness[i] = 0;
-              it[i] = ESPColor(
-                (uint8_t)(id(led_red) * 255.0 * tail_brightness[i]),
-                (uint8_t)(id(led_green) * 255.0 * tail_brightness[i]),
-                (uint8_t)(id(led_blue) * 255.0 * tail_brightness[i])
-              );
-            }
-            tail_brightness[position] = 1.0;
-            position = (position + 1) % it.size();
 
 sensor:
   - platform: template
@@ -500,69 +513,26 @@ event:
 script:
   - id: control_leds
     then:
-      - logger.log: "Starting control_leds script execution"
-      - if:
-          condition:
-            lambda: return id(device_state) == ${state_idle};
-          then:
-            - light.turn_off: led_respeaker_onboard
-          else:
-            - light.turn_on:
-                id: led_respeaker_onboard
-                red: !lambda |-
-                  switch (id(device_state)) {
-                    case ${state_initializing}: return 0.0;
-                    case ${state_va_listening}: return 0.0;
-                    case ${state_va_thinking}: return 0.5;
-                    case ${state_va_replying}: return 0.0;
-                    case ${state_va_error}: return 1.0;
-                    case ${state_timer_ringing}: return 1.0;
-                    case ${state_media_playing}: return 0.0;
-                    case ${state_button_pressed}: return 0.0;
-                    case ${state_not_ready}: return 1.0;
-                    default: return 0.0;
-                  }
-                green: !lambda |-
-                  switch (id(device_state)) {
-                    case ${state_initializing}: return 0.0;
-                    case ${state_va_listening}: return 1.0;
-                    case ${state_va_thinking}: return 0.0;
-                    case ${state_va_replying}: return 1.0;
-                    case ${state_va_error}: return 0.0;
-                    case ${state_timer_ringing}: return 1.0;
-                    case ${state_media_playing}: return 1.0;
-                    case ${state_button_pressed}: return 1.0;
-                    case ${state_not_ready}: return 0.5;
-                    default: return 0.0;
-                  }
-                blue: !lambda |-
-                  switch (id(device_state)) {
-                    case ${state_initializing}: return 1.0;
-                    case ${state_va_listening}: return 0.0;
-                    case ${state_va_thinking}: return 0.5;
-                    case ${state_va_replying}: return 1.0;
-                    case ${state_va_error}: return 0.0;
-                    case ${state_timer_ringing}: return 0.0;
-                    case ${state_media_playing}: return 0.0;
-                    case ${state_button_pressed}: return 1.0;
-                    case ${state_not_ready}: return 0.0;
-                    default: return 0.0;
-                  }
-                brightness: 0.5
-                effect: !lambda |-
-                  switch (id(device_state)) {
-                    case ${state_initializing}: return "Ring Chase";
-                    case ${state_va_listening}: return "Ring Chase";
-                    case ${state_va_thinking}: return "Fast Pulse";
-                    case ${state_va_replying}: return "Replying Alternate";
-                    case ${state_va_error}: return "Error Flash";
-                    case ${state_timer_ringing}: return "Ring Chase";
-                    case ${state_media_playing}: return "Idle Breathing";
-                    case ${state_button_pressed}: return "Fast Pulse";
-                    case ${state_not_ready}: return "Slow Pulse";
-                    default: return "none";
-                  }
-      - logger.log: "Finished control_leds script execution"
+      - lambda: |-
+          std::string effect;
+          switch (id(device_state)) {
+            case ${state_initializing}: effect = "Init Chase"; break;
+            case ${state_idle}: effect = "Idle Breathing"; break;
+            case ${state_va_listening}: effect = "Listening Chase"; break;
+            case ${state_va_thinking}: effect = "Thinking Pulse"; break;
+            case ${state_va_replying}: effect = "Replying Alternate"; break;
+            case ${state_va_error}: effect = "Error Flash"; break;
+            case ${state_timer_ringing}: effect = "Timer Chase"; break;
+            case ${state_media_playing}: effect = "Media Pulse"; break;
+            case ${state_button_pressed}: effect = "Button Flash"; break;
+            case ${state_not_ready}: effect = "Not Ready Pulse"; break;
+            default: effect = "none"; break;
+          }
+          if (effect != "none") {
+            id(led_respeaker_onboard).turn_on().set_effect(effect).perform();
+          } else {
+            id(led_respeaker_onboard).turn_off().perform();
+          }
   - id: ring_timer
     then:
       - logger.log: "Ringing timer"
@@ -678,7 +648,7 @@ microphone:
       amplify_shift: 0
     channel_1:
       id: nabu_mic_mww
-      amplify_shift: 3
+      amplify_shift: 2
 
 speaker:
   - platform: i2s_audio
@@ -860,8 +830,8 @@ micro_wake_word:
   microphone: nabu_mic_mww
   on_wake_word_detected:
     - logger.log:
-        format: "Wake word '%s' detected"
-        args: ["wake_word.c_str()"]
+        format: "Wake word '%s' detected, mic muted: %s"
+        args: ["wake_word.c_str()", "id(mic_mute_switch).state ? \"yes\" : \"no\""]
     - if:
         condition: {switch.is_off: mic_mute_switch}
         then:
@@ -935,56 +905,16 @@ voice_assistant:
         args: ["code.c_str()", "message.c_str()"]
     - if:
         condition:
-          and:
-            - lambda: return !id(init_in_progress);
-            - lambda: return code != "duplicate_wake_up_detected";
+          lambda: 'return code == "stt-no-text-recognized";'
         then:
-          - if:
-              condition:
-                and:
-                  - lambda: 'return code == "stt-no-text-recognized";'
-                  - switch.is_on: is_question_response_switch
-              then:
-                - logger.log: "STT failed after question, retrying"
-                - voice_assistant.stop:
-                - micro_wake_word.stop:
-                - delay: 100ms
-                - micro_wake_word.start:
-                - delay: 200ms
-                - voice_assistant.start:
-                    silence_detection: True
-                - delay: 1s
-                - if:
-                    condition:
-                      not:
-                        voice_assistant.is_running:
-                    then:
-                      - logger.log: "Retry failed, resetting to idle"
-                      - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
-                      - lambda: id(device_state) = ${state_idle};
-                      - script.execute: control_leds
-              else:
-                - logger.log: "Unhandled error, resetting to idle"
-                - lambda: id(voice_assistant_phase) = ${voice_assist_error_phase_id};
-                - lambda: id(device_state) = ${state_va_error};
-                - script.execute: control_leds
-                - voice_assistant.stop:
-                - micro_wake_word.stop:
-                - delay: 100ms
-                - micro_wake_word.start:
-                - delay: 200ms
-                - voice_assistant.start:
-                    silence_detection: True
-                - delay: 1s
-                - if:
-                    condition:
-                      not:
-                        voice_assistant.is_running:
-                    then:
-                      - logger.log: "VA failed to recover, resetting to idle"
-                      - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
-                      - lambda: id(device_state) = ${state_idle};
-                      - script.execute: control_leds
+          - delay: 2s
+          - voice_assistant.start:
+              silence_detection: True
+        else:
+          - voice_assistant.stop:
+          - micro_wake_word.stop:
+          - delay: 100ms
+          - micro_wake_word.start:
   on_start:
     - logger.log: "VA started"
     - mixer_speaker.apply_ducking:
@@ -1023,10 +953,6 @@ voice_assistant:
     - text_sensor.template.publish:
         id: tts_uri
         state: !lambda 'return x;'
-    - lambda: |-
-        ESP_LOGD("voice_assistant", "TTS ended. Last response: '%s'", id(last_response_text).state.c_str());
-        ESP_LOGD("voice_assistant", "Checking if last char is '?': %d", id(last_response_text).state.back() == '?');
-        ESP_LOGD("voice_assistant", "Media player state: %d", (int)id(external_media_player).state);
     - if:
         condition:
           lambda: 'return !id(last_response_text).state.empty() && id(last_response_text).state.back() == ''?'';'
@@ -1065,7 +991,6 @@ voice_assistant:
           - lambda: |-
               id(voice_assistant_phase) = ${voice_assist_waiting_for_command_phase_id};
               id(device_state) = ${state_va_listening};
-              ESP_LOGD("voice_assistant", "Restarting VA with silence detection");
           - voice_assistant.start:
               silence_detection: True
           - logger.log: "VA restarted for question response"
@@ -1168,6 +1093,10 @@ button:
     entity_category: config
     disabled_by_default: true
     icon: "mdi:restart"
+  - platform: template
+    name: "Manual VA Trigger"
+    on_press:
+      - voice_assistant.start:
 
 debug:
   update_interval: 5s
